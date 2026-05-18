@@ -1,3 +1,4 @@
+import urllib.request
 from flask import Flask, request, jsonify, session, send_from_directory
 import json
 import os
@@ -168,6 +169,106 @@ def admin_upgrade():
         db["usuarios"][email]["plano"] = plano
         save_db(db)
     return jsonify({"ok": True})
+
+
+MP_ACCESS_TOKEN = "APP_USR-6719425973860470-051719-0dba2eadcd461aa80a64231ff92c09ba-2112056378"
+MP_PUBLIC_KEY = "APP_USR-90e13660-4204-4f29-9435-55399dfaa19f"
+
+@app.route("/api/criar_pagamento", methods=["POST"])
+def criar_pagamento():
+    if "user" not in session or session.get("admin"):
+        return jsonify({"erro": "Não autorizado"}), 401
+    
+    data = request.json
+    plano = data.get("plano", "avulso")
+    email = session["user"]
+    db = load_db()
+    nome = db["usuarios"][email]["nome"]
+    
+    valor = 10.00 if plano == "avulso" else 60.00
+    titulo = "Análise Avulsa" if plano == "avulso" else "Assinatura Mensal Ilimitada"
+    
+    try:
+                import urllib.parse
+        
+        payload = {
+            "items": [{
+                "title": titulo,
+                "quantity": 1,
+                "currency_id": "BRL",
+                "unit_price": valor
+            }],
+            "payer": {
+                "email": email,
+                "name": nome
+            },
+            "back_urls": {
+                "success": "https://web-production-dc14b.up.railway.app/pagamento/sucesso",
+                "failure": "https://web-production-dc14b.up.railway.app/pagamento/falha",
+                "pending": "https://web-production-dc14b.up.railway.app/pagamento/pendente"
+            },
+            "auto_return": "approved",
+            "external_reference": f"{email}|{plano}",
+            "notification_url": "https://web-production-dc14b.up.railway.app/api/webhook_mp"
+        }
+        
+        req = urllib.request.Request(
+            "https://api.mercadopago.com/checkout/preferences",
+            data=json.dumps(payload).encode(),
+            headers={
+                "Authorization": f"Bearer {MP_ACCESS_TOKEN}",
+                "Content-Type": "application/json"
+            }
+        )
+        
+        with urllib.request.urlopen(req, timeout=30) as r:
+            resp = json.loads(r.read())
+            return jsonify({"link": resp["init_point"]})
+    
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+
+@app.route("/api/webhook_mp", methods=["POST"])
+def webhook_mp():
+    try:
+        data = request.json or {}
+        topic = data.get("type") or request.args.get("topic", "")
+        payment_id = data.get("data", {}).get("id") or request.args.get("id")
+        
+        if topic == "payment" and payment_id:
+            req = urllib.request.Request(
+                f"https://api.mercadopago.com/v1/payments/{payment_id}",
+                headers={"Authorization": f"Bearer {MP_ACCESS_TOKEN}"}
+            )
+            with urllib.request.urlopen(req, timeout=15) as r:
+                payment = json.loads(r.read())
+            
+            if payment.get("status") == "approved":
+                ref = payment.get("external_reference", "")
+                if "|" in ref:
+                    email, plano = ref.split("|", 1)
+                    db = load_db()
+                    if email in db["usuarios"]:
+                        db["usuarios"][email]["plano"] = plano
+                        save_db(db)
+        
+        return jsonify({"ok": True})
+    except Exception as e:
+        print("WEBHOOK ERROR:", e)
+        return jsonify({"ok": True})
+
+@app.route("/pagamento/sucesso")
+def pagamento_sucesso():
+    return send_from_directory(".", "analise_site.html")
+
+@app.route("/pagamento/falha")
+def pagamento_falha():
+    return send_from_directory(".", "analise_site.html")
+
+@app.route("/pagamento/pendente")
+def pagamento_pendente():
+    return send_from_directory(".", "analise_site.html")
+
 
 if __name__ == "__main__":
     db = load_db()
