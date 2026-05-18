@@ -384,49 +384,83 @@ footer strong{color:rgba(255,255,255,.4);font-weight:800;letter-spacing:1px}
 </div>
 
 <!-- DASHBOARD CLIENTE -->
-<div id="dashboard" style="display:none;padding-top:80px;background:var(--bg);min-height:100vh">
+<div id="dashboard" style="display:none;padding-top:80px;background:#07101f;min-height:100vh">
   <div class="dash-wrap">
-    <div class="dash-top">
-      <div><div class="dash-title">Minha Conta</div><div class="dash-sub" id="dash-sub"></div></div>
-      <button class="btn-nav primary" style="background:var(--azul);color:#fff;border:none" onclick="fazerLogout()">Sair</button>
+
+    <!-- HEADER -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:10px">
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;text-transform:uppercase;color:#fff;letter-spacing:-1px">Minha Conta</div>
+        <div id="dash-sub" style="font-size:13px;color:rgba(255,255,255,.4);margin-top:2px"></div>
+      </div>
+      <button onclick="fazerLogout()" style="background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Manrope',sans-serif">Sair</button>
     </div>
 
-    <div class="dash-tabs">
-      <button class="dtab active" onclick="mudarTab('minhas')">Minhas Análises</button>
-      <button class="dtab" onclick="mudarTab('nova')">Nova Análise</button>
+    <!-- PLANO ATIVO BADGE -->
+    <div id="plano-badge-box" style="margin-bottom:24px"></div>
+
+    <!-- TABS -->
+    <div style="display:flex;gap:6px;margin-bottom:20px">
+      <button class="dtab active" onclick="mudarTab('minhas')" style="flex:1">Minhas Análises</button>
+      <button class="dtab" onclick="mudarTab('nova')" style="flex:1">Nova Análise</button>
     </div>
 
+    <!-- MINHAS ANÁLISES -->
     <div class="tab-panel active" id="tab-minhas">
       <div id="lista-analises"></div>
     </div>
 
+    <!-- NOVA ANÁLISE -->
     <div class="tab-panel" id="tab-nova">
+
+      <!-- BLOQUEIO - SEM PLANO -->
       <div id="bloqueio-plano" style="display:none">
-        <div class="pix-cta">
-          <h3>Ative seu plano</h3>
-          <p>Escolha um plano e faça o Pix para ativar sua conta.</p>
-          <div class="pix-btns">
-            <button class="btn-pix azul" onclick="mostrarPix('avulso')">R$10 — Avulso</button>
-            <button class="btn-pix outline" onclick="mostrarPix('assinatura')">R$60 — Assinatura</button>
+
+        <!-- URGÊNCIA -->
+        <div style="background:linear-gradient(135deg,#1647d4,#0f35a8);border-radius:16px;padding:24px;text-align:center;margin-bottom:16px">
+          <div style="font-size:28px;margin-bottom:8px">⚡</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;text-transform:uppercase;color:#fff;margin-bottom:8px">Seu adversário já está sendo analisado</div>
+          <div style="font-size:14px;color:rgba(255,255,255,.7);line-height:1.6">Enquanto você espera, ele já sabe seus padrões.<br>Não deixe ele chegar preparado.</div>
+        </div>
+
+        <!-- PLANOS -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+          <!-- AVULSO -->
+          <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:20px;text-align:center">
+            <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:8px">Avulso</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:900;color:#fff;line-height:1">R$10</div>
+            <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:16px">/análise</div>
+            <div style="font-size:12px;color:rgba(255,255,255,.6);margin-bottom:16px;line-height:1.5">✓ 1 análise completa<br>✓ Entrega em 1h</div>
+            <button onclick="pagar('avulso')" style="width:100%;padding:12px;border-radius:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Manrope',sans-serif;transition:.2s" onmouseover="this.style.background='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.1)'">Pagar R$10</button>
+          </div>
+          <!-- ASSINATURA -->
+          <div style="background:linear-gradient(135deg,rgba(22,71,212,.3),rgba(22,71,212,.15));border:2px solid var(--azul);border-radius:14px;padding:20px;text-align:center;position:relative">
+            <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--azul);color:#fff;font-size:10px;font-weight:800;letter-spacing:1px;padding:3px 12px;border-radius:20px;white-space:nowrap">MELHOR OPÇÃO</div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#7aaeff;margin-bottom:8px">Mensal</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:900;color:#fff;line-height:1">R$60</div>
+            <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:16px">/mês</div>
+            <div style="font-size:12px;color:rgba(255,255,255,.6);margin-bottom:16px;line-height:1.5">✓ Ilimitadas<br>✓ Prioridade máxima</div>
+            <button onclick="pagar('assinatura')" style="width:100%;padding:12px;border-radius:10px;background:var(--azul);border:none;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Manrope',sans-serif">Assinar agora</button>
           </div>
         </div>
-      </div>
-      <div id="pix-instrucao" style="display:none">
-        <div class="pix-cta" style="margin-bottom:20px">
-          <h3 id="pix-titulo"></h3>
-          <p>Faça o Pix para a chave abaixo e mande o comprovante no WhatsApp para ativar.</p>
-          <div class="pix-key">henymc1128@gmail.com</div>
-          <p style="font-size:12px;color:rgba(255,255,255,.3)">Após confirmação seu plano é ativado na hora</p>
+
+        <!-- PROVA SOCIAL -->
+        <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:16px;text-align:center">
+          <div style="font-size:22px;margin-bottom:6px">⭐⭐⭐⭐⭐</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.7);font-style:italic;margin-bottom:6px">"Analisei o pivô adversário antes da final. Sabia cada movimento dele. Vencemos."</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.3)">— João, jogador de futsal · São Paulo</div>
         </div>
       </div>
+
+      <!-- FORM ANÁLISE -->
       <div id="form-nova">
-        <div class="ubox" id="vbox-dash">
-          <input type="file" accept="video/*" onchange="handleVDash(this)">
-          <span class="ubox-icon" id="vico-dash">🎥</span>
-          <div class="ubox-title" id="vtitle-dash">Enviar vídeo do jogo (opcional)</div>
-          <div class="ubox-sub">MP4, MOV · Clique ou arraste</div>
+        <div style="background:rgba(0,200,83,.08);border:1px solid rgba(0,200,83,.2);border-radius:12px;padding:14px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
+          <span style="font-size:20px">✅</span>
+          <div style="font-size:13px;color:rgba(255,255,255,.8)">Plano ativo — preencha os dados do adversário abaixo</div>
         </div>
         <div class="mfield"><label>Link do jogo / vídeo</label><input id="n-link" placeholder="https://youtube.com/..." /></div>
+        <div class="mfield"><label>Instagram do adversário (opcional)</label><input id="n-instagram" placeholder="@usuario" /></div>
+        <div class="mfield"><label>Nome do adversário</label><input id="n-nome-adv" placeholder="Ex: Carlos" /></div>
         <div class="mfield"><label>Número da camisa</label><input id="n-numero" placeholder="Ex: 10" type="number" /></div>
         <div class="mfield"><label>Posição</label>
           <select id="n-posicao">
@@ -436,8 +470,8 @@ footer strong{color:rgba(255,255,255,.4);font-weight:800;letter-spacing:1px}
             <option>Atacante</option><option>Pivô</option><option>Ala direito</option><option>Ala esquerdo</option><option>Fixo</option>
           </select>
         </div>
-        <div class="mfield"><label>Observações (opcional)</label><textarea id="n-obs" placeholder="Algo que você notou nele em quadra..."></textarea></div>
-        <button class="btn-main" style="width:100%;justify-content:center" onclick="solicitarAnalise()">Solicitar Análise →</button>
+        <div class="mfield"><label>Observações (opcional)</label><textarea id="n-obs" placeholder="Algo que você já notou nele em quadra..."></textarea></div>
+        <button class="btn-main" style="width:100%;justify-content:center;margin-top:4px" onclick="solicitarAnalise()">🔍 Enviar para análise →</button>
       </div>
     </div>
   </div>
@@ -541,13 +575,29 @@ async function mostrarDashboard(d){
   document.getElementById('landing').style.display='none';
   document.getElementById('dashboard').style.display='block';
   userPlano=d.plano||'gratuito';
-  document.getElementById('dash-sub').textContent=`Olá, ${d.nome} — Plano: ${userPlano==='gratuito'?'Sem plano ativo':userPlano}`;
+  document.getElementById('dash-sub').textContent=`Olá, ${d.nome}`;
   document.getElementById('nav-right').innerHTML=`<button class="btn-nav primary" style="background:var(--azul);color:#fff;border:none" onclick="fazerLogout()">Sair</button>`;
+  
+  const badge = document.getElementById('plano-badge-box');
   if(userPlano==='gratuito'){
+    badge.innerHTML='';
     document.getElementById('bloqueio-plano').style.display='block';
     document.getElementById('form-nova').style.display='none';
+  } else {
+    badge.innerHTML=`<div style="display:inline-flex;align-items:center;gap:8px;background:rgba(0,200,83,.12);border:1px solid rgba(0,200,83,.3);border-radius:20px;padding:6px 16px"><span style="color:#00c853;font-size:14px">✓</span><span style="font-size:13px;font-weight:700;color:#00c853">Plano ${userPlano} ativo</span></div>`;
+    document.getElementById('bloqueio-plano').style.display='none';
+    document.getElementById('form-nova').style.display='block';
   }
   carregarAnalises();
+}
+
+async function pagar(plano){
+  try{
+    const r=await fetch('/api/criar_pagamento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plano})});
+    const d=await r.json();
+    if(d.link) window.location.href=d.link;
+    else alert('Erro ao gerar pagamento. Tente novamente.');
+  }catch(e){ alert('Erro de conexão. Tente novamente.'); }
 }
 
 async function carregarAnalises(){
@@ -575,8 +625,10 @@ async function solicitarAnalise(){
   const link=document.getElementById('n-link').value.trim();
   const numero=document.getElementById('n-numero').value.trim();
   const posicao=document.getElementById('n-posicao').value;
+  const instagram=document.getElementById('n-instagram')?.value.trim()||'';
+  const nomeAdv=document.getElementById('n-nome-adv')?.value.trim()||'';
   if(!link||!numero||!posicao){alert('Preencha link, número e posição!');return;}
-  const r=await fetch('/api/solicitar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({link,numero,posicao,observacoes:document.getElementById('n-obs').value})});
+  const r=await fetch('/api/solicitar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({link,numero,posicao,instagram,nome_adversario:nomeAdv,observacoes:document.getElementById('n-obs').value})});
   const d=await r.json();
   if(d.erro==='plano_necessario'){document.getElementById('bloqueio-plano').style.display='block';document.getElementById('form-nova').style.display='none';return;}
   if(d.ok){alert(`✅ Análise #${d.id} solicitada! Em breve você recebe.`);document.getElementById('n-link').value='';document.getElementById('n-numero').value='';document.getElementById('n-obs').value='';mudarTab('minhas');}
