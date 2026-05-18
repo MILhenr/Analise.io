@@ -189,8 +189,6 @@ def criar_pagamento():
     titulo = "Análise Avulsa" if plano == "avulso" else "Assinatura Mensal Ilimitada"
     
     try:
-                import urllib.parse
-        
         payload = {
             "items": [{
                 "title": titulo,
