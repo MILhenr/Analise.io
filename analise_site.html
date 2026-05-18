@@ -467,7 +467,13 @@ footer strong{color:rgba(255,255,255,.4);font-weight:800;letter-spacing:1px}
           <span style="font-size:20px">✅</span>
           <div style="font-size:13px;color:rgba(255,255,255,.8)">Plano ativo — preencha os dados do adversário abaixo</div>
         </div>
-        <div class="mfield"><label>Link do jogo / vídeo</label><input id="n-link" placeholder="https://youtube.com/..." /></div>
+        <div id="links-container">
+          <div class="mfield">
+            <label>Link do vídeo 1</label>
+            <input class="n-link-input" placeholder="https://youtube.com/..." />
+          </div>
+        </div>
+        <button onclick="addLink()" id="btn-add-link" style="background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-bottom:12px;font-family:'Manrope',sans-serif;transition:.2s" onmouseover="this.style.borderColor='var(--azul)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,.15)';this.style.color='rgba(255,255,255,.6)'">+ Adicionar outro vídeo</button>
         <div class="mfield"><label>Instagram do adversário (opcional)</label><input id="n-instagram" placeholder="@usuario" /></div>
         <div class="mfield"><label>Nome do adversário</label><input id="n-nome-adv" placeholder="Ex: Carlos" /></div>
         <div class="mfield"><label>Número da camisa</label><input id="n-numero" placeholder="Ex: 10" type="number" /></div>
@@ -652,13 +658,15 @@ async function carregarAnalises(){
 }
 
 async function solicitarAnalise(){
-  const link=document.getElementById('n-link').value.trim();
+  const linkInputs = document.querySelectorAll('.n-link-input');
+  const links = Array.from(linkInputs).map(i=>i.value.trim()).filter(v=>v);
+  const link = links[0] || '';
   const numero=document.getElementById('n-numero').value.trim();
   const posicao=document.getElementById('n-posicao').value;
   const instagram=document.getElementById('n-instagram')?.value.trim()||'';
   const nomeAdv=document.getElementById('n-nome-adv')?.value.trim()||'';
   if(!link||!numero||!posicao){alert('Preencha link, número e posição!');return;}
-  const r=await fetch('/api/solicitar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({link,numero,posicao,instagram,nome_adversario:nomeAdv,observacoes:document.getElementById('n-obs').value})});
+  const r=await fetch('/api/solicitar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({link,links,numero,posicao,instagram,nome_adversario:nomeAdv,observacoes:document.getElementById('n-obs').value})});
   const d=await r.json();
   if(d.erro==='plano_necessario'){document.getElementById('bloqueio-plano').style.display='block';document.getElementById('form-nova').style.display='none';return;}
   if(d.ok){alert(`✅ Análise #${d.id} solicitada! Em breve você recebe.`);document.getElementById('n-link').value='';document.getElementById('n-numero').value='';document.getElementById('n-obs').value='';mudarTab('minhas');}
@@ -762,6 +770,17 @@ function fecharModal(id){document.getElementById(id).classList.remove('open');}
 function showMsg(id,txt,tipo){const el=document.getElementById(id);el.textContent=txt;el.className='mmsg '+tipo;el.style.display='block';}
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 
+function addLink(){
+  const container = document.getElementById('links-container');
+  const count = container.querySelectorAll('.n-link-input').length;
+  if(count >= 10){ document.getElementById('btn-add-link').style.display='none'; return; }
+  const div = document.createElement('div');
+  div.className = 'mfield';
+  div.innerHTML = `<label style="display:flex;justify-content:space-between;align-items:center">Link do vídeo ${count+1} <span onclick="this.closest('.mfield').remove()" style="cursor:pointer;color:rgba(255,255,255,.3);font-size:18px;font-weight:400">×</span></label><input class="n-link-input" placeholder="https://youtube.com/..." style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:9px;color:#fff;font-family:'Manrope',sans-serif;font-size:14px;padding:12px 14px;width:100%;outline:none"/>`;
+  container.appendChild(div);
+  if(count+1 >= 10) document.getElementById('btn-add-link').style.display='none';
+}
+
 function vsTab(tipo){
   document.querySelectorAll('.vs-tab').forEach((t,i)=>t.classList.toggle('active',['sem','com'][i]===tipo));
   document.getElementById('vsp-sem').style.display = tipo==='sem'?'flex':'none';
@@ -771,3 +790,4 @@ verificarSessao();
 </script>
 </body>
 </html>
+
