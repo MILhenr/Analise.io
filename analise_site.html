@@ -79,6 +79,10 @@ nav.scrolled{background:rgba(7,16,31,.97);border-bottom:1px solid rgba(255,255,2
 .vs-card.bad .vs-vlabel{color:rgba(255,255,255,.15)}
 .vs-card.good .vs-vlabel{color:rgba(22,71,212,.6)}
 .vs-hint{position:absolute;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,.12);font-style:italic}
+.vs-tabs{display:flex;gap:4px;margin-bottom:16px;background:rgba(255,255,255,.05);border-radius:10px;padding:4px}
+.vs-tab{flex:1;padding:10px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:"Manrope",sans-serif;background:none;color:rgba(255,255,255,.4);transition:.2s}
+.vs-tab.active{background:var(--azul);color:#fff}
+.vs-panel{display:flex;flex-direction:column;gap:4px;flex-direction:column}
 .vs-txt{padding:16px 18px;font-size:14px;line-height:1.6;font-weight:500}
 .vs-card.bad .vs-txt{color:rgba(255,255,255,.45)}
 .vs-card.good .vs-txt{color:rgba(255,255,255,.75)}
@@ -92,7 +96,7 @@ nav.scrolled{background:rgba(7,16,31,.97);border-bottom:1px solid rgba(255,255,2
 .sec-tag{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--azul);margin-bottom:10px}
 .sec-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,5vw,52px);font-weight:900;text-transform:uppercase;line-height:1;margin-bottom:10px}
 .sec-sub{font-size:15px;color:var(--texto2);margin-bottom:36px;line-height:1.6;max-width:520px}
-.players-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.players-grid{display:grid;grid-template-columns:1fr;gap:14px;max-width:340px}
 @media(max-width:580px){.players-grid{grid-template-columns:1fr}}
 .player-card{background:var(--branco);border:1px solid var(--cinza);border-radius:14px;overflow:hidden;transition:transform .25s,box-shadow .25s}
 .player-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(7,16,31,.1)}
@@ -247,17 +251,17 @@ footer strong{color:rgba(255,255,255,.4);font-weight:800;letter-spacing:1px}
   <div class="hero-bg"></div>
   <div class="hero-line"></div>
   <div class="hero-content">
-    <div class="hero-eyebrow"><span class="eyebrow-dot"></span>O segredo dos times profissionais</div>
-    <h1>Leia o jogo.<br><em>Vença antes<br>de entrar.</em></h1>
+    <div class="hero-eyebrow"><span class="eyebrow-dot"></span>O segredo da nata da bola</div>
+    <h1>Saiba tudo.<br><em>Vença antes<br>de entrar.</em></h1>
     <p class="hero-sub">Mande o vídeo do adversário. Receba análise completa — o que ele faz, como ele chuta, onde ele é fraco.</p>
     <p class="hero-bold">Fique <em>1 passo à frente de todos</em> no futsal, no futebol, no seu esporte.</p>
     <div class="hero-btns">
-      <button class="btn-main" onclick="abrirCadastro()">Quero minha análise →</button>
+      <button class="btn-main" onclick="abrirCadastro()">Analisar meu adversário →</button>
       <a href="#gratis" class="btn-sec">Ver análises grátis</a>
     </div>
     <div class="hero-numbers">
       <div class="hn-item"><span class="hn-num">+200</span><div class="hn-label">Jogadores analisados</div></div>
-      <div class="hn-item"><span class="hn-num">24h</span><div class="hn-label">Tempo de entrega</div></div>
+      <div class="hn-item"><span class="hn-num">1h</span><div class="hn-label">Tempo de entrega</div></div>
       <div class="hn-item"><span class="hn-num">97%</span><div class="hn-label">Clientes satisfeitos</div></div>
     </div>
   </div>
@@ -272,22 +276,29 @@ footer strong{color:rgba(255,255,255,.4);font-weight:800;letter-spacing:1px}
       <div class="vs-title">Com ou sem<br><em>análise?</em></div>
       <p class="vs-desc">Veja o que acontece nos dois casos. A diferença entre ganhar e perder está no preparo.</p>
     </div>
-    <div class="vs-cols fu">
-      <div class="vs-col-header bad">❌ Sem análise</div>
-      <div class="vs-col-header good">✅ Com análise</div>
-      <div class="vs-card bad">
+    <!-- TABS MOBILE -->
+    <div class="vs-tabs fu">
+      <button class="vs-tab active" onclick="vsTab('sem')">❌ Sem análise</button>
+      <button class="vs-tab" onclick="vsTab('com')">✅ Com análise</button>
+    </div>
+
+    <div class="vs-panel" id="vsp-sem">
+      <div class="vs-card bad fu">
         <div class="vs-video"><div class="vs-play-wrap"><div class="vs-play">▶</div><div class="vs-vlabel">seu vídeo aqui</div></div><div class="vs-hint">trocar pelo vídeo real</div></div>
         <div class="vs-txt"><strong>Você toma o gol e não sabe o que aconteceu.</strong>Ele chegou, chutou e você não teve tempo de reagir.</div>
       </div>
-      <div class="vs-card good">
-        <div class="vs-video"><div class="vs-play-wrap"><div class="vs-play">▶</div><div class="vs-vlabel">seu vídeo aqui</div></div><div class="vs-hint">trocar pelo vídeo real</div></div>
-        <div class="vs-txt"><strong>Você já sabia que ele ia pra direita.</strong>Bloqueou o chute antes mesmo de ele finalizar.</div>
-      </div>
-      <div class="vs-card bad">
+      <div class="vs-card bad fu">
         <div class="vs-video"><div class="vs-play-wrap"><div class="vs-play">▶</div><div class="vs-vlabel">seu vídeo aqui</div></div></div>
         <div class="vs-txt"><strong>Você perde pro mesmo jogador toda vez.</strong>Sem entender o porquê, sem saber o que muda.</div>
       </div>
-      <div class="vs-card good">
+    </div>
+
+    <div class="vs-panel" id="vsp-com" style="display:none">
+      <div class="vs-card good fu">
+        <div class="vs-video"><div class="vs-play-wrap"><div class="vs-play">▶</div><div class="vs-vlabel">seu vídeo aqui</div></div><div class="vs-hint">trocar pelo vídeo real</div></div>
+        <div class="vs-txt"><strong>Você já sabia que ele ia pra direita.</strong>Bloqueou o chute antes mesmo de ele finalizar.</div>
+      </div>
+      <div class="vs-card good fu">
         <div class="vs-video"><div class="vs-play-wrap"><div class="vs-play">▶</div><div class="vs-vlabel">seu vídeo aqui</div></div></div>
         <div class="vs-txt"><strong>Você força ele pro lado fraco.</strong>Perna esquerda, sem espaço — ele não sabe o que fazer.</div>
       </div>
@@ -302,7 +313,7 @@ footer strong{color:rgba(255,255,255,.4);font-weight:800;letter-spacing:1px}
     <h2 class="sec-title fu">Veja como funciona.</h2>
     <p class="sec-sub fu">Analisamos 3 dos melhores jogadores de futsal do mundo. De graça. Para você ver como é.</p>
     <div class="players-grid fu">
-      <div class="player-card">
+      <div class="player-card" style="max-width:320px;margin:0 auto">
         <div class="player-photo">⚽<div class="free-badge">GRÁTIS</div></div>
         <div class="player-body">
           <div class="player-name">Leandro Lino</div>
@@ -311,32 +322,6 @@ footer strong{color:rgba(255,255,255,.4);font-weight:800;letter-spacing:1px}
             <div class="pi">Sempre puxa pra direita antes de chutar</div>
             <div class="pi">Pedalada antes de acelerar pela ala</div>
             <div class="pi">Chute cruzado no canto baixo direito</div>
-          </div>
-          <a href="#" class="btn-player">Ver análise completa</a>
-        </div>
-      </div>
-      <div class="player-card">
-        <div class="player-photo">🏆<div class="free-badge">GRÁTIS</div></div>
-        <div class="player-body">
-          <div class="player-name">Rodrigo Capita</div>
-          <div class="player-pos">Fixo · Magnus · Seleção Brasileira</div>
-          <div class="player-insights">
-            <div class="pi">Chute potente sempre no canto direito</div>
-            <div class="pi">Avança pelo meio quando há espaço</div>
-            <div class="pi">Passe longo rápido no contra-ataque</div>
-          </div>
-          <a href="#" class="btn-player">Ver análise completa</a>
-        </div>
-      </div>
-      <div class="player-card">
-        <div class="player-photo">🌍<div class="free-badge">GRÁTIS</div></div>
-        <div class="player-body">
-          <div class="player-name">Pito</div>
-          <div class="player-pos">Pivô · Barcelona · Melhor do Mundo 2024</div>
-          <div class="player-insights">
-            <div class="pi">Giro de pivô sempre pro lado esquerdo</div>
-            <div class="pi">Finaliza de costas pro gol com precisão</div>
-            <div class="pi">Chute colocado no canto oposto ao goleiro</div>
           </div>
           <a href="#" class="btn-player">Ver análise completa</a>
         </div>
@@ -695,6 +680,11 @@ function fecharModal(id){document.getElementById(id).classList.remove('open');}
 function showMsg(id,txt,tipo){const el=document.getElementById(id);el.textContent=txt;el.className='mmsg '+tipo;el.style.display='block';}
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 
+function vsTab(tipo){
+  document.querySelectorAll('.vs-tab').forEach((t,i)=>t.classList.toggle('active',['sem','com'][i]===tipo));
+  document.getElementById('vsp-sem').style.display = tipo==='sem'?'flex':'none';
+  document.getElementById('vsp-com').style.display = tipo==='com'?'flex':'none';
+}
 verificarSessao();
 </script>
 </body>
