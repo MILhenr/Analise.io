@@ -183,7 +183,10 @@ def criar_pagamento():
     plano = data.get("plano", "avulso")
     email = session["user"]
     db = load_db()
-    nome = db["usuarios"][email]["nome"]
+    if email not in db["usuarios"]:
+        session.clear()
+        return jsonify({"erro": "Sessão expirada. Faça login novamente."}), 401
+    nome = db["usuarios"][email].get("nome", "Cliente")
     
     valor = 10.00 if plano == "avulso" else 60.00
     titulo = "Análise Avulsa" if plano == "avulso" else "Assinatura Mensal Ilimitada"
