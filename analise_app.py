@@ -70,7 +70,15 @@ def login():
 
     session["user"] = email
     session["admin"] = False
-    return jsonify({"ok": True, "admin": False, "nome": db["usuarios"][email]["nome"], "plano": db["usuarios"][email]["plano"]})
+    
+    # Conta do dono sempre com acesso
+    plano = db["usuarios"][email]["plano"]
+    if email == "henymc1128@gmail.com":
+        plano = "assinatura"
+        db["usuarios"][email]["plano"] = "assinatura"
+        save_db(db)
+    
+    return jsonify({"ok": True, "admin": False, "nome": db["usuarios"][email]["nome"], "plano": plano})
 
 @app.route("/api/logout")
 def logout():
