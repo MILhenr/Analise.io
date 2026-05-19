@@ -59,6 +59,10 @@ def hash_senha(s):
 
 # ================= ROTAS =================
 
+@app.route("/static/<path:filename>")
+def static_files(filename):
+    return send_from_directory(".", filename)
+
 @app.route("/")
 def index():
     return send_from_directory(".", "analise_site.html")
