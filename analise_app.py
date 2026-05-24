@@ -6,8 +6,8 @@ import urllib.request
 from datetime import datetime
 from flask import Flask, request, jsonify, session, send_from_directory
 
-import psycopg
-from psycopg.rows import dict_row
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
 import cloudinary
 import cloudinary.uploader
@@ -139,7 +139,6 @@ def hash_senha(s):
 
 def upload_image_cloudinary(base64_image):
     try:
-
         if not base64_image:
             return None
 
@@ -150,7 +149,6 @@ def upload_image_cloudinary(base64_image):
 
         url = result.get("secure_url")
 
-        # otimização automática
         url = url.replace(
             "/upload/",
             "/upload/f_auto,q_auto/"
@@ -188,19 +186,15 @@ def pagamento_pendente():
 
 @app.route("/api/cadastro", methods=["POST"])
 def cadastro():
-
     data = request.json
 
     email = data.get("email", "").lower().strip()
     nome = data.get("nome", "").strip()
-
     senha = hash_senha(data.get("senha", ""))
 
     try:
-
         with get_db() as conn:
             with conn.cursor() as c:
-
                 c.execute(
                     "SELECT email FROM usuarios WHERE email=%s",
                     (email,)
@@ -214,8 +208,8 @@ def cadastro():
                 c.execute(
                     """
                     INSERT INTO usuarios
-                    (email,nome,senha,plano,criado_em)
-                    VALUES (%s,%s,%s,%s,%s)
+                    (email, nome, senha, plano, criado_em)
+                    VALUES (%s, %s, %s, %s, %s)
                     """,
                     (
                         email,
@@ -231,21 +225,19 @@ def cadastro():
         return jsonify({"ok": True})
 
     except Exception as e:
+        print("ERRO CADASTRO:", e)
         return jsonify({"erro": str(e)}), 500
 
 @app.route("/api/login", methods=["POST"])
 def login():
-
     data = request.json
 
     user = data.get("user", "").strip()
-
     senha = hash_senha(data.get("senha", ""))
 
     # ================= ADMIN =================
 
     if user == ADMIN_USER and senha == ADMIN_SENHA:
-
         session["user"] = "admin"
         session["admin"] = True
 
@@ -260,10 +252,8 @@ def login():
     email = user.lower()
 
     try:
-
         with get_db() as conn:
             with conn.cursor() as c:
-
                 c.execute(
                     "SELECT * FROM usuarios WHERE email=%s",
                     (email,)
@@ -280,14 +270,11 @@ def login():
                 plano = u["plano"]
 
                 if email == OWNER_EMAIL and plano != "assinatura":
-
                     c.execute(
                         "UPDATE usuarios SET plano='assinatura' WHERE email=%s",
                         (email,)
                     )
-
                     conn.commit()
-
                     plano = "assinatura"
 
                 session["user"] = email
@@ -301,18 +288,16 @@ def login():
                 })
 
     except Exception as e:
+        print("ERRO LOGIN:", e)
         return jsonify({"erro": str(e)}), 500
 
 @app.route("/api/logout")
 def logout():
-
     session.clear()
-
     return jsonify({"ok": True})
 
 @app.route("/api/me")
 def me():
-
     if "user" not in session:
         return jsonify({"logado": False})
 
@@ -326,10 +311,8 @@ def me():
     email = session["user"]
 
     try:
-
         with get_db() as conn:
             with conn.cursor() as c:
-
                 c.execute(
                     "SELECT * FROM usuarios WHERE email=%s",
                     (email,)
@@ -349,19 +332,17 @@ def me():
                     "email": email
                 })
 
-    except:
+    except Exception as e:
+        print("ERRO ME:", e)
         return jsonify({"logado": False})
 
 # ================= ATLETAS =================
 
 @app.route("/api/atletas", methods=["GET"])
 def listar_atletas():
-
     try:
-
         with get_db() as conn:
             with conn.cursor() as c:
-
                 c.execute("""
                     SELECT *
                     FROM atletas
@@ -374,20 +355,17 @@ def listar_atletas():
                 return jsonify(rows)
 
     except Exception as e:
-        print(e)
+        print("ERRO LISTAR ATLETAS:", e)
         return jsonify([])
 
 @app.route("/api/admin/atletas", methods=["GET"])
 def admin_listar_atletas():
-
     if not session.get("admin"):
         return jsonify({"erro": "Não autorizado"}), 401
 
     try:
-
         with get_db() as conn:
             with conn.cursor() as c:
-
                 c.execute("""
                     SELECT *
                     FROM atletas
@@ -399,30 +377,26 @@ def admin_listar_atletas():
                 return jsonify(rows)
 
     except Exception as e:
-        print(e)
+        print("ERRO ADMIN LISTAR ATLETAS:", e)
         return jsonify([])
 
 # ================= CRIAR ATLETA =================
 
 @app.route("/api/admin/atletas", methods=["POST"])
 def admin_criar_atleta():
-
     if not session.get("admin"):
         return jsonify({"erro": "Não autorizado"}), 401
 
     data = request.json
 
     try:
-
         aid = str(uuid.uuid4())[:8].upper()
 
         foto_base64 = data.get("foto")
-
         foto = upload_image_cloudinary(foto_base64)
 
         with get_db() as conn:
             with conn.cursor() as c:
-
                 c.execute('''
                     INSERT INTO atletas (
                         id,
@@ -460,58 +434,32 @@ def admin_criar_atleta():
                         %s,%s
                     )
                 ''', (
-
                     aid,
-
-                    data.get("nome",""),
+                    data.get("nome", ""),
                     int(data.get("idade") or 0),
-
-                    data.get("posicao",""),
-
-                    data.get("modalidade","Futsal"),
-
-                    data.get("clube",""),
-
-                    data.get("agencia",""),
-
-                    data.get("contrato",""),
-
-                    data.get("pe","Direito"),
-
+                    data.get("posicao", ""),
+                    data.get("modalidade", "Futsal"),
+                    data.get("clube", ""),
+                    data.get("agencia", ""),
+                    data.get("contrato", ""),
+                    data.get("pe", "Direito"),
                     int(data.get("altura") or 0),
-
                     int(data.get("peso") or 0),
-
                     data.get("disponivel", True),
-
-                    data.get("instagram",""),
-
-                    data.get("whatsapp",""),
-
-                    data.get("forte",""),
-
-                    data.get("fraco",""),
-
-                    data.get("video",""),
-
+                    data.get("instagram", ""),
+                    data.get("whatsapp", ""),
+                    data.get("forte", ""),
+                    data.get("fraco", ""),
+                    data.get("video", ""),
                     foto,
-
-                    data.get("stats_gols",""),
-
-                    data.get("stats_assists",""),
-
-                    data.get("stats_passes",""),
-
-                    data.get("stats_dribles",""),
-
-                    data.get("stats_nota",""),
-
-                    data.get("stats_jogos",""),
-
+                    data.get("stats_gols", ""),
+                    data.get("stats_assists", ""),
+                    data.get("stats_passes", ""),
+                    data.get("stats_dribles", ""),
+                    data.get("stats_nota", ""),
+                    data.get("stats_jogos", ""),
                     "aprovado",
-
                     datetime.now().strftime("%d/%m/%Y %H:%M")
-
                 ))
 
             conn.commit()
@@ -523,6 +471,213 @@ def admin_criar_atleta():
         })
 
     except Exception as e:
+        print("ERRO CRIAR ATLETA:", e)
+        return jsonify({"erro": str(e)}), 500
+
+# ================= EDITAR ATLETA =================
+
+@app.route("/api/admin/atletas/<aid>", methods=["PUT"])
+def admin_editar_atleta(aid):
+    if not session.get("admin"):
+        return jsonify({"erro": "Não autorizado"}), 401
+
+    data = request.json
+
+    try:
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute("""
+                    UPDATE atletas SET
+                        nome=%s,
+                        idade=%s,
+                        posicao=%s,
+                        modalidade=%s,
+                        clube=%s,
+                        agencia=%s,
+                        contrato=%s,
+                        pe=%s,
+                        altura=%s,
+                        peso=%s,
+                        disponivel=%s,
+                        instagram=%s,
+                        whatsapp=%s,
+                        forte=%s,
+                        fraco=%s,
+                        video=%s,
+                        stats_gols=%s,
+                        stats_assists=%s,
+                        stats_passes=%s,
+                        stats_dribles=%s,
+                        stats_nota=%s,
+                        stats_jogos=%s,
+                        status=%s
+                    WHERE id=%s
+                """, (
+                    data.get("nome", ""),
+                    int(data.get("idade") or 0),
+                    data.get("posicao", ""),
+                    data.get("modalidade", "Futsal"),
+                    data.get("clube", ""),
+                    data.get("agencia", ""),
+                    data.get("contrato", ""),
+                    data.get("pe", "Direito"),
+                    int(data.get("altura") or 0),
+                    int(data.get("peso") or 0),
+                    data.get("disponivel", True),
+                    data.get("instagram", ""),
+                    data.get("whatsapp", ""),
+                    data.get("forte", ""),
+                    data.get("fraco", ""),
+                    data.get("video", ""),
+                    data.get("stats_gols", ""),
+                    data.get("stats_assists", ""),
+                    data.get("stats_passes", ""),
+                    data.get("stats_dribles", ""),
+                    data.get("stats_nota", ""),
+                    data.get("stats_jogos", ""),
+                    data.get("status", "aprovado"),
+                    aid
+                ))
+
+            conn.commit()
+
+        return jsonify({"ok": True})
+
+    except Exception as e:
+        print("ERRO EDITAR ATLETA:", e)
+        return jsonify({"erro": str(e)}), 500
+
+# ================= DELETAR ATLETA =================
+
+@app.route("/api/admin/atletas/<aid>", methods=["DELETE"])
+def admin_deletar_atleta(aid):
+    if not session.get("admin"):
+        return jsonify({"erro": "Não autorizado"}), 401
+
+    try:
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute(
+                    "DELETE FROM atletas WHERE id=%s",
+                    (aid,)
+                )
+
+            conn.commit()
+
+        return jsonify({"ok": True})
+
+    except Exception as e:
+        print("ERRO DELETAR ATLETA:", e)
+        return jsonify({"erro": str(e)}), 500
+
+# ================= CLUBES =================
+
+@app.route("/api/clubes", methods=["GET"])
+def listar_clubes():
+    try:
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute("""
+                    SELECT *
+                    FROM clubes
+                    WHERE status='aprovado'
+                    ORDER BY criado_em DESC
+                """)
+
+                rows = [dict(r) for r in c.fetchall()]
+
+                return jsonify(rows)
+
+    except Exception as e:
+        print("ERRO LISTAR CLUBES:", e)
+        return jsonify([])
+
+@app.route("/api/admin/clubes", methods=["GET"])
+def admin_listar_clubes():
+    if not session.get("admin"):
+        return jsonify({"erro": "Não autorizado"}), 401
+
+    try:
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute("""
+                    SELECT *
+                    FROM clubes
+                    ORDER BY criado_em DESC
+                """)
+
+                rows = [dict(r) for r in c.fetchall()]
+
+                return jsonify(rows)
+
+    except Exception as e:
+        print("ERRO ADMIN LISTAR CLUBES:", e)
+        return jsonify([])
+
+@app.route("/api/admin/clubes", methods=["POST"])
+def admin_criar_clube():
+    if not session.get("admin"):
+        return jsonify({"erro": "Não autorizado"}), 401
+
+    data = request.json
+
+    try:
+        cid = str(uuid.uuid4())[:8].upper()
+
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute('''
+                    INSERT INTO clubes (
+                        id,
+                        nome,
+                        cidade,
+                        posicao,
+                        idade,
+                        detalhes,
+                        contato,
+                        status,
+                        criado_em
+                    )
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                ''', (
+                    cid,
+                    data.get("nome", ""),
+                    data.get("cidade", ""),
+                    data.get("posicao", ""),
+                    data.get("idade", ""),
+                    data.get("detalhes", ""),
+                    data.get("contato", ""),
+                    "aprovado",
+                    datetime.now().strftime("%d/%m/%Y %H:%M")
+                ))
+
+            conn.commit()
+
+        return jsonify({"ok": True, "id": cid})
+
+    except Exception as e:
+        print("ERRO CRIAR CLUBE:", e)
+        return jsonify({"erro": str(e)}), 500
+
+@app.route("/api/admin/clubes/<cid>", methods=["DELETE"])
+def admin_deletar_clube(cid):
+    if not session.get("admin"):
+        return jsonify({"erro": "Não autorizado"}), 401
+
+    try:
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute(
+                    "DELETE FROM clubes WHERE id=%s",
+                    (cid,)
+                )
+
+            conn.commit()
+
+        return jsonify({"ok": True})
+
+    except Exception as e:
+        print("ERRO DELETAR CLUBE:", e)
         return jsonify({"erro": str(e)}), 500
 
 # ================= START =================
