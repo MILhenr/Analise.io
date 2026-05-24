@@ -682,7 +682,7 @@ footer {
     <!-- Não logado -->
     <div id="nav-guest" style="display:flex;gap:8px;align-items:center">
       <button class="btn-nav-outline" onclick="openAuthModal('login')">Entrar</button>
-      <button class="btn-nav-solid" onclick="showPage('cadastro-atleta');updateCadastroView()">+ Cadastre seu Atleta</button>
+      <button class="btn-nav-solid" onclick="showPage('cadastro-atleta');updateCadastroView()">Adicione seu Atleta</button>
     </div>
     <!-- Logado comum -->
     <div id="nav-user" style="display:none;gap:8px;align-items:center">
@@ -703,7 +703,7 @@ footer {
 
   <div class="hero">
     <div class="hero-left fade-up">
-      <div class="hero-badge"><span class="badge-dot"></span> Marketplace Esportivo</div>
+      <div class="hero-badge"><span class="badge-dot"></span> Feito para o Futsal</div>
       <h1>DESCUBRA.<br><span class="blue italic">CONTRATE.</span><br>VENÇA.</h1>
       <p class="hero-sub">A plataforma mais completa para conectar <strong>atletas de futsal e futebol</strong> com clubes, agentes e olheiros do Brasil inteiro.</p>
       <div class="hero-btns">
@@ -1109,7 +1109,7 @@ footer {
 <footer>
   <div class="logo" style="font-size:18px">ANALISE<span style="color:var(--blue)">.IO</span></div>
   <div class="footer-copy">© 2025 Analise.IO — Todos os direitos reservados</div>
-  <div style="font-size:13px;color:var(--gray)">Marketplace Esportivo Profissional</div>
+  <div style="font-size:13px;color:var(--gray)">A Plataforma do Futsal Brasileiro</div>
 </footer>
 
 <script>
@@ -1212,12 +1212,15 @@ function openProfile(id){
 
   // Linha com label visível e valor borrado ou não
   const row = (label, value, locked=false) => {
-    const val = locked && bloqueado
-      ? `<span style="filter:blur(5px);user-select:none;pointer-events:none;background:var(--gray-light);border-radius:4px;padding:2px 8px">${value}</span>`
-      : `<span style="font-weight:600;color:var(--text)">${value}</span>`;
+    const isEmpty = !value || value === '-' || value === '—';
+    const displayVal = isEmpty
+      ? `<span style="font-size:12px;color:var(--gray);font-style:italic">Dado não disponível</span>`
+      : locked && bloqueado
+        ? `<span style="filter:blur(5px);user-select:none;pointer-events:none;background:var(--gray-light);border-radius:4px;padding:2px 8px">${value}</span>`
+        : `<span style="font-weight:600;color:var(--text)">${value}</span>`;
     return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)">
       <span style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray)">${label}</span>
-      ${val}
+      ${displayVal}
     </div>`;
   };
 
