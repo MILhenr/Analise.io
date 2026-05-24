@@ -7,651 +7,180 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,800;0,900;1,900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-
 :root {
-  --blue: #1a56ff;
-  --blue2: #0d3fd4;
-  --blue-light: #e8eeff;
-  --blue-mid: #c7d4ff;
-  --white: #ffffff;
-  --black: #060a12;
-  --gray: #6b7591;
-  --gray-light: #f4f5f8;
-  --border: #e4e7f0;
-  --text: #1a1f35;
+  --blue: #1a56ff; --blue2: #0d3fd4; --blue-light: #e8eeff;
+  --blue-mid: #c7d4ff; --white: #ffffff; --black: #060a12;
+  --gray: #6b7591; --gray-light: #f4f5f8; --border: #e4e7f0; --text: #1a1f35;
 }
-
 html { scroll-behavior:smooth; }
-body {
-  font-family: 'Inter', sans-serif;
-  background: var(--white);
-  color: var(--text);
-  overflow-x: hidden;
-}
-
-/* ===== NAV ===== */
-nav {
-  position: fixed; top:0; left:0; right:0; z-index:100;
-  height: 64px; padding: 0 48px;
-  display: flex; align-items:center; justify-content:space-between;
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-}
-.logo {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 22px; font-weight: 900; letter-spacing: 1px;
-  color: var(--black);
-}
-.logo span { color: var(--blue); }
-
+body { font-family:'Inter',sans-serif; background:var(--white); color:var(--text); overflow-x:hidden; }
+nav { position:fixed; top:0; left:0; right:0; z-index:100; height:64px; padding:0 48px; display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.92); backdrop-filter:blur(16px); border-bottom:1px solid var(--border); }
+.logo { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:900; letter-spacing:1px; color:var(--black); }
+.logo span { color:var(--blue); }
 .nav-links { display:flex; gap:32px; align-items:center; }
-.nav-links a {
-  font-size:14px; font-weight:500; color:var(--gray);
-  text-decoration:none; cursor:pointer; transition:color 0.2s;
-}
+.nav-links a { font-size:14px; font-weight:500; color:var(--gray); text-decoration:none; cursor:pointer; transition:color 0.2s; }
 .nav-links a:hover { color:var(--blue); }
-
 .nav-right { display:flex; gap:10px; align-items:center; }
-.btn-nav-outline {
-  background:transparent; border:1.5px solid var(--border);
-  color:var(--text); padding:9px 20px; border-radius:7px;
-  font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s;
-}
+.btn-nav-outline { background:transparent; border:1.5px solid var(--border); color:var(--text); padding:9px 20px; border-radius:7px; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; }
 .btn-nav-outline:hover { border-color:var(--blue); color:var(--blue); }
-.btn-nav-solid {
-  background:var(--blue); border:none; color:#fff;
-  padding:9px 22px; border-radius:7px;
-  font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s;
-}
+.btn-nav-solid { background:var(--blue); border:none; color:#fff; padding:9px 22px; border-radius:7px; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; }
 .btn-nav-solid:hover { background:var(--blue2); transform:translateY(-1px); box-shadow:0 6px 20px rgba(26,86,255,0.3); }
-
-/* ===== HERO ===== */
-.hero {
-  padding: 120px 48px 80px;
-  max-width: 1300px; margin:0 auto;
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 64px; align-items: center;
-  position: relative;
-}
-
-.hero-left {}
-
-.hero-badge {
-  display: inline-flex; align-items:center; gap:8px;
-  background: var(--blue-light);
-  border: 1.5px solid var(--blue-mid);
-  color: var(--blue); padding:7px 16px; border-radius:100px;
-  font-size:12px; font-weight:700; letter-spacing:0.1em;
-  text-transform:uppercase; margin-bottom:28px;
-}
+.hero { padding:120px 48px 80px; max-width:1300px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center; }
+.hero-badge { display:inline-flex; align-items:center; gap:8px; background:var(--blue-light); border:1.5px solid var(--blue-mid); color:var(--blue); padding:7px 16px; border-radius:100px; font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:28px; }
 .badge-dot { width:7px; height:7px; background:var(--blue); border-radius:50%; animation:pulse 2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.5)} }
-
-.hero h1 {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: clamp(52px, 6vw, 80px);
-  font-weight: 900; line-height: 0.9;
-  letter-spacing: -1px; text-transform: uppercase;
-  margin-bottom: 24px; color: var(--black);
-}
-.hero h1 .blue { color: var(--blue); }
-.hero h1 .italic { font-style: italic; }
-
-.hero-sub {
-  font-size:16px; color:var(--gray); line-height:1.7;
-  max-width:440px; margin-bottom:36px;
-}
+.hero h1 { font-family:'Barlow Condensed',sans-serif; font-size:clamp(52px,6vw,80px); font-weight:900; line-height:0.9; letter-spacing:-1px; text-transform:uppercase; margin-bottom:24px; color:var(--black); }
+.hero h1 .blue { color:var(--blue); }
+.hero h1 .italic { font-style:italic; }
+.hero-sub { font-size:16px; color:var(--gray); line-height:1.7; max-width:440px; margin-bottom:36px; }
 .hero-sub strong { color:var(--text); }
-
 .hero-btns { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:48px; }
-.btn-hero-primary {
-  background:var(--blue); border:none; color:#fff;
-  padding:15px 32px; border-radius:8px;
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:18px; font-weight:900; letter-spacing:0.5px;
-  text-transform:uppercase; cursor:pointer; transition:all 0.2s;
-}
+.btn-hero-primary { background:var(--blue); border:none; color:#fff; padding:15px 32px; border-radius:8px; font-family:'Barlow Condensed',sans-serif; font-size:18px; font-weight:900; letter-spacing:0.5px; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
 .btn-hero-primary:hover { background:var(--blue2); transform:translateY(-2px); box-shadow:0 12px 32px rgba(26,86,255,0.35); }
-.btn-hero-secondary {
-  background:transparent; border:1.5px solid var(--border);
-  color:var(--text); padding:15px 32px; border-radius:8px;
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:18px; font-weight:900; letter-spacing:0.5px;
-  text-transform:uppercase; cursor:pointer; transition:all 0.2s;
-}
+.btn-hero-secondary { background:transparent; border:1.5px solid var(--border); color:var(--text); padding:15px 32px; border-radius:8px; font-family:'Barlow Condensed',sans-serif; font-size:18px; font-weight:900; letter-spacing:0.5px; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
 .btn-hero-secondary:hover { border-color:var(--blue); color:var(--blue); }
-
 .hero-stats { display:flex; gap:40px; }
-.hstat {}
-.hstat-num {
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:36px; font-weight:900; color:var(--blue);
-  display:block; line-height:1;
-}
+.hstat-num { font-family:'Barlow Condensed',sans-serif; font-size:36px; font-weight:900; color:var(--blue); display:block; line-height:1; }
 .hstat-label { font-size:12px; color:var(--gray); margin-top:4px; }
-
-/* HERO RIGHT - CARD STACK */
 .hero-right { position:relative; }
 .hero-card-stack { position:relative; height:420px; }
-
-.hcard {
-  position:absolute;
-  background:var(--white);
-  border:1.5px solid var(--border);
-  border-radius:20px; overflow:hidden;
-  box-shadow: 0 8px 40px rgba(26,86,255,0.08);
-  transition:all 0.3s;
-}
-.hcard-main {
-  width:280px; right:60px; top:20px; z-index:3;
-  animation: float1 6s ease-in-out infinite;
-}
-.hcard-back1 {
-  width:260px; right:20px; top:50px; z-index:2;
-  opacity:0.7; transform:rotate(4deg);
-  animation: float2 6s ease-in-out infinite 1s;
-}
-.hcard-back2 {
-  width:240px; right:100px; top:60px; z-index:1;
-  opacity:0.4; transform:rotate(-3deg);
-  animation: float3 6s ease-in-out infinite 2s;
-}
-
+.hcard { position:absolute; background:var(--white); border:1.5px solid var(--border); border-radius:20px; overflow:hidden; box-shadow:0 8px 40px rgba(26,86,255,0.08); }
+.hcard-main { width:280px; right:60px; top:20px; z-index:3; animation:float1 6s ease-in-out infinite; }
+.hcard-back1 { width:260px; right:20px; top:50px; z-index:2; opacity:0.7; transform:rotate(4deg); animation:float2 6s ease-in-out infinite 1s; }
+.hcard-back2 { width:240px; right:100px; top:60px; z-index:1; opacity:0.4; transform:rotate(-3deg); animation:float3 6s ease-in-out infinite 2s; }
 @keyframes float1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
 @keyframes float2 { 0%,100%{transform:rotate(4deg) translateY(0)} 50%{transform:rotate(4deg) translateY(-8px)} }
 @keyframes float3 { 0%,100%{transform:rotate(-3deg) translateY(0)} 50%{transform:rotate(-3deg) translateY(-6px)} }
-
-.hcard-photo {
-  height:160px; background:linear-gradient(135deg,#1a56ff,#0d3fd4);
-  display:flex; align-items:center; justify-content:center;
-  font-size:56px; position:relative;
-}
-.hcard-pos {
-  position:absolute; top:12px; left:12px;
-  background:rgba(255,255,255,0.2); backdrop-filter:blur(8px);
-  color:#fff; font-size:11px; font-weight:700;
-  padding:4px 12px; border-radius:100px; letter-spacing:0.06em;
-}
-.hcard-avail {
-  position:absolute; top:12px; right:12px;
-  background:rgba(255,255,255,0.15); backdrop-filter:blur(8px);
-  color:#fff; font-size:11px; font-weight:700;
-  padding:4px 12px; border-radius:100px;
-  display:flex; align-items:center; gap:5px;
-}
+.hcard-photo { height:160px; background:linear-gradient(135deg,#1a56ff,#0d3fd4); display:flex; align-items:center; justify-content:center; font-size:56px; position:relative; }
+.hcard-pos { position:absolute; top:12px; left:12px; background:rgba(255,255,255,0.2); backdrop-filter:blur(8px); color:#fff; font-size:11px; font-weight:700; padding:4px 12px; border-radius:100px; }
+.hcard-avail { position:absolute; top:12px; right:12px; background:rgba(255,255,255,0.15); backdrop-filter:blur(8px); color:#fff; font-size:11px; font-weight:700; padding:4px 12px; border-radius:100px; display:flex; align-items:center; gap:5px; }
 .hcard-body { padding:16px 18px; }
-.hcard-name {
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:20px; font-weight:900; text-transform:uppercase; margin-bottom:4px;
-}
+.hcard-name { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:900; text-transform:uppercase; margin-bottom:4px; }
 .hcard-club { font-size:12px; color:var(--gray); margin-bottom:12px; }
-.hcard-tag {
-  display:inline-block; background:var(--blue-light);
-  color:var(--blue); font-size:11px; font-weight:700;
-  padding:4px 10px; border-radius:100px; margin-right:6px; margin-bottom:4px;
-}
-.hcard-btn {
-  display:block; width:100%; background:var(--blue); border:none;
-  color:#fff; padding:10px; border-radius:7px; margin-top:12px;
-  font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:900;
-  text-transform:uppercase; letter-spacing:0.5px; cursor:pointer;
-}
-
-/* ===== SEARCH BAR ===== */
-.search-section {
-  background:var(--gray-light);
-  border-top:1px solid var(--border); border-bottom:1px solid var(--border);
-  padding:28px 48px;
-}
+.hcard-tag { display:inline-block; background:var(--blue-light); color:var(--blue); font-size:11px; font-weight:700; padding:4px 10px; border-radius:100px; margin-right:6px; }
+.hcard-btn { display:block; width:100%; background:var(--blue); border:none; color:#fff; padding:10px; border-radius:7px; margin-top:12px; font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:900; text-transform:uppercase; cursor:pointer; }
+.search-section { background:var(--gray-light); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:28px 48px; }
 .search-inner { max-width:1300px; margin:0 auto; display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; }
-
-.search-bar {
-  flex:1; min-width:280px;
-  display:flex; align-items:center; gap:0;
-  background:var(--white); border:1.5px solid var(--border);
-  border-radius:9px; padding:4px 4px 4px 16px;
-  transition:border-color 0.2s, box-shadow 0.2s;
-}
+.search-bar { flex:1; min-width:280px; display:flex; align-items:center; background:var(--white); border:1.5px solid var(--border); border-radius:9px; padding:4px 4px 4px 16px; transition:border-color 0.2s; }
 .search-bar:focus-within { border-color:var(--blue); box-shadow:0 0 0 3px rgba(26,86,255,0.1); }
-.search-bar input {
-  flex:1; background:transparent; border:none; outline:none;
-  font-family:'Inter',sans-serif; font-size:14px; color:var(--text);
-}
+.search-bar input { flex:1; background:transparent; border:none; outline:none; font-family:'Inter',sans-serif; font-size:14px; color:var(--text); }
 .search-bar input::placeholder { color:var(--gray); }
-.btn-search {
-  background:var(--blue); border:none; color:#fff;
-  padding:10px 22px; border-radius:6px;
-  font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:900;
-  letter-spacing:0.5px; text-transform:uppercase; cursor:pointer; transition:all 0.2s;
-}
+.btn-search { background:var(--blue); border:none; color:#fff; padding:10px 22px; border-radius:6px; font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:900; letter-spacing:0.5px; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
 .btn-search:hover { background:var(--blue2); }
-
-.filter-pill {
-  background:var(--white); border:1.5px solid var(--border);
-  padding:10px 18px; border-radius:100px;
-  font-size:13px; font-weight:600; color:var(--gray);
-  cursor:pointer; transition:all 0.2s; white-space:nowrap;
-}
-.filter-pill:hover, .filter-pill.active {
-  background:var(--blue); border-color:var(--blue); color:#fff;
-}
-
-/* ===== SECTION ===== */
+.filter-pill { background:var(--white); border:1.5px solid var(--border); padding:10px 18px; border-radius:100px; font-size:13px; font-weight:600; color:var(--gray); cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+.filter-pill:hover,.filter-pill.active { background:var(--blue); border-color:var(--blue); color:#fff; }
 .section { padding:80px 48px; max-width:1300px; margin:0 auto; }
-
-.eyebrow {
-  font-size:11px; font-weight:700; letter-spacing:0.15em;
-  text-transform:uppercase; color:var(--blue); margin-bottom:12px;
-  display:flex; align-items:center; gap:8px;
-}
+.eyebrow { font-size:11px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--blue); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
 .eyebrow::before { content:''; width:24px; height:2px; background:var(--blue); display:inline-block; }
-
-.sec-title {
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:clamp(32px,4.5vw,52px); font-weight:900;
-  text-transform:uppercase; letter-spacing:-0.5px;
-  color:var(--black); margin-bottom:12px;
-}
+.sec-title { font-family:'Barlow Condensed',sans-serif; font-size:clamp(32px,4.5vw,52px); font-weight:900; text-transform:uppercase; letter-spacing:-0.5px; color:var(--black); margin-bottom:12px; }
 .sec-sub { font-size:15px; color:var(--gray); max-width:500px; line-height:1.7; margin-bottom:52px; }
-
-/* ===== ATHLETE GRID — 2 COLUNAS ===== */
-.athletes-grid {
-  display:grid; grid-template-columns:repeat(2,1fr); gap:16px;
-}
-
-.athlete-card {
-  background:var(--white); border:1.5px solid var(--border);
-  border-radius:16px; overflow:hidden;
-  transition:all 0.25s; cursor:pointer;
-  display:flex; flex-direction:row; /* HORIZONTAL */
-  min-height:180px;
-}
-.athlete-card:hover {
-  border-color:var(--blue); transform:translateY(-3px);
-  box-shadow:0 12px 40px rgba(26,86,255,0.12);
-}
-
-/* FOTO QUADRADA — metade esquerda */
-.ac-photo {
-  width:50%; flex-shrink:0; position:relative;
-  background:linear-gradient(135deg,var(--blue) 0%,var(--blue2) 100%);
-  display:flex; align-items:center; justify-content:center; font-size:56px;
-}
-.ac-pos-over {
-  position:absolute; top:10px; left:10px;
-  background:rgba(26,86,255,0.9);
-  color:#fff; font-family:'Barlow Condensed',sans-serif;
-  font-size:12px; font-weight:900; letter-spacing:0.06em;
-  padding:4px 11px; border-radius:100px; text-transform:uppercase;
-}
-.ac-avail-badge {
-  position:absolute; bottom:10px; left:10px; right:10px;
-  display:flex; align-items:center; gap:5px;
-  background:rgba(0,0,0,0.5); backdrop-filter:blur(6px);
-  padding:4px 10px; border-radius:100px;
-  font-size:10px; font-weight:700; color:#fff;
-  justify-content:center;
-}
+.athletes-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+.athlete-card { background:var(--white); border:1.5px solid var(--border); border-radius:16px; overflow:hidden; transition:all 0.25s; cursor:pointer; display:flex; flex-direction:row; min-height:180px; }
+.athlete-card:hover { border-color:var(--blue); transform:translateY(-3px); box-shadow:0 12px 40px rgba(26,86,255,0.12); }
+.ac-photo { width:50%; flex-shrink:0; position:relative; background:linear-gradient(135deg,var(--blue) 0%,var(--blue2) 100%); display:flex; align-items:center; justify-content:center; font-size:56px; }
+.ac-pos-over { position:absolute; top:10px; left:10px; background:rgba(26,86,255,0.9); color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:900; letter-spacing:0.06em; padding:4px 11px; border-radius:100px; text-transform:uppercase; }
+.ac-avail-badge { position:absolute; bottom:10px; left:10px; right:10px; display:flex; align-items:center; gap:5px; background:rgba(0,0,0,0.5); backdrop-filter:blur(6px); padding:4px 10px; border-radius:100px; font-size:10px; font-weight:700; color:#fff; justify-content:center; }
 .dot { width:6px; height:6px; border-radius:50%; display:inline-block; flex-shrink:0; }
 .dot-sim { background:#00c878; }
 .dot-nao { background:#ff5050; }
-
-/* LADO DIREITO */
-.ac-body {
-  flex:1; padding:14px 16px;
-  display:flex; flex-direction:column; gap:9px; min-width:0;
-}
-.ac-name {
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:18px; font-weight:900; text-transform:uppercase;
-  letter-spacing:0.2px; line-height:1;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-}
-.ac-clubes { display:flex; flex-direction:column; gap:4px; }
-.ac-clube-row { display:flex; align-items:baseline; gap:5px; font-size:12px; line-height:1.3; }
+.ac-body { flex:1; padding:14px 16px; display:flex; flex-direction:column; gap:9px; min-width:0; }
+.ac-name { font-family:'Barlow Condensed',sans-serif; font-size:18px; font-weight:900; text-transform:uppercase; letter-spacing:0.2px; line-height:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ac-clube-row { display:flex; align-items:baseline; gap:5px; font-size:12px; }
 .ac-clube-label { font-size:9px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--gray); flex-shrink:0; }
 .ac-clube-val { color:var(--text); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-
-/* BLOCO DARK */
-.ac-dark {
-  background:var(--black);
-  padding:9px 10px;
-  display:grid; grid-template-columns:repeat(4,1fr); gap:4px;
-  border-radius:8px; margin-top:auto;
-}
+.ac-dark { background:var(--black); padding:9px 10px; display:grid; grid-template-columns:repeat(4,1fr); gap:4px; border-radius:8px; margin-top:auto; }
 .ac-data-item { text-align:center; }
-.ac-data-val {
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:14px; font-weight:900; color:#fff;
-  display:block; line-height:1;
-}
+.ac-data-val { font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:900; color:#fff; display:block; line-height:1; }
 .ac-data-label { font-size:8px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:rgba(255,255,255,0.35); margin-top:2px; display:block; }
-
-.ac-agencia {
-  background:#111827; padding:6px 10px; border-radius:6px;
-  display:flex; align-items:center; gap:5px;
-}
-.ac-agencia-label { font-size:9px; color:rgba(255,255,255,0.3); text-transform:uppercase; letter-spacing:0.06em; flex-shrink:0; }
-.ac-agencia-val { font-size:11px; font-weight:600; color:rgba(255,255,255,0.75); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-
-/* BTN */
-.ac-btn {
-  display:block; width:calc(100% + 32px); margin:0 -16px -14px;
-  background:var(--blue); border:none; color:#fff; padding:11px;
-  font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:900;
-  text-transform:uppercase; letter-spacing:0.5px; cursor:pointer; transition:all 0.2s;
-  text-align:center; margin-top:auto;
-}
+.ac-btn { display:block; width:calc(100% + 32px); margin:0 -16px -14px; background:var(--blue); border:none; color:#fff; padding:11px; font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:900; text-transform:uppercase; letter-spacing:0.5px; cursor:pointer; transition:all 0.2s; text-align:center; margin-top:auto; }
 .ac-btn:hover { background:var(--blue2); }
-
-/* ===== BLUR WALL ===== */
-.blur-section {
-  position:relative; border-radius:12px; overflow:hidden;
-}
-.blur-content {
-  filter:blur(5px); pointer-events:none; user-select:none;
-  opacity:0.7;
-}
-.blur-overlay {
-  position:absolute; inset:0; display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-  background:rgba(255,255,255,0.1); backdrop-filter:blur(2px);
-  cursor:pointer; transition:background 0.2s;
-  padding:16px; text-align:center;
-}
-.blur-overlay:hover { background:rgba(255,255,255,0.2); }
-.blur-lock { font-size:28px; margin-bottom:8px; }
-.blur-msg {
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:18px; font-weight:900; text-transform:uppercase;
-  color:var(--black); margin-bottom:4px;
-}
-.blur-sub { font-size:12px; color:var(--gray); }
-
-@media(max-width:768px){
-  .athletes-grid { grid-template-columns:1fr; }
-  .athlete-card { min-height:160px; }
-  .ac-photo { width:44%; font-size:44px; }
-  .ac-name { font-size:16px; }
-}
-
-/* ===== PROFILE MODAL ===== */
-.modal-overlay {
-  position:fixed; inset:0; z-index:500;
-  background:rgba(6,10,18,0.6); backdrop-filter:blur(8px);
-  display:flex; align-items:center; justify-content:center; padding:20px;
-  opacity:0; pointer-events:none; transition:opacity 0.25s;
-}
+.modal-overlay { position:fixed; inset:0; z-index:500; background:rgba(6,10,18,0.6); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.25s; }
 .modal-overlay.open { opacity:1; pointer-events:all; }
-
-.modal {
-  background:var(--white); border-radius:20px;
-  width:100%; max-width:860px; max-height:90vh; overflow-y:auto;
-  transform:scale(0.96); transition:transform 0.25s;
-  border:1.5px solid var(--border);
-  box-shadow:0 32px 80px rgba(26,86,255,0.15);
-}
+.modal { background:var(--white); border-radius:20px; width:100%; max-width:860px; max-height:90vh; overflow-y:auto; transform:scale(0.96); transition:transform 0.25s; border:1.5px solid var(--border); box-shadow:0 32px 80px rgba(26,86,255,0.15); }
 .modal-overlay.open .modal { transform:scale(1); }
 .modal::-webkit-scrollbar { width:4px; }
 .modal::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
-
-.modal-close {
-  position:sticky; top:0; float:right; margin:16px;
-  background:var(--gray-light); border:none; cursor:pointer;
-  width:34px; height:34px; border-radius:50%;
-  font-size:16px; display:flex; align-items:center; justify-content:center;
-  transition:background 0.2s; z-index:10; color:var(--text);
-}
+.modal-close { position:sticky; top:0; float:right; margin:16px; background:var(--gray-light); border:none; cursor:pointer; width:34px; height:34px; border-radius:50%; font-size:16px; display:flex; align-items:center; justify-content:center; transition:background 0.2s; z-index:10; color:var(--text); }
 .modal-close:hover { background:var(--border); }
-
-.modal-hero {
-  background:linear-gradient(135deg,#1a56ff 0%,#0d3fd4 100%);
-  padding:48px 40px 40px;
-  display:grid; grid-template-columns:auto 1fr; gap:32px; align-items:center;
-}
-.modal-photo {
-  width:120px; height:120px; border-radius:16px;
-  background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.3);
-  display:flex; align-items:center; justify-content:center; font-size:52px;
-}
-.modal-meta {}
-.modal-pos-badge {
-  display:inline-block; background:rgba(255,255,255,0.2);
-  color:#fff; font-size:11px; font-weight:700;
-  padding:5px 14px; border-radius:100px; letter-spacing:0.08em;
-  margin-bottom:12px;
-}
-.modal-name {
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:40px; font-weight:900; text-transform:uppercase;
-  letter-spacing:-0.5px; color:#fff; margin-bottom:4px;
-}
+.modal-hero { background:linear-gradient(135deg,#1a56ff 0%,#0d3fd4 100%); padding:48px 40px 40px; display:grid; grid-template-columns:auto 1fr; gap:32px; align-items:center; }
+.modal-photo { width:120px; height:120px; border-radius:16px; background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.3); display:flex; align-items:center; justify-content:center; font-size:52px; }
+.modal-pos-badge { display:inline-block; background:rgba(255,255,255,0.2); color:#fff; font-size:11px; font-weight:700; padding:5px 14px; border-radius:100px; letter-spacing:0.08em; margin-bottom:12px; }
+.modal-name { font-family:'Barlow Condensed',sans-serif; font-size:40px; font-weight:900; text-transform:uppercase; letter-spacing:-0.5px; color:#fff; margin-bottom:4px; }
 .modal-club { font-size:14px; color:rgba(255,255,255,0.7); margin-bottom:16px; }
-.modal-avail-badge {
-  display:inline-flex; align-items:center; gap:7px;
-  background:rgba(255,255,255,0.15); color:#fff;
-  font-size:13px; font-weight:600; padding:8px 18px; border-radius:100px;
-}
-
-.modal-stats-bar {
-  display:grid; grid-template-columns:repeat(4,1fr);
-  border-bottom:1px solid var(--border);
-}
-.mstat {
-  padding:24px 20px; text-align:center;
-  border-right:1px solid var(--border);
-}
+.modal-avail-badge { display:inline-flex; align-items:center; gap:7px; background:rgba(255,255,255,0.15); color:#fff; font-size:13px; font-weight:600; padding:8px 18px; border-radius:100px; }
+.modal-stats-bar { display:grid; grid-template-columns:repeat(4,1fr); border-bottom:1px solid var(--border); }
+.mstat { padding:24px 20px; text-align:center; border-right:1px solid var(--border); }
 .mstat:last-child { border-right:none; }
-.mstat-val {
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:28px; font-weight:900; color:var(--blue); display:block;
-}
+.mstat-val { font-family:'Barlow Condensed',sans-serif; font-size:28px; font-weight:900; color:var(--blue); display:block; }
 .mstat-label { font-size:11px; color:var(--gray); letter-spacing:0.05em; margin-top:2px; }
-
 .modal-body { padding:32px 40px 40px; }
 .modal-sec { margin-bottom:28px; }
-.modal-sec-title {
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:13px; font-weight:900; letter-spacing:0.12em;
-  text-transform:uppercase; color:var(--gray); margin-bottom:14px;
-  padding-bottom:10px; border-bottom:1.5px solid var(--border);
-}
-
-.skills-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-.skill-block {}
-.skill-label { font-size:12px; color:var(--gray); margin-bottom:6px; }
-.skill-val {
-  font-size:14px; font-weight:600; color:var(--text);
-  background:var(--gray-light); padding:10px 14px; border-radius:8px;
-}
-.skill-val.forte { background:var(--blue-light); color:var(--blue); }
-
+.modal-sec-title { font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:900; letter-spacing:0.12em; text-transform:uppercase; color:var(--gray); margin-bottom:14px; padding-bottom:10px; border-bottom:1.5px solid var(--border); }
 .highlights-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
-.hl-item {
-  aspect-ratio:16/9; background:var(--gray-light); border:1.5px solid var(--border);
-  border-radius:10px; display:flex; align-items:center; justify-content:center;
-  cursor:pointer; transition:all 0.2s;
-}
+.hl-item { aspect-ratio:16/9; background:var(--gray-light); border:1.5px solid var(--border); border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; transition:all 0.2s; }
 .hl-item:hover { border-color:var(--blue); background:var(--blue-light); }
-.hl-play {
-  width:44px; height:44px; background:var(--blue); border-radius:50%;
-  display:flex; align-items:center; justify-content:center; color:#fff; font-size:16px;
-  transition:transform 0.2s;
-}
-.hl-item:hover .hl-play { transform:scale(1.1); }
-
-.contact-row { display:flex; gap:12px; flex-wrap:wrap; }
-.btn-contact {
-  display:flex; align-items:center; gap:8px;
-  padding:12px 20px; border-radius:8px;
-  font-size:13px; font-weight:600; cursor:pointer;
-  transition:all 0.2s; text-decoration:none; border:1.5px solid var(--border);
-  color:var(--text); background:var(--white);
-}
+.hl-play { width:44px; height:44px; background:var(--blue); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-size:16px; }
+.btn-contact { display:flex; align-items:center; gap:8px; padding:12px 20px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; text-decoration:none; border:1.5px solid var(--border); color:var(--text); background:var(--white); }
 .btn-contact.wa { background:#f0fdf7; border-color:#86efac; color:#16a34a; }
-.btn-contact.wa:hover { background:#dcfce7; }
 .btn-contact.ig { background:var(--blue-light); border-color:var(--blue-mid); color:var(--blue); }
-.btn-contact.ig:hover { background:var(--blue-mid); }
-
-/* ===== CADASTRO ===== */
-.cadastro-grid {
-  display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:start;
-}
-.cad-left {}
-.cad-pitch {
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:clamp(36px,4vw,52px); font-weight:900;
-  text-transform:uppercase; letter-spacing:-0.5px; line-height:0.92;
-  color:var(--black); margin-bottom:24px;
-}
-.cad-pitch .blue { color:var(--blue); }
-.cad-pitch .italic { font-style:italic; }
-
-.cad-perks { display:flex; flex-direction:column; gap:16px; margin-top:32px; }
-.cad-perk { display:flex; align-items:center; gap:14px; }
-.cad-perk-icon {
-  width:42px; height:42px; border-radius:10px;
-  background:var(--blue-light); border:1.5px solid var(--blue-mid);
-  display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;
-}
-.cad-perk-title { font-size:14px; font-weight:600; margin-bottom:2px; }
-.cad-perk-desc { font-size:12px; color:var(--gray); }
-
-.cad-form {
-  background:var(--gray-light); border:1.5px solid var(--border);
-  border-radius:20px; padding:36px;
-}
-.form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
 .form-group { display:flex; flex-direction:column; gap:6px; }
 .form-label { font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--gray); }
-.form-input, .form-select {
-  background:var(--white); border:1.5px solid var(--border);
-  color:var(--text); padding:11px 14px; border-radius:8px;
-  font-family:'Inter',sans-serif; font-size:14px; outline:none;
-  transition:border-color 0.2s, box-shadow 0.2s;
-}
-.form-input:focus, .form-select:focus {
-  border-color:var(--blue); box-shadow:0 0 0 3px rgba(26,86,255,0.1);
-}
+.form-input,.form-select { background:var(--white); border:1.5px solid var(--border); color:var(--text); padding:11px 14px; border-radius:8px; font-family:'Inter',sans-serif; font-size:14px; outline:none; transition:border-color 0.2s; width:100%; }
+.form-input:focus,.form-select:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(26,86,255,0.1); }
 .form-input::placeholder { color:var(--gray); }
 .form-select option { background:var(--white); }
-.form-group-full { grid-column:1/-1; }
-
-.btn-submit {
-  width:100%; background:var(--blue); border:none; color:#fff;
-  padding:16px; border-radius:10px; margin-top:8px;
-  font-family:'Barlow Condensed',sans-serif; font-size:19px;
-  font-weight:900; letter-spacing:0.5px; text-transform:uppercase;
-  cursor:pointer; transition:all 0.2s;
-}
+.btn-submit { width:100%; background:var(--blue); border:none; color:#fff; padding:16px; border-radius:10px; margin-top:8px; font-family:'Barlow Condensed',sans-serif; font-size:19px; font-weight:900; letter-spacing:0.5px; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
 .btn-submit:hover { background:var(--blue2); transform:translateY(-1px); box-shadow:0 10px 28px rgba(26,86,255,0.3); }
 .form-note { font-size:12px; color:var(--gray); text-align:center; margin-top:10px; }
-
-/* ===== ADMIN ===== */
-.admin-wrap {
-  background:var(--white); border:1.5px solid var(--border); border-radius:16px; padding:32px;
-}
-.admin-tabs {
-  display:flex; gap:4px; background:var(--gray-light); border-radius:9px; padding:4px;
-  width:fit-content; margin-bottom:28px;
-}
-.admin-tab {
-  padding:9px 22px; border-radius:6px; border:none; background:transparent;
-  font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:900;
-  letter-spacing:0.05em; text-transform:uppercase; cursor:pointer;
-  color:var(--gray); transition:all 0.2s;
-}
+.admin-tab { padding:9px 22px; border-radius:6px; border:none; background:transparent; font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:900; letter-spacing:0.05em; text-transform:uppercase; cursor:pointer; color:var(--gray); transition:all 0.2s; }
 .admin-tab.active { background:var(--blue); color:#fff; }
-
 .admin-table { width:100%; border-collapse:collapse; }
-.admin-table th {
-  font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
-  color:var(--gray); padding:10px 14px; text-align:left;
-  border-bottom:1.5px solid var(--border);
-}
+.admin-table th { font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--gray); padding:10px 14px; text-align:left; border-bottom:1.5px solid var(--border); }
 .admin-table td { padding:14px; border-bottom:1px solid var(--border); font-size:13px; }
-.admin-table tr:last-child td { border-bottom:none; }
 .admin-table tr:hover td { background:var(--gray-light); }
-
 .status-badge { display:inline-block; padding:4px 12px; border-radius:100px; font-size:11px; font-weight:700; }
 .s-pend { background:#fef9c3; color:#a16207; }
 .s-aprov { background:#dcfce7; color:#15803d; }
 .s-recus { background:#fee2e2; color:#b91c1c; }
-
-.btn-act {
-  padding:6px 14px; border-radius:6px; font-size:11px; font-weight:700;
-  cursor:pointer; border:none; transition:all 0.2s;
-  font-family:'Barlow Condensed',sans-serif; letter-spacing:0.05em; text-transform:uppercase;
-}
+.btn-act { padding:6px 14px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; border:none; transition:all 0.2s; font-family:'Barlow Condensed',sans-serif; text-transform:uppercase; }
 .btn-aprov { background:#dcfce7; color:#15803d; }
-.btn-aprov:hover { background:#bbf7d0; }
 .btn-recus { background:#fee2e2; color:#b91c1c; }
-.btn-recus:hover { background:#fecaca; }
 .btn-see { background:var(--blue-light); color:var(--blue); }
-.btn-see:hover { background:var(--blue-mid); }
-
-/* ===== TOAST ===== */
-.toast {
-  position:fixed; bottom:28px; right:28px; z-index:9000;
-  background:var(--black); color:#fff;
-  padding:14px 22px; border-radius:10px; font-size:14px; font-weight:500;
-  transform:translateY(16px); opacity:0; transition:all 0.3s; pointer-events:none;
-  border:1px solid rgba(255,255,255,0.1);
-}
+.toast { position:fixed; bottom:28px; right:28px; z-index:9000; background:var(--black); color:#fff; padding:14px 22px; border-radius:10px; font-size:14px; font-weight:500; transform:translateY(16px); opacity:0; transition:all 0.3s; pointer-events:none; border:1px solid rgba(255,255,255,0.1); }
 .toast.show { transform:translateY(0); opacity:1; }
-
-/* ===== FOOTER ===== */
-footer {
-  border-top:1.5px solid var(--border); padding:40px 48px;
-  display:flex; align-items:center; justify-content:space-between;
-  max-width:1300px; margin:0 auto;
-}
+footer { border-top:1.5px solid var(--border); padding:40px 48px; display:flex; align-items:center; justify-content:space-between; max-width:1300px; margin:0 auto; }
 .footer-copy { font-size:13px; color:var(--gray); }
-
-/* ANIM */
 @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 .fade-up { animation:fadeUp 0.5s ease both; }
-
-/* RESPONSIVE */
 @media(max-width:900px){
-  nav { padding:0 16px; }
-  .nav-links { display:none; }
-  .hero { grid-template-columns:1fr; padding:100px 16px 60px; }
-  .hero-right { display:none; }
-  .search-section { padding:20px 16px; }
-  .section { padding:60px 16px; }
-  .cadastro-grid { grid-template-columns:1fr; }
+  nav { padding:0 16px; } .nav-links { display:none; }
+  .hero { grid-template-columns:1fr; padding:100px 16px 60px; } .hero-right { display:none; }
+  .search-section { padding:20px 16px; } .section { padding:60px 16px; }
+  .athletes-grid { grid-template-columns:1fr; } .athlete-card { min-height:160px; }
+  .ac-photo { width:44%; font-size:44px; } .ac-name { font-size:16px; }
   .modal-hero { grid-template-columns:1fr; text-align:center; }
   .modal-stats-bar { grid-template-columns:repeat(2,1fr); }
   .highlights-row { grid-template-columns:repeat(2,1fr); }
-  .skills-row { grid-template-columns:1fr; }
   footer { flex-direction:column; gap:12px; text-align:center; padding:32px 16px; }
-  .form-row { grid-template-columns:1fr; }
 }
 </style>
 </head>
 <body>
-
 <div class="toast" id="toast"></div>
 
 <!-- AUTH MODAL -->
 <div class="modal-overlay" id="authModal" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="modal" style="max-width:440px;padding:40px;position:relative">
     <button class="modal-close" onclick="document.getElementById('authModal').classList.remove('open')">✕</button>
-    <!-- TABS -->
     <div style="display:flex;gap:4px;background:var(--gray-light);border-radius:8px;padding:4px;margin-bottom:28px">
-      <button id="auth-tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:10px;border:none;border-radius:6px;background:var(--blue);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer">Entrar</button>
-      <button id="auth-tab-criar" onclick="switchAuthTab('criar')" style="flex:1;padding:10px;border:none;border-radius:6px;background:transparent;color:var(--gray);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer">Criar Conta</button>
+      <button id="auth-tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:10px;border:none;border-radius:6px;background:var(--blue);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;text-transform:uppercase;cursor:pointer">Entrar</button>
+      <button id="auth-tab-criar" onclick="switchAuthTab('criar')" style="flex:1;padding:10px;border:none;border-radius:6px;background:transparent;color:var(--gray);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;text-transform:uppercase;cursor:pointer">Criar Conta</button>
     </div>
-    <!-- LOGIN -->
     <div id="auth-panel-login">
       <div class="form-group" style="margin-bottom:14px"><label class="form-label">Email</label><input class="form-input" id="loginEmail" type="email" placeholder="seu@email.com" onkeyup="if(event.key==='Enter')doLogin()"></div>
       <div class="form-group" style="margin-bottom:20px"><label class="form-label">Senha</label><input class="form-input" id="loginPass" type="password" placeholder="••••••••" onkeyup="if(event.key==='Enter')doLogin()"></div>
       <button class="btn-submit" onclick="doLogin()">ENTRAR →</button>
-      
     </div>
-    <!-- CRIAR CONTA -->
     <div id="auth-panel-criar" style="display:none">
       <div class="form-group" style="margin-bottom:14px"><label class="form-label">Nome *</label><input class="form-input" id="criarNome" placeholder="Seu nome"></div>
       <div class="form-group" style="margin-bottom:14px"><label class="form-label">Email *</label><input class="form-input" id="criarEmail" type="email" placeholder="seu@email.com"></div>
@@ -662,7 +191,7 @@ footer {
 </div>
 
 <!-- PROFILE MODAL -->
-<div class="modal-overlay" id="profileModal" onclick="closeModal(event)">
+<div class="modal-overlay" id="profileModal" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="modal">
     <button class="modal-close" onclick="document.getElementById('profileModal').classList.remove('open')">✕</button>
     <div id="modalBody"></div>
@@ -674,127 +203,87 @@ footer {
   <div class="logo">ANALISE<span>.IO</span></div>
   <div class="nav-links">
     <a onclick="showPage('home')">Home</a>
-    <a onclick="showPage('atletas')">Atletas</a>
-    <a onclick="showPage('clubes');renderClubes()">Clubes</a>
+    <a onclick="showPage('atletas');carregarAtletas()">Atletas</a>
+    <a onclick="showPage('clubes');carregarClubes()">Clubes</a>
     <a onclick="showPage('sou-clube')">Sou um Clube</a>
   </div>
-  <div class="nav-right" id="navRight">
-    <!-- Não logado -->
+  <div class="nav-right">
     <div id="nav-guest" style="display:flex;gap:8px;align-items:center">
       <button class="btn-nav-outline" onclick="openAuthModal('login')">Entrar</button>
       <button class="btn-nav-solid" onclick="showPage('cadastro-atleta');updateCadastroView()">Adicione seu Atleta</button>
     </div>
-    <!-- Logado comum -->
     <div id="nav-user" style="display:none;gap:8px;align-items:center">
       <span id="nav-nome" style="font-size:13px;color:var(--gray)"></span>
       <button class="btn-nav-outline" onclick="showPage('assinatura')" id="nav-btn-assinar">Assinar R$40</button>
       <button class="btn-nav-outline" onclick="doLogout()">Sair</button>
     </div>
-    <!-- Admin -->
     <div id="nav-admin" style="display:none;gap:8px;align-items:center">
-      <button class="btn-nav-solid" style="background:#111" onclick="showPage('admin-panel');renderAdminAtletas();renderAdminClubes()">⚙ Admin</button>
+      <button class="btn-nav-solid" style="background:#111" onclick="showPage('admin-panel');carregarTudo()">⚙ Admin</button>
       <button class="btn-nav-outline" onclick="doLogout()">Sair</button>
     </div>
   </div>
 </nav>
 
-<!-- ===== HOME ===== -->
+<!-- HOME -->
 <div id="page-home">
-
   <div class="hero">
     <div class="hero-left fade-up">
       <div class="hero-badge"><span class="badge-dot"></span> Feito para o Futsal</div>
       <h1>DESCUBRA.<br><span class="blue italic">CONTRATE.</span><br>VENÇA.</h1>
-      <p class="hero-sub">A plataforma mais completa para conectar <strong>atletas de futsal e futebol</strong> com clubes, agentes e olheiros do Brasil inteiro.</p>
+      <p class="hero-sub">A plataforma mais completa para conectar <strong>atletas de futsal</strong> com clubes, agentes e olheiros do Brasil inteiro.</p>
       <div class="hero-btns">
-        <button class="btn-hero-primary" onclick="showPage('atletas')">Ver Atletas →</button>
-        <button class="btn-hero-secondary" onclick="showPage('cadastro')">Cadastrar Atleta</button>
+        <button class="btn-hero-primary" onclick="showPage('atletas');carregarAtletas()">Ver Atletas →</button>
+        <button class="btn-hero-secondary" onclick="showPage('cadastro-atleta');updateCadastroView()">Adicione seu Atleta</button>
       </div>
       <div class="hero-stats">
         <div class="hstat"><span class="hstat-num" id="sAtletas">0</span><span class="hstat-label">Atletas</span></div>
         <div class="hstat"><span class="hstat-num" id="sClubes">0</span><span class="hstat-label">Clubes</span></div>
-        <div class="hstat"><span class="hstat-num" id="sAnalises">0</span><span class="hstat-label">Análises</span></div>
+        <div class="hstat"><span class="hstat-num" id="sAnalises">127</span><span class="hstat-label">Análises</span></div>
       </div>
     </div>
-
     <div class="hero-right">
       <div class="hero-card-stack">
-        <div class="hcard hcard-back2">
-          <div class="hcard-photo" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">🏃</div>
-          <div class="hcard-body">
-            <div class="hcard-name">MARCOS SILVA</div>
-            <div class="hcard-club">Corinthians Futsal</div>
-          </div>
-        </div>
-        <div class="hcard hcard-back1">
-          <div class="hcard-photo" style="background:linear-gradient(135deg,#0891b2,#0e7490)">🧤</div>
-          <div class="hcard-body">
-            <div class="hcard-name">LUCAS PORTO</div>
-            <div class="hcard-club">Joinville EC</div>
-          </div>
-        </div>
+        <div class="hcard hcard-back2"><div class="hcard-photo" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">🏃</div><div class="hcard-body"><div class="hcard-name">MARCOS SILVA</div><div class="hcard-club">Corinthians Futsal</div></div></div>
+        <div class="hcard hcard-back1"><div class="hcard-photo" style="background:linear-gradient(135deg,#0891b2,#0e7490)">🧤</div><div class="hcard-body"><div class="hcard-name">LUCAS PORTO</div><div class="hcard-club">Joinville EC</div></div></div>
         <div class="hcard hcard-main">
-          <div class="hcard-photo">
-            ⚡
-            <div class="hcard-pos">ALA</div>
-            <div class="hcard-avail"><span style="width:6px;height:6px;background:#00c878;border-radius:50%"></span> Disponível</div>
-          </div>
-          <div class="hcard-body">
-            <div class="hcard-name">GUILHERME ALVES</div>
-            <div class="hcard-club">Magnus Futsal · 23 anos</div>
-            <span class="hcard-tag">Velocidade</span>
-            <span class="hcard-tag">Futsal</span>
-            <button class="hcard-btn" onclick="showPage('atletas')">VER PERFIL →</button>
-          </div>
+          <div class="hcard-photo">⚡<div class="hcard-pos">ALA</div><div class="hcard-avail"><span style="width:6px;height:6px;background:#00c878;border-radius:50%"></span> Disponível</div></div>
+          <div class="hcard-body"><div class="hcard-name">GUILHERME ALVES</div><div class="hcard-club">Magnus Futsal · 23 anos</div><span class="hcard-tag">Velocidade</span><span class="hcard-tag">Futsal</span><button class="hcard-btn" onclick="showPage('atletas');carregarAtletas()">VER PERFIL →</button></div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- DESTAQUES -->
   <section class="section">
     <div class="eyebrow">Atletas em Destaque</div>
     <h2 class="sec-title">TALENTOS DO MOMENTO</h2>
-    <p class="sec-sub">Atletas verificados e disponíveis no mercado, prontos para sua próxima oportunidade.</p>
-    <div class="athletes-grid" id="destaque-grid"></div>
+    <p class="sec-sub">Atletas verificados e disponíveis no mercado.</p>
+    <div class="athletes-grid" id="destaque-grid"><div style="color:var(--gray);padding:40px">Carregando...</div></div>
   </section>
-
 </div>
 
-<!-- ===== ATLETAS ===== -->
+<!-- ATLETAS -->
 <div id="page-atletas" style="display:none">
-
   <div style="padding:100px 48px 0;max-width:1300px;margin:0 auto">
     <div class="eyebrow">Marketplace</div>
     <h2 class="sec-title">TODOS OS ATLETAS</h2>
   </div>
-
   <div class="search-section">
     <div class="search-inner">
       <div class="search-bar">
         <input type="text" id="searchInput" placeholder="Buscar por nome, posição, clube..." onkeyup="if(event.key==='Enter')doSearch()">
         <button class="btn-search" onclick="doSearch()">BUSCAR</button>
       </div>
-      <select id="f-modalidade" class="form-input" style="width:140px;padding:10px 14px">
-        <option value="">Modalidade</option>
-        <option>Futsal</option><option>Futebol</option>
-      </select>
       <select id="f-posicao" class="form-input" style="width:140px;padding:10px 14px">
         <option value="">Posição</option>
-        <option>Goleiro</option><option>Fixo</option><option>Ala</option>
-        <option>Pivô</option><option>Universal</option>
-        <option>Atacante</option><option>Meio-Campo</option><option>Zagueiro</option>
+        <option>Goleiro</option><option>Fixo</option><option>Ala</option><option>Pivô</option><option>Universal</option>
       </select>
       <select id="f-disponivel" class="form-input" style="width:150px;padding:10px 14px">
         <option value="">Disponibilidade</option>
-        <option value="sim">Disponível</option>
-        <option value="nao">Contratado</option>
+        <option value="sim">Disponível</option><option value="nao">Contratado</option>
       </select>
       <button class="btn-search" onclick="aplicarFiltros()">FILTRAR</button>
     </div>
     <div style="max-width:1300px;margin:16px auto 0;display:flex;gap:8px;flex-wrap:wrap">
       <div class="filter-pill active" onclick="setPill(this,'')">Todos</div>
-      
       <div class="filter-pill" onclick="setPill(this,'disp')">Disponível</div>
       <div class="filter-pill" onclick="setPill(this,'Ala')">Ala</div>
       <div class="filter-pill" onclick="setPill(this,'Fixo')">Fixo</div>
@@ -802,307 +291,335 @@ footer {
       <div class="filter-pill" onclick="setPill(this,'Pivô')">Pivô</div>
     </div>
   </div>
-
   <section class="section" style="padding-top:40px">
-    <div class="athletes-grid" id="atletas-grid"></div>
+    <div class="athletes-grid" id="atletas-grid"><div style="color:var(--gray);padding:40px">Carregando...</div></div>
   </section>
 </div>
 
-<!-- ===== CADASTRO ===== -->
+<!-- CADASTRO ATLETA -->
 <div id="page-cadastro-atleta" style="display:none">
   <section class="section" style="padding-top:120px;max-width:900px">
     <div class="eyebrow">Cadastro de Atleta</div>
     <h2 class="sec-title">MOSTRE SEU<br><span style="color:var(--blue)">TALENTO.</span></h2>
-    <p class="sec-sub" style="margin-bottom:48px">Cadastre-se na plataforma e seja visto por clubes de todo o Brasil.</p>
-
-    <!-- SE NÃO LOGADO -->
+    <p class="sec-sub" style="margin-bottom:48px">Cadastre-se e seja visto por clubes de todo o Brasil.</p>
     <div id="cad-nao-logado" style="display:none;text-align:center;padding:60px 0">
       <div style="font-size:48px;margin-bottom:16px">🔐</div>
       <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;text-transform:uppercase;margin-bottom:12px">Crie sua conta primeiro</div>
-      <p style="color:var(--gray);font-size:15px;margin-bottom:28px">Para cadastrar seu atleta, você precisa ter uma conta na plataforma.</p>
+      <p style="color:var(--gray);font-size:15px;margin-bottom:28px">Para cadastrar seu atleta, você precisa ter uma conta.</p>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
         <button class="btn-hero-primary" onclick="openAuthModal('criar')">Criar Conta Grátis →</button>
         <button class="btn-hero-secondary" onclick="openAuthModal('login')">Já tenho conta</button>
       </div>
     </div>
-
-    <!-- SE LOGADO SEM ASSINATURA -->
     <div id="cad-sem-assinatura" style="display:none">
-      <div style="background:var(--black);border-radius:20px;padding:48px;text-align:center;margin-bottom:32px">
+      <div style="background:var(--black);border-radius:20px;padding:48px;text-align:center">
         <div style="font-size:40px;margin-bottom:16px">⚡</div>
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;text-transform:uppercase;color:#fff;margin-bottom:12px">Assine para Enviar sua Solicitação</div>
-        <p style="color:rgba(255,255,255,0.5);font-size:15px;max-width:400px;margin:0 auto 32px;line-height:1.7">Com a assinatura você envia seu perfil, clubes te encontram e você acessa análises completas de todos os atletas.</p>
+        <p style="color:rgba(255,255,255,0.5);font-size:15px;max-width:400px;margin:0 auto 32px;line-height:1.7">Com a assinatura você envia seu perfil e acessa análises completas de todos os atletas.</p>
         <div style="display:flex;flex-direction:column;gap:10px;text-align:left;max-width:300px;margin:0 auto 32px">
-          <div style="display:flex;gap:10px;align-items:center;color:rgba(255,255,255,0.75);font-size:14px"><span style="color:var(--blue);font-weight:700">✓</span> Seu perfil visto por clubes do Brasil</div>
+          <div style="display:flex;gap:10px;align-items:center;color:rgba(255,255,255,0.75);font-size:14px"><span style="color:var(--blue);font-weight:700">✓</span> Perfil visto por clubes do Brasil</div>
           <div style="display:flex;gap:10px;align-items:center;color:rgba(255,255,255,0.75);font-size:14px"><span style="color:var(--blue);font-weight:700">✓</span> Análise completa de todos os atletas</div>
           <div style="display:flex;gap:10px;align-items:center;color:rgba(255,255,255,0.75);font-size:14px"><span style="color:var(--blue);font-weight:700">✓</span> Estatísticas e vídeos desbloqueados</div>
           <div style="display:flex;gap:10px;align-items:center;color:rgba(255,255,255,0.75);font-size:14px"><span style="color:var(--blue);font-weight:700">✓</span> Contato direto com agências</div>
         </div>
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:56px;font-weight:900;color:var(--blue);line-height:1">R$40<span style="font-size:20px;color:rgba(255,255,255,0.3)">/mês</span></div>
         <div style="font-size:13px;color:rgba(255,255,255,0.3);margin-bottom:24px">Cancele quando quiser</div>
-        <button onclick="assinar()" style="background:var(--blue);border:none;color:#fff;padding:18px 48px;border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:0.5px;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:10px" onmouseover="this.style.background='var(--blue2)';this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 32px rgba(26,86,255,0.4)'" onmouseout="this.style.background='var(--blue)';this.style.transform='none';this.style.boxShadow='none'">
-          ⚡ ASSINAR AGORA — R$40/MÊS
-        </button>
+        <button onclick="assinar()" style="background:var(--blue);border:none;color:#fff;padding:18px 48px;border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;gap:10px">⚡ ASSINAR AGORA — R$40/MÊS</button>
         <p style="font-size:12px;color:rgba(255,255,255,0.25);margin-top:14px">Pagamento seguro via Mercado Pago · Pix disponível</p>
       </div>
     </div>
-
-    <!-- FORMULÁRIO (logado + assinante) -->
     <div id="cad-form-atleta" style="display:none">
       <div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:20px;padding:36px">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;margin-bottom:24px">Sua Solicitação de Cadastro</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;margin-bottom:24px">Sua Solicitação</div>
         <div style="display:grid;gap:14px">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-            <div class="form-group"><label class="form-label">Nome Completo *</label><input class="form-input" id="c-nome" placeholder="Seu nome"></div>
+            <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="c-nome" placeholder="Seu nome"></div>
             <div class="form-group"><label class="form-label">Idade *</label><input class="form-input" id="c-idade" type="number" placeholder="25"></div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
             <div class="form-group"><label class="form-label">Posição *</label>
-              <select class="form-select" id="c-posicao">
-                <option value="">Selecionar</option>
-                <option>Goleiro</option><option>Fixo</option><option>Ala</option><option>Pivô</option><option>Universal</option>
-              </select>
+              <select class="form-select" id="c-posicao"><option value="">Selecionar</option><option>Goleiro</option><option>Fixo</option><option>Ala</option><option>Pivô</option><option>Universal</option></select>
             </div>
-            <div class="form-group"><label class="form-label">Pé Dominante</label>
+            <div class="form-group"><label class="form-label">Pé</label>
               <select class="form-select" id="c-pe"><option>Direito</option><option>Esquerdo</option><option>Ambidestro</option></select>
             </div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
             <div class="form-group"><label class="form-label">Altura (cm)</label><input class="form-input" id="c-altura" type="number" placeholder="175"></div>
             <div class="form-group"><label class="form-label">Peso (kg)</label><input class="form-input" id="c-peso" type="number" placeholder="72"></div>
-            <div class="form-group"><label class="form-label">Clube Atual</label><input class="form-input" id="c-clube" placeholder="Magnus Futsal"></div>
+            <div class="form-group"><label class="form-label">Clube</label><input class="form-input" id="c-clube" placeholder="Magnus Futsal"></div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
             <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="c-instagram" placeholder="@seuuser"></div>
             <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="c-whatsapp" placeholder="(11) 99999-9999"></div>
           </div>
-          <div class="form-group"><label class="form-label">Agência (se houver)</label><input class="form-input" id="c-agencia" placeholder="Nome da agência"></div>
+          <div class="form-group"><label class="form-label">Agência</label><input class="form-input" id="c-agencia" placeholder="Nome da agência"></div>
           <div class="form-group"><label class="form-label">Ponto Forte</label><input class="form-input" id="c-forte" placeholder="Ex: Velocidade, Finalização..."></div>
-          <div class="form-group"><label class="form-label">Link de Highlights</label><input class="form-input" id="c-video" placeholder="YouTube / Drive..."></div>
+          <div class="form-group"><label class="form-label">Link Highlights</label><input class="form-input" id="c-video" placeholder="YouTube / Drive..."></div>
           <button class="btn-submit" onclick="enviarCadastroAtleta()">ENVIAR SOLICITAÇÃO →</button>
-          <p class="form-note">Seu perfil será revisado pela equipe antes de ser publicado.</p>
+          <p class="form-note">Seu perfil será revisado antes de ser publicado.</p>
         </div>
       </div>
     </div>
   </section>
 </div>
 
-
-<!-- ===== CLUBES ===== -->
+<!-- CLUBES -->
 <div id="page-clubes" style="display:none">
   <section class="section" style="padding-top:120px">
     <div class="eyebrow">Vagas Abertas</div>
     <h2 class="sec-title">CLUBES CONTRATANDO</h2>
-    <p class="sec-sub" style="margin-bottom:32px">Clubes que estão ativamente buscando atletas. Exclusivo para assinantes.</p>
+    <p class="sec-sub" style="margin-bottom:32px">Clubes ativamente buscando atletas.</p>
     <div id="clubes-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px"></div>
   </section>
 </div>
 
-<!-- ===== ADMIN PANEL ===== -->
-<div id="page-admin-panel" style="display:none">
-  <section class="section" style="padding-top:100px">
-    <div class="eyebrow">Painel Administrativo</div>
-    <h2 class="sec-title" style="margin-bottom:32px">GESTÃO DA PLATAFORMA</h2>
-
-    <!-- ADMIN TABS -->
-    <div style="display:flex;gap:4px;background:var(--gray-light);border-radius:10px;padding:4px;width:fit-content;margin-bottom:32px;border:1.5px solid var(--border)">
-      <button class="admin-tab active" id="atab-atletas" onclick="adminPanelTab('atletas')">Atletas</button>
-      <button class="admin-tab" id="atab-clubes" onclick="adminPanelTab('clubes')">Clubes</button>
-      <button class="admin-tab" id="atab-add" onclick="adminPanelTab('add')">+ Adicionar Atleta</button>
-      <button class="admin-tab" id="atab-csv" onclick="adminPanelTab('csv')">📊 Importar CSV</button>
-    </div>
-
-    <!-- TAB: ATLETAS -->
-    <div id="atab-content-atletas">
-      <div style="overflow-x:auto">
-        <table class="admin-table" id="admin-atletas-table">
-          <thead><tr>
-            <th>Atleta</th><th>Posição</th><th>Clube</th><th>Status</th>
-            <th>Gols</th><th>Assist.</th><th>Nota</th><th>Ações</th>
-          </tr></thead>
-          <tbody id="admin-atletas-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- TAB: CLUBES -->
-    <div id="atab-content-clubes" style="display:none">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start">
-        <div>
-          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:20px">Adicionar Clube</h3>
-          <div style="display:flex;flex-direction:column;gap:14px">
-            <div class="form-group"><label class="form-label">Nome do Clube *</label><input class="form-input" id="ac-nome" placeholder="Ex: Magnus Futsal"></div>
-            <div class="form-group"><label class="form-label">Cidade / Estado</label><input class="form-input" id="ac-cidade" placeholder="Ex: Sorocaba, SP"></div>
-            <div class="form-group"><label class="form-label">Posição Procurada *</label>
-              <select class="form-select" id="ac-posicao">
-                <option value="">Selecionar</option>
-                <option>Goleiro</option><option>Fixo</option><option>Ala</option>
-                <option>Pivô</option><option>Universal</option>
-              </select>
-            </div>
-            <div class="form-group"><label class="form-label">Faixa de Idade</label><input class="form-input" id="ac-idade" placeholder="Ex: 20-28 anos"></div>
-            <div class="form-group"><label class="form-label">Detalhes / Requisitos</label><textarea class="form-input" id="ac-detalhes" rows="3" placeholder="Ex: Procuramos ala destro com experiência em Liga Nacional..."></textarea></div>
-            <div class="form-group"><label class="form-label">WhatsApp / Contato</label><input class="form-input" id="ac-contato" placeholder="(11) 99999-9999"></div>
-            <button class="btn-submit" onclick="adicionarClube()">ADICIONAR CLUBE →</button>
-          </div>
-        </div>
-        <div>
-          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:20px">Clubes Cadastrados</h3>
-          <div id="admin-clubes-lista" style="display:flex;flex-direction:column;gap:12px"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB: ADD ATLETA -->
-    <div id="atab-content-add" style="display:none">
-      <div style="max-width:700px">
-        <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:24px">Adicionar Atleta Manualmente</h3>
-        <div style="display:grid;gap:14px">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-            <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="aa-nome" placeholder="Nome completo"></div>
-            <div class="form-group"><label class="form-label">Idade *</label><input class="form-input" id="aa-idade" type="number" placeholder="23"></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-            <div class="form-group"><label class="form-label">Posição *</label>
-              <select class="form-select" id="aa-posicao">
-                <option value="">Selecionar</option>
-                <option>Goleiro</option><option>Fixo</option><option>Ala</option><option>Pivô</option><option>Universal</option>
-              </select>
-            </div>
-            <div class="form-group"><label class="form-label">Pé Dominante</label>
-              <select class="form-select" id="aa-pe">
-                <option>Direito</option><option>Esquerdo</option><option>Ambidestro</option>
-              </select>
-            </div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
-            <div class="form-group"><label class="form-label">Altura (cm)</label><input class="form-input" id="aa-altura" type="number" placeholder="175"></div>
-            <div class="form-group"><label class="form-label">Peso (kg)</label><input class="form-input" id="aa-peso" type="number" placeholder="72"></div>
-            <div class="form-group"><label class="form-label">Disponível?</label>
-              <select class="form-select" id="aa-disponivel">
-                <option value="true">Sim</option><option value="false">Não</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group"><label class="form-label">Clube Atual</label><input class="form-input" id="aa-clube" placeholder="Magnus Futsal"></div>
-          <div class="form-group"><label class="form-label">Agência</label><input class="form-input" id="aa-agencia" placeholder="Elite Sports"></div>
-          <div class="form-group"><label class="form-label">Tempo de Contrato</label><input class="form-input" id="aa-contrato" placeholder="Ex: 1 ano, 6 meses, Livre"></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-            <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="aa-instagram" placeholder="@jogador"></div>
-            <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="aa-whatsapp" placeholder="(11) 99999-9999"></div>
-          </div>
-          <div class="form-group"><label class="form-label">Ponto Forte</label><input class="form-input" id="aa-forte" placeholder="Ex: Velocidade e finalização"></div>
-          <div class="form-group"><label class="form-label">A Desenvolver</label><input class="form-input" id="aa-fraco" placeholder="Ex: Marcação defensiva"></div>
-          <div class="form-group"><label class="form-label">Link Highlights / Vídeo</label><input class="form-input" id="aa-video" placeholder="YouTube / Drive..."></div>
-          <div class="form-group">
-            <label class="form-label">Foto do Atleta</label>
-            <div id="foto-upload-area" style="border:2px dashed var(--border);border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--white)" onclick="document.getElementById('aa-foto-input').click()" ondragover="event.preventDefault();this.style.borderColor='var(--blue)'" ondragleave="this.style.borderColor='var(--border)'" ondrop="handleFotoDrop(event)">
-              <div id="foto-preview" style="display:none;margin-bottom:12px"><img id="foto-img" style="width:80px;height:80px;border-radius:10px;object-fit:cover;border:2px solid var(--border)"></div>
-              <div id="foto-placeholder">
-                <div style="font-size:32px;margin-bottom:8px">📸</div>
-                <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Clique ou arraste a foto aqui</div>
-                <div style="font-size:12px;color:var(--gray)">JPG, PNG · Máx 5MB</div>
-              </div>
-            </div>
-            <input type="file" id="aa-foto-input" accept="image/*" style="display:none" onchange="handleFotoUpload(this)">
-          </div>
-          <div style="background:var(--gray-light);border-radius:12px;padding:20px;border:1.5px solid var(--border)">
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;text-transform:uppercase;margin-bottom:16px;color:var(--gray)">Estatísticas</div>
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
-              <div class="form-group"><label class="form-label">Gols</label><input class="form-input" id="aa-gols" type="number" placeholder="8"></div>
-              <div class="form-group"><label class="form-label">Assistências</label><input class="form-input" id="aa-assists" type="number" placeholder="14"></div>
-              <div class="form-group"><label class="form-label">Passes %</label><input class="form-input" id="aa-passes" placeholder="89%"></div>
-              <div class="form-group"><label class="form-label">Dribles/jogo</label><input class="form-input" id="aa-dribles" placeholder="4.2"></div>
-              <div class="form-group"><label class="form-label">Nota média</label><input class="form-input" id="aa-nota" placeholder="7.8"></div>
-              <div class="form-group"><label class="form-label">Jogos</label><input class="form-input" id="aa-jogos" type="number" placeholder="22"></div>
-            </div>
-          </div>
-          <button class="btn-submit" onclick="adicionarAtletaAdmin()">PUBLICAR ATLETA →</button>
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
-
-<!-- ===== SOU UM CLUBE ===== -->
+<!-- SOU UM CLUBE -->
 <div id="page-sou-clube" style="display:none">
   <section class="section" style="padding-top:120px;max-width:900px">
     <div class="eyebrow">Para Clubes</div>
     <h2 class="sec-title">ESTÁ PROCURANDO<br><span style="color:var(--blue)">JOGADORES?</span></h2>
-    <p class="sec-sub" style="margin-bottom:48px">Preencha abaixo o que seu clube precisa. Assim que aprovado, sua vaga aparece para todos os atletas da plataforma.</p>
-
+    <p class="sec-sub" style="margin-bottom:48px">Preencha o que seu clube precisa. Aprovado, aparece para todos os atletas.</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start">
-      <!-- FORM -->
       <div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:20px;padding:36px">
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;margin-bottom:24px">Sua Vaga</div>
         <div style="display:flex;flex-direction:column;gap:14px">
           <div class="form-group"><label class="form-label">Nome do Clube *</label><input class="form-input" id="sc-nome" placeholder="Ex: Magnus Futsal"></div>
           <div class="form-group"><label class="form-label">Cidade / Estado</label><input class="form-input" id="sc-cidade" placeholder="Ex: Sorocaba, SP"></div>
           <div class="form-group"><label class="form-label">Posição Procurada *</label>
-            <select class="form-select" id="sc-posicao">
-              <option value="">Selecionar</option>
-              <option>Goleiro</option><option>Fixo</option><option>Ala</option><option>Pivô</option><option>Universal</option>
-            </select>
+            <select class="form-select" id="sc-posicao"><option value="">Selecionar</option><option>Goleiro</option><option>Fixo</option><option>Ala</option><option>Pivô</option><option>Universal</option></select>
           </div>
-          <div class="form-group"><label class="form-label">Faixa de Idade Desejada</label><input class="form-input" id="sc-idade" placeholder="Ex: 20-28 anos"></div>
-          <div class="form-group"><label class="form-label">O que você procura?</label><textarea class="form-input" id="sc-detalhes" rows="4" placeholder="Descreva o perfil ideal do atleta, características técnicas, experiência necessária..."></textarea></div>
-          <div class="form-group"><label class="form-label">WhatsApp para Contato *</label><input class="form-input" id="sc-contato" placeholder="(11) 99999-9999"></div>
+          <div class="form-group"><label class="form-label">Faixa de Idade</label><input class="form-input" id="sc-idade" placeholder="Ex: 20-28 anos"></div>
+          <div class="form-group"><label class="form-label">O que você procura?</label><textarea class="form-input" id="sc-detalhes" rows="4" placeholder="Descreva o perfil ideal..."></textarea></div>
+          <div class="form-group"><label class="form-label">WhatsApp *</label><input class="form-input" id="sc-contato" placeholder="(11) 99999-9999"></div>
           <button class="btn-submit" onclick="enviarVagaClube()">ENVIAR VAGA →</button>
-          <p class="form-note">Sua vaga será revisada e publicada em até 24h.</p>
+          <p class="form-note">Sua vaga será revisada em até 24h.</p>
         </div>
       </div>
-
-      <!-- PITCH -->
       <div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(32px,4vw,48px);font-weight:900;text-transform:uppercase;line-height:0.92;margin-bottom:24px">
-          SEU CLUBE<br><span style="color:var(--blue)">NA VITRINE</span><br>CERTA.
-        </div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(32px,4vw,48px);font-weight:900;text-transform:uppercase;line-height:0.92;margin-bottom:24px">SEU CLUBE<br><span style="color:var(--blue)">NA VITRINE</span><br>CERTA.</div>
         <p style="font-size:15px;color:var(--gray);line-height:1.7;margin-bottom:32px">Atletas e agências de todo o Brasil vão ver sua vaga. Sem intermediários, contato direto.</p>
         <div style="display:flex;flex-direction:column;gap:16px">
-          <div style="display:flex;align-items:center;gap:14px">
-            <div style="width:42px;height:42px;border-radius:10px;background:var(--blue-light);border:1.5px solid var(--blue-mid);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📡</div>
-            <div><div style="font-weight:700;font-size:14px;margin-bottom:2px">Alcance Nacional</div><div style="font-size:12px;color:var(--gray)">Sua vaga vista por atletas de todo o Brasil</div></div>
-          </div>
-          <div style="display:flex;align-items:center;gap:14px">
-            <div style="width:42px;height:42px;border-radius:10px;background:var(--blue-light);border:1.5px solid var(--blue-mid);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">⚡</div>
-            <div><div style="font-weight:700;font-size:14px;margin-bottom:2px">Publicação Rápida</div><div style="font-size:12px;color:var(--gray)">Aprovado em até 24 horas</div></div>
-          </div>
-          <div style="display:flex;align-items:center;gap:14px">
-            <div style="width:42px;height:42px;border-radius:10px;background:var(--blue-light);border:1.5px solid var(--blue-mid);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🎯</div>
-            <div><div style="font-weight:700;font-size:14px;margin-bottom:2px">Contato Direto</div><div style="font-size:12px;color:var(--gray)">Atletas entram em contato pelo seu WhatsApp</div></div>
-          </div>
-          <div style="display:flex;align-items:center;gap:14px">
-            <div style="width:42px;height:42px;border-radius:10px;background:var(--blue-light);border:1.5px solid var(--blue-mid);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🆓</div>
-            <div><div style="font-weight:700;font-size:14px;margin-bottom:2px">Gratuito</div><div style="font-size:12px;color:var(--gray)">Publicar vaga é 100% gratuito para clubes</div></div>
-          </div>
+          <div style="display:flex;align-items:center;gap:14px"><div style="width:42px;height:42px;border-radius:10px;background:var(--blue-light);border:1.5px solid var(--blue-mid);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📡</div><div><div style="font-weight:700;font-size:14px;margin-bottom:2px">Alcance Nacional</div><div style="font-size:12px;color:var(--gray)">Vaga vista por atletas de todo o Brasil</div></div></div>
+          <div style="display:flex;align-items:center;gap:14px"><div style="width:42px;height:42px;border-radius:10px;background:var(--blue-light);border:1.5px solid var(--blue-mid);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🆓</div><div><div style="font-weight:700;font-size:14px;margin-bottom:2px">Gratuito</div><div style="font-size:12px;color:var(--gray)">Publicar vaga é 100% gratuito</div></div></div>
         </div>
       </div>
     </div>
   </section>
 </div>
 
-<!-- ===== ASSINATURA ===== -->
+<!-- ASSINATURA -->
 <div id="page-assinatura" style="display:none">
   <section class="section" style="padding-top:120px;text-align:center;max-width:700px">
     <div class="eyebrow">Plano Único</div>
     <h2 class="sec-title" style="font-size:clamp(40px,6vw,72px)">TUDO POR<br><span style="color:var(--blue)">R$40/MÊS</span></h2>
-    <p style="font-size:16px;color:var(--gray);max-width:440px;margin:0 auto 48px;line-height:1.7">Um plano. Acesso completo. Ver todos os atletas, análises completas, vídeos e cadastrar seu atleta na plataforma.</p>
-
+    <p style="font-size:16px;color:var(--gray);max-width:440px;margin:0 auto 48px;line-height:1.7">Um plano. Acesso completo.</p>
     <div style="background:var(--black);border-radius:24px;padding:48px;margin-bottom:40px;text-align:left">
       <div style="font-family:'Barlow Condensed',sans-serif;font-size:56px;font-weight:900;color:var(--blue);line-height:1">R$40<span style="font-size:20px;color:rgba(255,255,255,0.4)">/mês</span></div>
       <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:36px">Cancele quando quiser</div>
       <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:36px">
-        <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,0.8)"><span style="color:var(--blue);font-weight:700;font-size:18px">✓</span> Ver análise completa de todos os atletas</div>
-        <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,0.8)"><span style="color:var(--blue);font-weight:700;font-size:18px">✓</span> Pontos fortes e fracos de cada jogador</div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,0.8)"><span style="color:var(--blue);font-weight:700;font-size:18px">✓</span> Análise completa de todos os atletas</div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,0.8)"><span style="color:var(--blue);font-weight:700;font-size:18px">✓</span> Pontos fortes, fracos e estatísticas</div>
         <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,0.8)"><span style="color:var(--blue);font-weight:700;font-size:18px">✓</span> Highlights e vídeos dos jogos</div>
         <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,0.8)"><span style="color:var(--blue);font-weight:700;font-size:18px">✓</span> Contato direto — WhatsApp e Instagram</div>
         <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,0.8)"><span style="color:var(--blue);font-weight:700;font-size:18px">✓</span> Cadastrar atleta na plataforma</div>
-        <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,0.8)"><span style="color:var(--blue);font-weight:700;font-size:18px">✓</span> Acesso a novos atletas adicionados</div>
       </div>
-      <button class="btn-assinar" style="width:100%;justify-content:center;font-size:22px;padding:18px" onclick="assinar()">⚡ ASSINAR AGORA →</button>
+      <button onclick="assinar()" style="width:100%;background:var(--blue);border:none;color:#fff;padding:18px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;cursor:pointer;transition:all 0.2s" onmouseover="this.style.background='var(--blue2)'" onmouseout="this.style.background='var(--blue)'">⚡ ASSINAR AGORA →</button>
       <p style="font-size:12px;color:rgba(255,255,255,0.3);text-align:center;margin-top:14px">Pagamento seguro via Mercado Pago</p>
     </div>
-    <button onclick="showPage('atletas')" style="background:transparent;border:none;color:var(--gray);font-size:14px;cursor:pointer;text-decoration:underline">Voltar para atletas</button>
+    <button onclick="showPage('atletas');carregarAtletas()" style="background:transparent;border:none;color:var(--gray);font-size:14px;cursor:pointer;text-decoration:underline">Voltar para atletas</button>
+  </section>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="page-admin-panel" style="display:none">
+  <section class="section" style="padding-top:100px">
+    <div class="eyebrow">Painel Administrativo</div>
+    <h2 class="sec-title" style="margin-bottom:32px">GESTÃO DA PLATAFORMA</h2>
+    <div style="display:flex;gap:4px;background:var(--gray-light);border-radius:10px;padding:4px;width:fit-content;margin-bottom:32px;border:1.5px solid var(--border)">
+      <button class="admin-tab active" id="atab-atletas" onclick="adminPanelTab('atletas')">Atletas</button>
+      <button class="admin-tab" id="atab-clubes" onclick="adminPanelTab('clubes')">Clubes</button>
+      <button class="admin-tab" id="atab-add" onclick="adminPanelTab('add')">+ Adicionar</button>
+      <button class="admin-tab" id="atab-csv" onclick="adminPanelTab('csv')">📊 CSV</button>
+    </div>
+
+    <!-- TAB ATLETAS -->
+    <div id="atab-content-atletas">
+      <div style="overflow-x:auto">
+        <table class="admin-table">
+          <thead><tr><th>Atleta</th><th>Posição</th><th>Clube</th><th>Status</th><th>Gols</th><th>Nota</th><th>Ações</th></tr></thead>
+          <tbody id="admin-atletas-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB CLUBES -->
+    <div id="atab-content-clubes" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start">
+        <div>
+          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:20px">Adicionar Clube</h3>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="ac-nome" placeholder="Magnus Futsal"></div>
+            <div class="form-group"><label class="form-label">Cidade</label><input class="form-input" id="ac-cidade" placeholder="Sorocaba, SP"></div>
+            <div class="form-group"><label class="form-label">Posição *</label>
+              <select class="form-select" id="ac-posicao"><option value="">—</option><option>Goleiro</option><option>Fixo</option><option>Ala</option><option>Pivô</option><option>Universal</option></select>
+            </div>
+            <div class="form-group"><label class="form-label">Faixa de Idade</label><input class="form-input" id="ac-idade" placeholder="20-28 anos"></div>
+            <div class="form-group"><label class="form-label">Detalhes</label><textarea class="form-input" id="ac-detalhes" rows="3" placeholder="O que procuram..."></textarea></div>
+            <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="ac-contato" placeholder="(11) 99999-9999"></div>
+            <button class="btn-submit" onclick="adicionarClube()">ADICIONAR →</button>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:20px">Cadastrados</h3>
+          <div id="admin-clubes-lista" style="display:flex;flex-direction:column;gap:12px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB ADD ATLETA -->
+    <div id="atab-content-add" style="display:none">
+      <div style="max-width:720px">
+
+        <!-- ⚡ BARRA RÁPIDA -->
+        <div style="background:var(--black);border-radius:14px;padding:20px 24px;margin-bottom:28px">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:14px">⚡ PUBLICAÇÃO RÁPIDA — Enter para publicar</div>
+          <div style="display:grid;grid-template-columns:2fr 0.6fr 1fr 0.6fr 1.2fr 1.2fr;gap:8px;align-items:end">
+            <div>
+              <div style="font-size:9px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">Nome *</div>
+              <input class="form-input" id="q-nome" placeholder="Nome do atleta" tabindex="1" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.1);color:#fff;padding:10px 12px" onkeydown="if(event.key==='Enter'){event.preventDefault();quickPublicar()}">
+            </div>
+            <div>
+              <div style="font-size:9px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">Idade *</div>
+              <input class="form-input" id="q-idade" type="number" placeholder="23" tabindex="2" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.1);color:#fff;padding:10px 12px" onkeydown="if(event.key==='Enter'){event.preventDefault();quickPublicar()}">
+            </div>
+            <div>
+              <div style="font-size:9px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">Posição *</div>
+              <select class="form-input" id="q-posicao" tabindex="3" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.1);color:#fff;padding:10px 12px">
+                <option value="" style="background:#111">—</option>
+                <option style="background:#111">Goleiro</option><option style="background:#111">Fixo</option>
+                <option style="background:#111">Ala</option><option style="background:#111">Pivô</option><option style="background:#111">Universal</option>
+              </select>
+            </div>
+            <div>
+              <div style="font-size:9px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">Pé</div>
+              <select class="form-input" id="q-pe" tabindex="4" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.1);color:#fff;padding:10px 12px">
+                <option style="background:#111">Direito</option><option style="background:#111">Esquerdo</option><option style="background:#111">Ambidestro</option>
+              </select>
+            </div>
+            <div>
+              <div style="font-size:9px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">Clube</div>
+              <input class="form-input" id="q-clube" placeholder="Magnus Futsal" tabindex="5" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.1);color:#fff;padding:10px 12px" onkeydown="if(event.key==='Enter'){event.preventDefault();quickPublicar()}">
+            </div>
+            <div>
+              <div style="font-size:9px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">Agência</div>
+              <input class="form-input" id="q-agencia" placeholder="Elite Sports" tabindex="6" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.1);color:#fff;padding:10px 12px" onkeydown="if(event.key==='Enter'){event.preventDefault();quickPublicar()}">
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px;align-items:flex-end">
+            <div style="flex:1">
+              <div style="font-size:9px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">Instagram</div>
+              <input class="form-input" id="q-instagram" placeholder="@jogador" tabindex="7" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.1);color:#fff;padding:10px 12px" onkeydown="if(event.key==='Enter'){event.preventDefault();quickPublicar()}">
+            </div>
+            <div style="flex:1">
+              <div style="font-size:9px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">WhatsApp</div>
+              <input class="form-input" id="q-whatsapp" placeholder="11999999999" tabindex="8" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.1);color:#fff;padding:10px 12px" onkeydown="if(event.key==='Enter'){event.preventDefault();quickPublicar()}">
+            </div>
+            <button onclick="quickPublicar()" tabindex="9" style="background:var(--blue);border:none;color:#fff;padding:10px 28px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;cursor:pointer;white-space:nowrap;height:42px;transition:all 0.2s" onmouseover="this.style.background='var(--blue2)'" onmouseout="this.style.background='var(--blue)'">⚡ PUBLICAR →</button>
+          </div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.2);margin-top:8px">Dados extras (foto, vídeo, stats, altura, peso) adicione no formulário completo abaixo.</div>
+        </div>
+
+        <!-- FORMULÁRIO COMPLETO -->
+        <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;margin-bottom:20px;color:var(--gray)">Formulário Completo (opcional)</h3>
+        <div style="display:grid;gap:14px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="aa-nome" placeholder="Nome completo"></div>
+            <div class="form-group"><label class="form-label">Idade *</label><input class="form-input" id="aa-idade" type="number" placeholder="23"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+            <div class="form-group"><label class="form-label">Posição *</label>
+              <select class="form-select" id="aa-posicao"><option value="">—</option><option>Goleiro</option><option>Fixo</option><option>Ala</option><option>Pivô</option><option>Universal</option></select>
+            </div>
+            <div class="form-group"><label class="form-label">Pé</label>
+              <select class="form-select" id="aa-pe"><option>Direito</option><option>Esquerdo</option><option>Ambidestro</option></select>
+            </div>
+            <div class="form-group"><label class="form-label">Disponível?</label>
+              <select class="form-select" id="aa-disponivel"><option value="true">✅ Sim</option><option value="false">❌ Não</option></select>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+            <div class="form-group"><label class="form-label">Altura (cm)</label><input class="form-input" id="aa-altura" type="number" placeholder="175"></div>
+            <div class="form-group"><label class="form-label">Peso (kg)</label><input class="form-input" id="aa-peso" type="number" placeholder="72"></div>
+            <div class="form-group"><label class="form-label">Clube</label><input class="form-input" id="aa-clube" placeholder="Magnus Futsal"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="form-group"><label class="form-label">Agência</label><input class="form-input" id="aa-agencia" placeholder="Elite Sports"></div>
+            <div class="form-group"><label class="form-label">Contrato</label><input class="form-input" id="aa-contrato" placeholder="1 ano, Livre..."></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="aa-instagram" placeholder="@jogador"></div>
+            <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="aa-whatsapp" placeholder="11999999999"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="form-group"><label class="form-label">Ponto Forte</label><input class="form-input" id="aa-forte" placeholder="Velocidade, Finalização..."></div>
+            <div class="form-group"><label class="form-label">A Desenvolver</label><input class="form-input" id="aa-fraco" placeholder="Marcação..."></div>
+          </div>
+          <div class="form-group"><label class="form-label">Link Vídeo / Highlights</label><input class="form-input" id="aa-video" placeholder="YouTube, Drive..."></div>
+          <div class="form-group">
+            <label class="form-label">Foto do Atleta</label>
+            <div id="foto-upload-area" style="border:2px dashed var(--border);border-radius:10px;padding:24px;text-align:center;cursor:pointer;background:var(--white)" onclick="document.getElementById('aa-foto-input').click()" ondragover="event.preventDefault();this.style.borderColor='var(--blue)'" ondragleave="this.style.borderColor='var(--border)'" ondrop="handleFotoDrop(event)">
+              <div id="foto-preview" style="display:none;margin-bottom:12px"><img id="foto-img" style="width:80px;height:80px;border-radius:10px;object-fit:cover"></div>
+              <div id="foto-placeholder"><div style="font-size:32px;margin-bottom:8px">📸</div><div style="font-size:14px;font-weight:600">Clique ou arraste a foto</div><div style="font-size:12px;color:var(--gray)">JPG, PNG · Máx 5MB</div></div>
+            </div>
+            <input type="file" id="aa-foto-input" accept="image/*" style="display:none" onchange="handleFotoUpload(this)">
+          </div>
+          <!-- STATS -->
+          <div style="background:var(--gray-light);border-radius:12px;padding:20px;border:1.5px solid var(--border)">
+            <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:0" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'grid':'none';this.querySelector('.sarrow').textContent=this.nextElementSibling.style.display!=='none'?'▾':'▸'">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;text-transform:uppercase;color:var(--gray)">📊 Estatísticas <span style="font-size:12px;font-weight:400;text-transform:none">(deixe vazio = dado não disponível)</span></div>
+              <span class="sarrow" style="color:var(--gray)">▸</span>
+            </div>
+            <div style="display:none;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px">
+              <div class="form-group"><label class="form-label">Gols</label><input class="form-input" id="aa-gols" placeholder="—"></div>
+              <div class="form-group"><label class="form-label">Assistências</label><input class="form-input" id="aa-assists" placeholder="—"></div>
+              <div class="form-group"><label class="form-label">Passes %</label><input class="form-input" id="aa-passes" placeholder="—"></div>
+              <div class="form-group"><label class="form-label">Dribles/jogo</label><input class="form-input" id="aa-dribles" placeholder="—"></div>
+              <div class="form-group"><label class="form-label">Nota média</label><input class="form-input" id="aa-nota" placeholder="—"></div>
+              <div class="form-group"><label class="form-label">Jogos</label><input class="form-input" id="aa-jogos" placeholder="—"></div>
+            </div>
+          </div>
+          <button class="btn-submit" onclick="adicionarAtletaAdmin()" style="font-size:20px;padding:18px">⚡ PUBLICAR ATLETA COMPLETO →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB CSV -->
+    <div id="atab-content-csv" style="display:none">
+      <div style="max-width:700px">
+        <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:8px">Importar via Planilha CSV</h3>
+        <p style="font-size:14px;color:var(--gray);margin-bottom:24px">Preencha a planilha modelo e importe vários atletas de uma vez.</p>
+        <div style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:12px;padding:20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:16px">
+          <div><div style="font-weight:700;margin-bottom:4px">📄 Planilha Modelo</div><div style="font-size:13px;color:var(--gray)">Baixe, preencha no Excel ou Google Sheets.</div></div>
+          <button onclick="downloadModelo()" style="background:var(--blue);border:none;color:#fff;padding:11px 22px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;text-transform:uppercase;cursor:pointer;white-space:nowrap">⬇ Baixar Modelo</button>
+        </div>
+        <div style="background:var(--gray-light);border-radius:10px;padding:16px;margin-bottom:24px;font-size:12px;color:var(--gray);line-height:1.8">
+          <strong style="color:var(--text);display:block;margin-bottom:8px">Colunas:</strong>
+          nome · idade · posicao · pe · altura · peso · clube · agencia · contrato · instagram · whatsapp · forte · fraco · video · gols · assists · passes · dribles · nota · jogos · disponivel
+        </div>
+        <div id="csv-upload-area" style="border:2px dashed var(--border);border-radius:12px;padding:40px;text-align:center;cursor:pointer" onclick="document.getElementById('csv-input').click()" ondragover="event.preventDefault();this.style.borderColor='var(--blue)'" ondragleave="this.style.borderColor='var(--border)'" ondrop="handleCsvDrop(event)">
+          <div style="font-size:40px;margin-bottom:12px">📊</div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:6px">Clique ou arraste o CSV aqui</div>
+          <div style="font-size:13px;color:var(--gray)">.csv do Excel ou Google Sheets</div>
+        </div>
+        <input type="file" id="csv-input" accept=".csv" style="display:none" onchange="handleCsvUpload(this)">
+        <div id="csv-preview" style="display:none;margin-top:24px">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;margin-bottom:14px" id="csv-preview-title"></div>
+          <div id="csv-preview-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;max-height:300px;overflow-y:auto"></div>
+          <button class="btn-submit" onclick="importarCsv()">IMPORTAR ATLETAS →</button>
+        </div>
+      </div>
+    </div>
   </section>
 </div>
 
@@ -1113,266 +630,16 @@ footer {
 </footer>
 
 <script>
-// ===== DATA =====
-let db = { atletas:[
-  {id:1,nome:"Guilherme Alves",idade:23,posicao:"Ala",modalidade:"Futsal",clube:"Magnus Futsal",pe:"Direito",altura:174,peso:70,forte:"Velocidade e drible",fraco:"Cabeceio",disponivel:true,instagram:"@guilherme.ala",whatsapp:"11999999999",agencia:"Elite Sports",video:"https://youtube.com",status:"aprovado",emoji:"⚡",caracteristica:"Velocidade"},
-  {id:2,nome:"Lucas Mendonça",idade:26,posicao:"Fixo",modalidade:"Futsal",clube:"Corinthians Futsal",pe:"Esquerdo",altura:180,peso:78,forte:"Marcação e liderança",fraco:"Finalização",disponivel:false,instagram:"@lucas.fixo",whatsapp:"11988888888",agencia:"Pro Athletes",video:"https://youtube.com",status:"aprovado",emoji:"🛡️",caracteristica:"Marcação"},
-  {id:3,nome:"Rafael Costa",idade:19,posicao:"Pivô",modalidade:"Futsal",clube:"Joinville",pe:"Direito",altura:182,peso:82,forte:"Jogo aéreo e físico",fraco:"Visão de jogo",disponivel:true,instagram:"@rafael.pivo",whatsapp:"11977777777",agencia:"",video:"https://youtube.com",status:"aprovado",emoji:"💪",caracteristica:"Físico"},
-  {id:4,nome:"André Souza",idade:28,posicao:"Goleiro",modalidade:"Futsal",clube:"Brasília Futsal",pe:"Direito",altura:185,peso:80,forte:"Reflexos e bola aérea",fraco:"Jogo com os pés",disponivel:true,instagram:"@andre.goleiro",whatsapp:"11966666666",agencia:"GoalKeeper Brasil",video:"https://youtube.com",status:"aprovado",emoji:"🧤",caracteristica:"Reflexos"},
-  {id:5,nome:"Thiago Lima",idade:22,posicao:"Atacante",modalidade:"Futebol",clube:"Sem clube",pe:"Ambidestro",altura:176,peso:71,forte:"Finalização e velocidade",fraco:"Marcação",disponivel:true,instagram:"@thiago.gol",whatsapp:"11955555555",agencia:"",video:"https://youtube.com",status:"aprovado",emoji:"🎯",caracteristica:"Finalização"},
-  {id:6,nome:"Matheus Santos",idade:21,posicao:"Meio-Campo",modalidade:"Futebol",clube:"Flamengo Sub-23",pe:"Direito",altura:172,peso:68,forte:"Visão de jogo e passe",fraco:"Disputa física",disponivel:false,instagram:"@matheus.10",whatsapp:"11944444444",agencia:"RJ Sports",video:"https://youtube.com",status:"aprovado",emoji:"🎭",caracteristica:"Visão de Jogo"},
-  {id:7,nome:"Pedro Ferreira",idade:24,posicao:"Ala",modalidade:"Futsal",clube:"ACBF",pe:"Esquerdo",altura:170,peso:67,forte:"Drible e criatividade",fraco:"Defesa",disponivel:true,instagram:"@pedro.ala",whatsapp:"11933333333",agencia:"Sul Sports",video:"https://youtube.com",status:"pendente",emoji:"🌟",caracteristica:"Criatividade"},
-]};
-
-let adminCurrentTab='pend';
-
-// ===== RENDER CARD =====
-function renderCard(a){
-  return `<div class="athlete-card" onclick="openProfile(${a.id})">
-    <div class="ac-photo" style="${a.foto?'background:none':''  }">
-      ${a.foto?`<img src="${a.foto}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`:a.emoji}
-      <div class="ac-pos-over">${a.posicao}</div>
-      <div class="ac-avail-badge">
-        <span class="dot ${a.disponivel?'dot-sim':'dot-nao'}"></span>
-        ${a.disponivel?'Disponível':'Contratado'}
-      </div>
-    </div>
-    <div class="ac-body">
-      <div class="ac-name">${a.nome}</div>
-      <div class="ac-clube-row"><span class="ac-clube-label">Clube</span><span class="ac-clube-val">${a.clube}</span></div>
-      <div class="ac-clube-row" style="margin-top:2px"><span class="ac-clube-label">Agência</span><span class="ac-clube-val" style="color:var(--gray);font-weight:500">${a.agencia||'—'}</span></div>
-      <div class="ac-dark">
-        <div class="ac-data-item"><span class="ac-data-val">${a.idade}</span><span class="ac-data-label">Idade</span></div>
-        <div class="ac-data-item"><span class="ac-data-val">${a.altura}cm</span><span class="ac-data-label">Alt</span></div>
-        <div class="ac-data-item"><span class="ac-data-val">${a.pe.charAt(0)}</span><span class="ac-data-label">Pé</span></div>
-        <div class="ac-data-item"><span class="ac-data-val">${a.peso}kg</span><span class="ac-data-label">Peso</span></div>
-      </div>
-      <button class="ac-btn">ANÁLISE COMPLETA →</button>
-    </div>
-  </div>`;
-}
-
-// ===== INIT =====
-function init(){
-  const aprov = db.atletas.filter(a=>a.status==='aprovado');
-  document.getElementById('destaque-grid').innerHTML = aprov.slice(0,6).map(renderCard).join('');
-  renderAtletas(aprov);
-  renderAdminTable('pend');
-  animCount('sAtletas', aprov.length);
-  animCount('sClubes', [...new Set(aprov.filter(a=>a.clube!=='Sem clube').map(a=>a.clube))].length);
-  animCount('sAnalises', 127);
-}
-
-function animCount(id, target){
-  let cur=0; const step=Math.ceil(target/30);
-  const t=setInterval(()=>{ cur=Math.min(cur+step,target); document.getElementById(id).textContent=cur; if(cur>=target)clearInterval(t); },50);
-}
-
-function renderAtletas(lista){
-  const el=document.getElementById('atletas-grid');
-  el.innerHTML=lista.length?lista.map(renderCard).join(''):'<p style="color:var(--gray);padding:40px">Nenhum atleta encontrado.</p>';
-}
-
-// ===== FILTERS =====
-function setPill(el,val){
-  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
-  el.classList.add('active');
-  const base=db.atletas.filter(a=>a.status==='aprovado');
-  const r=!val?base:val==='disp'?base.filter(a=>a.disponivel):base.filter(a=>a.modalidade===val||a.posicao===val);
-  renderAtletas(r);
-}
-
-function doSearch(){
-  const q=document.getElementById('searchInput').value.toLowerCase().trim();
-  if(!q)return;
-  const r=db.atletas.filter(a=>a.status==='aprovado'&&(a.nome.toLowerCase().includes(q)||a.posicao.toLowerCase().includes(q)||a.clube.toLowerCase().includes(q)));
-  renderAtletas(r);
-  showToast(r.length+' resultado(s) para "'+q+'"');
-}
-
-function aplicarFiltros(){
-  const mod=document.getElementById('f-modalidade').value;
-  const pos=document.getElementById('f-posicao').value;
-  const disp=document.getElementById('f-disponivel').value;
-  let lista=db.atletas.filter(a=>a.status==='aprovado');
-  if(mod) lista=lista.filter(a=>a.modalidade===mod);
-  if(pos) lista=lista.filter(a=>a.posicao===pos);
-  if(disp==='sim') lista=lista.filter(a=>a.disponivel);
-  if(disp==='nao') lista=lista.filter(a=>!a.disponivel);
-  renderAtletas(lista);
-  showToast(lista.length+' atleta(s) encontrado(s)');
-}
-
-// ===== PROFILE =====
+// ===== STATE =====
+let currentUser = null;
 let userAssinante = false;
+let dbAtletas = [];
+let dbClubes = [];
+let fotoAtualBase64 = null;
+let csvAtletasParsed = [];
 
-function openProfile(id){
-  const a = db.atletas.find(x=>x.id===id); if(!a) return;
-  const bloqueado = !userAssinante;
-
-  // Linha com label visível e valor borrado ou não
-  const row = (label, value, locked=false) => {
-    const isEmpty = !value || value === '-' || value === '—';
-    const displayVal = isEmpty
-      ? `<span style="font-size:12px;color:var(--gray);font-style:italic">Dado não disponível</span>`
-      : locked && bloqueado
-        ? `<span style="filter:blur(5px);user-select:none;pointer-events:none;background:var(--gray-light);border-radius:4px;padding:2px 8px">${value}</span>`
-        : `<span style="font-weight:600;color:var(--text)">${value}</span>`;
-    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)">
-      <span style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray)">${label}</span>
-      ${displayVal}
-    </div>`;
-  };
-
-  const lockedClick = bloqueado ? `onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')"` : '';
-  const lockedStyle = bloqueado ? `style="cursor:pointer"` : '';
-
-  document.getElementById('modalBody').innerHTML = `
-    <div class="modal-hero">
-      <div class="modal-photo" style="${a.foto?'background:none;overflow:hidden':''  }">${a.foto?`<img src="${a.foto}" style="width:100%;height:100%;object-fit:cover">`:a.emoji}</div>
-      <div class="modal-meta">
-        <span class="modal-pos-badge">${a.posicao} · Futsal</span>
-        <div class="modal-name">${a.nome}</div>
-        <div class="modal-club">🏟 ${a.clube}</div>
-        <div class="modal-avail-badge">
-          <span style="width:8px;height:8px;background:${a.disponivel?'#00c878':'#ff5050'};border-radius:50%;display:inline-block"></span>
-          ${a.disponivel?'Disponível no Mercado':'Contratado'}
-        </div>
-      </div>
-    </div>
-    <div class="modal-stats-bar">
-      <div class="mstat"><span class="mstat-val">${a.idade}</span><span class="mstat-label">Idade</span></div>
-      <div class="mstat"><span class="mstat-val">${a.altura}cm</span><span class="mstat-label">Altura</span></div>
-      <div class="mstat"><span class="mstat-val">${a.peso}kg</span><span class="mstat-label">Peso</span></div>
-      <div class="mstat"><span class="mstat-val">${a.pe.charAt(0)}</span><span class="mstat-label">Pé Dom.</span></div>
-    </div>
-    <div class="modal-body">
-      <div class="modal-sec" ${lockedStyle} ${lockedClick}>
-        <div class="modal-sec-title">Perfil & Contato</div>
-        ${row('Instagram', a.instagram||'@atleta', true)}
-        ${row('WhatsApp', a.whatsapp?'('+a.whatsapp.slice(0,2)+') '+a.whatsapp.slice(2,7)+'-****':'disponível', true)}
-        ${row('Agência', a.agencia||'Sem agência', true)}
-        ${row('Tempo de Contrato', a.contrato||'6 meses', true)}
-      </div>
-      <div class="modal-sec" ${lockedStyle} ${lockedClick}>
-        <div class="modal-sec-title">Análise Técnica</div>
-        ${row('Ponto Forte', a.forte, true)}
-        ${row('A Desenvolver', a.fraco, true)}
-        ${row('Posição Preferida', a.posicao, false)}
-        ${row('Modalidade', 'Futsal', false)}
-      </div>
-      <div class="modal-sec" ${lockedStyle} ${lockedClick}>
-        <div class="modal-sec-title">📊 Estatísticas</div>
-        ${row('Gols na temporada', a.stats_gols||'8', true)}
-        ${row('Assistências', a.stats_assists||'14', true)}
-        ${row('Passes certos', a.stats_passes||'89%', true)}
-        ${row('Dribles por jogo', a.stats_dribles||'4.2', true)}
-        ${row('Nota média', a.stats_nota||'7.8', true)}
-        ${row('Jogos disputados', a.stats_jogos||'22', true)}
-      </div>
-      <div class="modal-sec" ${lockedStyle} ${lockedClick}>
-        <div class="modal-sec-title">🎬 Links dos Jogos</div>
-        <div class="highlights-row">
-          <div class="hl-item" style="${bloqueado?'filter:blur(4px);pointer-events:none':''}"><div class="hl-play">▶</div></div>
-          <div class="hl-item" style="${bloqueado?'filter:blur(4px);pointer-events:none':''}"><div class="hl-play">▶</div></div>
-          <div class="hl-item" style="${bloqueado?'filter:blur(4px);pointer-events:none':''}"><div class="hl-play">▶</div></div>
-        </div>
-        ${bloqueado?`<div style="text-align:center;margin-top:12px"><span style="font-size:12px;color:var(--gray)">🔒 Assine para acessar os links</span></div>`:''}
-      </div>
-      ${bloqueado?`<div style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:12px;padding:20px;text-align:center;margin-top:8px">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:var(--blue);margin-bottom:6px">ASSINE E VEJA TUDO</div>
-        <div style="font-size:13px;color:var(--gray);margin-bottom:16px">Desbloqueie todos os dados por apenas R$40/mês</div>
-        <button class="btn-hero-primary" style="padding:12px 32px;font-size:16px" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">⚡ ASSINAR R$40/MÊS →</button>
-      </div>`:''}
-    </div>`;
-
-  document.getElementById('profileModal').classList.add('open');
-}
-
-function assinar(){
-  if(!currentUser){ openAuthModal('criar'); return; }
-  showToast('Redirecionando para pagamento...');
-  fetch('/api/criar_pagamento',{
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({plano:'assinatura'})
-  }).then(r=>r.json()).then(d=>{
-    if(d.link){
-      window.location.href = d.link; // vai pro Mercado Pago de verdade
-    } else {
-      showToast('⚠️ Erro ao gerar pagamento. Tente novamente.');
-    }
-  }).catch(()=>{
-    showToast('⚠️ Sem conexão com servidor. Verifique sua conta.');
-  });
-}
-
-// ===== CADASTRO =====
-async function enviarCadastroAtleta(){
-  const nome=document.getElementById('c-nome').value.trim();
-  const idade=document.getElementById('c-idade').value;
-  const pos=document.getElementById('c-posicao').value;
-  if(!nome||!idade||!pos){ showToast('⚠️ Preencha os campos obrigatórios'); return; }
-  const payload = {
-    nome, idade, posicao:pos, modalidade:'Futsal',
-    clube:document.getElementById('c-clube').value,
-    pe:document.getElementById('c-pe').value,
-    altura:document.getElementById('c-altura').value,
-    peso:document.getElementById('c-peso').value,
-    instagram:document.getElementById('c-instagram').value,
-    whatsapp:document.getElementById('c-whatsapp').value,
-    agencia:document.getElementById('c-agencia').value,
-    forte:document.getElementById('c-forte').value,
-    video:document.getElementById('c-video').value,
-  };
-  try {
-    const r = await fetch('/api/atletas/solicitar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    const d = await r.json();
-    if(d.ok){
-      showToast('✅ Solicitação enviada! Aguarde aprovação em até 48h.');
-      document.querySelectorAll('#cad-form-atleta .form-input,#cad-form-atleta .form-select').forEach(i=>i.value='');
-    } else { showToast('⚠️ '+(d.erro||'Erro ao enviar')); }
-  } catch(e){
-    showToast('✅ Solicitação enviada! (demo)');
-    document.querySelectorAll('#cad-form-atleta .form-input,#cad-form-atleta .form-select').forEach(i=>i.value='');
-  }
-}
-
-// ===== ADMIN =====
-function adminTab(el,tab){
-  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active'); adminCurrentTab=tab; renderAdminTable(tab);
-}
-function renderAdminTable(tab){
-  const lista=tab==='pend'?db.atletas.filter(a=>a.status==='pendente'):tab==='aprov'?db.atletas.filter(a=>a.status==='aprovado'):db.atletas;
-  document.getElementById('admin-tbody').innerHTML=lista.length?lista.map(a=>`
-    <tr>
-      <td><strong>${a.nome}</strong><br><small style="color:var(--gray)">${a.idade} anos</small></td>
-      <td>${a.posicao}</td><td>${a.modalidade}</td><td>${a.clube}</td>
-      <td><span class="status-badge ${a.status==='pendente'?'s-pend':a.status==='aprovado'?'s-aprov':'s-recus'}">${a.status}</span></td>
-      <td style="display:flex;gap:6px;flex-wrap:wrap">
-        ${a.status!=='aprovado'?`<button class="btn-act btn-aprov" onclick="adminAcao(${a.id},'aprovado')">APROVAR</button>`:''}
-        ${a.status!=='recusado'?`<button class="btn-act btn-recus" onclick="adminAcao(${a.id},'recusado')">RECUSAR</button>`:''}
-        <button class="btn-act btn-see" onclick="openProfile(${a.id})">VER</button>
-      </td>
-    </tr>`).join(''):'<tr><td colspan="6" style="color:var(--gray);padding:32px;text-align:center">Nenhum atleta aqui.</td></tr>';
-}
-function adminAcao(id,status){
-  const a=db.atletas.find(x=>x.id===id); if(!a) return;
-  a.status=status; renderAdminTable(adminCurrentTab);
-  init();
-  showToast(status==='aprovado'?'✅ '+a.nome+' aprovado!':'❌ '+a.nome+' recusado.');
-}
-
-// ===== PAGES =====
-function showPage(p){
-  ['home','atletas','cadastro-atleta','admin','assinatura','clubes','admin-panel','sou-clube'].forEach(pg=>{
-    const el=document.getElementById('page-'+pg);
-    if(el) el.style.display=pg===p?'block':'none';
-  });
-  window.scrollTo({top:0,behavior:'smooth'});
-  if(p==='atletas') renderAtletas(db.atletas.filter(a=>a.status==='aprovado'));
-  if(p==='admin') renderAdminTable(adminCurrentTab);
-}
+// ===== EMOJIS =====
+const emojis = {Goleiro:'🧤',Fixo:'🛡️',Ala:'⚡',Pivô:'💪',Universal:'🌟'};
 
 // ===== TOAST =====
 function showToast(msg){
@@ -1381,447 +648,536 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove('show'),3200);
 }
 
-// ===== AUTH =====
-let currentUser = null;
-let dbClubes = [
-  {id:1, nome:"Magnus Futsal", cidade:"Sorocaba, SP", posicao:"Ala", idade:"20-28 anos", detalhes:"Procuramos ala destro com experiência em Liga Nacional. Alto rendimento físico.", contato:"(15) 99999-9999", status:"aprovado"},
-  {id:2, nome:"ACBF", cidade:"Carlos Barbosa, RS", posicao:"Fixo", idade:"22-30 anos", detalhes:"Buscamos fixo com liderança e boa saída de bola. Contrato de 1 ano.", contato:"(54) 98888-8888", status:"aprovado"},
-  {id:3, nome:"Corinthians Futsal", cidade:"São Paulo, SP", posicao:"Goleiro", idade:"18-26 anos", detalhes:"Goleiro para categoria sub-23 com potencial de evolução.", contato:"(11) 97777-7777", status:"aprovado"},
-];
-
-function openAuthModal(tab){
-  document.getElementById('authModal').classList.add('open');
-  switchAuthTab(tab||'login');
+// ===== PAGES =====
+function showPage(p){
+  ['home','atletas','cadastro-atleta','assinatura','clubes','admin-panel','sou-clube'].forEach(pg=>{
+    const el=document.getElementById('page-'+pg);
+    if(el) el.style.display=pg===p?'block':'none';
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
+// ===== RENDER CARD =====
+function renderCard(a){
+  return `<div class="athlete-card" onclick="openProfile('${a.id}')">
+    <div class="ac-photo" style="${a.foto?'background:none':''}">
+      ${a.foto?`<img src="${a.foto}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`:(emojis[a.posicao]||'⭐')}
+      <div class="ac-pos-over">${a.posicao}</div>
+      <div class="ac-avail-badge"><span class="dot ${a.disponivel?'dot-sim':'dot-nao'}"></span>${a.disponivel?'Disponível':'Contratado'}</div>
+    </div>
+    <div class="ac-body">
+      <div class="ac-name">${a.nome}</div>
+      <div class="ac-clube-row"><span class="ac-clube-label">Clube</span><span class="ac-clube-val">${a.clube||'—'}</span></div>
+      <div class="ac-clube-row" style="margin-top:2px"><span class="ac-clube-label">Agência</span><span class="ac-clube-val" style="color:var(--gray);font-weight:500">${a.agencia||'—'}</span></div>
+      <div class="ac-dark">
+        <div class="ac-data-item"><span class="ac-data-val">${a.idade||'—'}</span><span class="ac-data-label">Idade</span></div>
+        <div class="ac-data-item"><span class="ac-data-val">${a.altura?a.altura+'cm':'—'}</span><span class="ac-data-label">Alt</span></div>
+        <div class="ac-data-item"><span class="ac-data-val">${a.pe?a.pe.charAt(0):'—'}</span><span class="ac-data-label">Pé</span></div>
+        <div class="ac-data-item"><span class="ac-data-val">${a.peso?a.peso+'kg':'—'}</span><span class="ac-data-label">Peso</span></div>
+      </div>
+      <button class="ac-btn">ANÁLISE COMPLETA →</button>
+    </div>
+  </div>`;
+}
+
+// ===== CARREGAR ATLETAS DO BACKEND =====
+async function carregarAtletas(){
+  try {
+    const r = await fetch('/api/atletas');
+    dbAtletas = await r.json();
+  } catch(e){ /* usa local */ }
+  renderAtletas(dbAtletas);
+  document.getElementById('destaque-grid').innerHTML = dbAtletas.slice(0,6).map(renderCard).join('') || '<p style="color:var(--gray);padding:20px">Nenhum atleta ainda.</p>';
+  animCount('sAtletas', dbAtletas.length);
+}
+
+async function carregarClubes(){
+  try {
+    const r = await fetch('/api/clubes');
+    dbClubes = await r.json();
+  } catch(e){}
+  renderClubes();
+}
+
+async function carregarTudo(){
+  await carregarAtletas();
+  await carregarClubes();
+  renderAdminAtletas();
+  renderAdminClubes();
+}
+
+function animCount(id,target){
+  let cur=0; const step=Math.ceil(target/30);
+  const t=setInterval(()=>{ cur=Math.min(cur+step,target); const el=document.getElementById(id); if(el)el.textContent=cur; if(cur>=target)clearInterval(t); },50);
+}
+
+function renderAtletas(lista){
+  const el=document.getElementById('atletas-grid');
+  if(el) el.innerHTML=lista.length?lista.map(renderCard).join(''):'<p style="color:var(--gray);padding:40px">Nenhum atleta encontrado.</p>';
+}
+
+// ===== FILTERS =====
+function setPill(el,val){
+  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  const r=!val?dbAtletas:val==='disp'?dbAtletas.filter(a=>a.disponivel):dbAtletas.filter(a=>a.posicao===val);
+  renderAtletas(r);
+}
+function doSearch(){
+  const q=document.getElementById('searchInput').value.toLowerCase().trim();
+  if(!q)return;
+  renderAtletas(dbAtletas.filter(a=>a.nome.toLowerCase().includes(q)||a.posicao.toLowerCase().includes(q)||(a.clube||'').toLowerCase().includes(q)));
+}
+function aplicarFiltros(){
+  const pos=document.getElementById('f-posicao').value;
+  const disp=document.getElementById('f-disponivel').value;
+  let lista=dbAtletas;
+  if(pos) lista=lista.filter(a=>a.posicao===pos);
+  if(disp==='sim') lista=lista.filter(a=>a.disponivel);
+  if(disp==='nao') lista=lista.filter(a=>!a.disponivel);
+  renderAtletas(lista);
+  showToast(lista.length+' atleta(s)');
+}
+
+// ===== PROFILE MODAL =====
+async function openProfile(id){
+  const a = dbAtletas.find(x=>String(x.id)===String(id)); if(!a) return;
+  const bloqueado = !userAssinante;
+
+  // Buscar foto do backend se logado
+  let fotoSrc = a.foto || null;
+  if(!fotoSrc && a.tem_foto && currentUser){
+    try {
+      const r = await fetch('/api/atletas/'+id+'/foto');
+      const d = await r.json();
+      fotoSrc = d.foto;
+    } catch(e){}
+  }
+
+  const row = (label, value, locked=false) => {
+    const isEmpty = !value || value==='-' || value==='—' || value==='';
+    const displayVal = isEmpty
+      ? '<span style="font-size:12px;color:var(--gray);font-style:italic">Dado não disponível</span>'
+      : locked && bloqueado
+        ? '<span style="filter:blur(5px);user-select:none;pointer-events:none;background:var(--gray-light);border-radius:4px;padding:2px 8px">'+value+'</span>'
+        : '<span style="font-weight:600;color:var(--text)">'+value+'</span>';
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)"><span style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray)">'+label+'</span>'+displayVal+'</div>';
+  };
+
+  const lockedClick = bloqueado ? 'onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')"' : '';
+  const lockedStyle = bloqueado ? 'style="cursor:pointer"' : '';
+
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-hero">
+      <div class="modal-photo" style="${fotoSrc?'background:none;overflow:hidden':''}">
+        ${fotoSrc?`<img src="${fotoSrc}" style="width:100%;height:100%;object-fit:cover">`:(emojis[a.posicao]||'⭐')}
+      </div>
+      <div class="modal-meta">
+        <span class="modal-pos-badge">${a.posicao} · Futsal</span>
+        <div class="modal-name">${a.nome}</div>
+        <div class="modal-club">🏟 ${a.clube||'—'}</div>
+        <div class="modal-avail-badge"><span style="width:8px;height:8px;background:${a.disponivel?'#00c878':'#ff5050'};border-radius:50%;display:inline-block"></span> ${a.disponivel?'Disponível no Mercado':'Contratado'}</div>
+      </div>
+    </div>
+    <div class="modal-stats-bar">
+      <div class="mstat"><span class="mstat-val">${a.idade||'—'}</span><span class="mstat-label">Idade</span></div>
+      <div class="mstat"><span class="mstat-val">${a.altura?a.altura+'cm':'—'}</span><span class="mstat-label">Altura</span></div>
+      <div class="mstat"><span class="mstat-val">${a.peso?a.peso+'kg':'—'}</span><span class="mstat-label">Peso</span></div>
+      <div class="mstat"><span class="mstat-val">${a.pe?a.pe.charAt(0):'—'}</span><span class="mstat-label">Pé Dom.</span></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-sec" ${lockedStyle} ${lockedClick}>
+        <div class="modal-sec-title">Perfil & Contato</div>
+        ${row('Instagram', a.instagram, true)}
+        ${row('WhatsApp', a.whatsapp?'('+String(a.whatsapp).slice(0,2)+') '+String(a.whatsapp).slice(2,7)+'-****':'', true)}
+        ${row('Agência', a.agencia, true)}
+        ${row('Tempo de Contrato', a.contrato, true)}
+      </div>
+      <div class="modal-sec" ${lockedStyle} ${lockedClick}>
+        <div class="modal-sec-title">Análise Técnica</div>
+        ${row('Ponto Forte', a.forte, true)}
+        ${row('A Desenvolver', a.fraco, true)}
+        ${row('Posição', a.posicao, false)}
+        ${row('Modalidade', 'Futsal', false)}
+      </div>
+      <div class="modal-sec" ${lockedStyle} ${lockedClick}>
+        <div class="modal-sec-title">📊 Estatísticas</div>
+        ${row('Gols na temporada', a.stats_gols, true)}
+        ${row('Assistências', a.stats_assists, true)}
+        ${row('Passes certos', a.stats_passes, true)}
+        ${row('Dribles por jogo', a.stats_dribles, true)}
+        ${row('Nota média', a.stats_nota, true)}
+        ${row('Jogos disputados', a.stats_jogos, true)}
+      </div>
+      <div class="modal-sec" ${lockedStyle} ${lockedClick}>
+        <div class="modal-sec-title">🎬 Links dos Jogos</div>
+        <div class="highlights-row">
+          ${bloqueado?
+            ['','',''].map(()=>'<div class="hl-item" style="filter:blur(4px);pointer-events:none"><div class="hl-play">▶</div></div>').join('')
+            : a.video ? '<div class="hl-item" onclick="window.open(''+a.video+'','_blank')"><div class="hl-play">▶</div></div><div class="hl-item"><div style="color:var(--gray);font-size:12px">Sem vídeo</div></div><div class="hl-item"><div style="color:var(--gray);font-size:12px">Sem vídeo</div></div>'
+            : '<div class="hl-item"><div style="color:var(--gray);font-size:12px">Sem vídeo</div></div>'.repeat(3)
+          }
+        </div>
+        ${bloqueado?'<div style="text-align:center;margin-top:12px"><span style="font-size:12px;color:var(--gray)">🔒 Assine para acessar</span></div>':''}
+      </div>
+      ${bloqueado?'<div style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:12px;padding:20px;text-align:center;margin-top:8px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:var(--blue);margin-bottom:6px">ASSINE E VEJA TUDO</div><div style="font-size:13px;color:var(--gray);margin-bottom:16px">R$40/mês — acesso completo</div><button class="btn-hero-primary" style="padding:12px 32px;font-size:16px" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">⚡ ASSINAR R$40/MÊS →</button></div>':''}
+    </div>`;
+  document.getElementById('profileModal').classList.add('open');
+}
+
+// ===== AUTH =====
+function openAuthModal(tab){ document.getElementById('authModal').classList.add('open'); switchAuthTab(tab||'login'); }
 function switchAuthTab(tab){
-  document.getElementById('auth-panel-login').style.display = tab==='login'?'block':'none';
-  document.getElementById('auth-panel-criar').style.display = tab==='criar'?'block':'none';
-  document.getElementById('auth-tab-login').style.background = tab==='login'?'var(--blue)':'transparent';
-  document.getElementById('auth-tab-login').style.color = tab==='login'?'#fff':'var(--gray)';
-  document.getElementById('auth-tab-criar').style.background = tab==='criar'?'var(--blue)':'transparent';
-  document.getElementById('auth-tab-criar').style.color = tab==='criar'?'#fff':'var(--gray)';
+  document.getElementById('auth-panel-login').style.display=tab==='login'?'block':'none';
+  document.getElementById('auth-panel-criar').style.display=tab==='criar'?'block':'none';
+  document.getElementById('auth-tab-login').style.background=tab==='login'?'var(--blue)':'transparent';
+  document.getElementById('auth-tab-login').style.color=tab==='login'?'#fff':'var(--gray)';
+  document.getElementById('auth-tab-criar').style.background=tab==='criar'?'var(--blue)':'transparent';
+  document.getElementById('auth-tab-criar').style.color=tab==='criar'?'#fff':'var(--gray)';
 }
 
 async function doLogin(){
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass = document.getElementById('loginPass').value.trim();
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value.trim();
   if(!email||!pass){ showToast('⚠️ Preencha email e senha'); return; }
-
-  // Admin local
   if(email==='admin' && pass==='admin123'){
-    currentUser = {nome:'Admin', admin:true, plano:'admin'};
+    currentUser={nome:'Admin',admin:true,plano:'admin'}; userAssinante=true;
     document.getElementById('authModal').classList.remove('open');
-    updateNavLogado();
-    userAssinante = true;
-    showToast('✅ Bem-vindo, Admin!');
-    showPage('admin-panel');
-    renderAdminAtletas();
-    renderAdminClubes();
-    return;
+    updateNavLogado(); showToast('✅ Bem-vindo, Admin!');
+    showPage('admin-panel'); carregarTudo(); return;
   }
-
-  // Login via API
   try {
-    const r = await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:email,senha:pass})});
-    const d = await r.json();
+    const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:email,senha:pass})});
+    const d=await r.json();
     if(d.erro){ showToast('⚠️ '+d.erro); return; }
-    currentUser = {nome:d.nome, admin:d.admin, plano:d.plano||'gratuito'};
-    userAssinante = d.plano==='assinatura';
+    currentUser={nome:d.nome,admin:d.admin,plano:d.plano||'gratuito'};
+    userAssinante=d.plano==='assinatura';
     document.getElementById('authModal').classList.remove('open');
-    updateNavLogado();
-    showToast('✅ Bem-vindo, '+d.nome+'!');
-    if(d.admin){ showPage('admin-panel'); renderAdminAtletas(); renderAdminClubes(); }
+    updateNavLogado(); showToast('✅ Bem-vindo, '+d.nome+'!');
+    if(d.admin){ showPage('admin-panel'); carregarTudo(); }
   } catch(e){
-    // Fallback demo
-    currentUser = {nome:email.split('@')[0], admin:false, plano:'gratuito'};
-    userAssinante = false;
+    currentUser={nome:email.split('@')[0],admin:false,plano:'gratuito'}; userAssinante=false;
     document.getElementById('authModal').classList.remove('open');
-    updateNavLogado();
-    showToast('✅ Bem-vindo! (modo demo)');
+    updateNavLogado(); showToast('✅ Bem-vindo! (modo demo)');
   }
 }
 
 async function doCriarConta(){
-  const nome = document.getElementById('criarNome').value.trim();
-  const email = document.getElementById('criarEmail').value.trim();
-  const senha = document.getElementById('criarSenha').value.trim();
+  const nome=document.getElementById('criarNome').value.trim();
+  const email=document.getElementById('criarEmail').value.trim();
+  const senha=document.getElementById('criarSenha').value.trim();
   if(!nome||!email||!senha){ showToast('⚠️ Preencha todos os campos'); return; }
   if(senha.length<6){ showToast('⚠️ Senha mínimo 6 caracteres'); return; }
   try {
-    const r = await fetch('/api/cadastro',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome,email,senha})});
-    const d = await r.json();
+    const r=await fetch('/api/cadastro',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome,email,senha})});
+    const d=await r.json();
     if(d.erro){ showToast('⚠️ '+d.erro); return; }
     showToast('✅ Conta criada! Faça login.');
-    switchAuthTab('login');
-    document.getElementById('loginEmail').value=email;
+    switchAuthTab('login'); document.getElementById('loginEmail').value=email;
   } catch(e){
-    // Demo fallback
-    currentUser = {nome, admin:false, plano:'gratuito'};
-    userAssinante = false;
+    currentUser={nome,admin:false,plano:'gratuito'}; userAssinante=false;
     document.getElementById('authModal').classList.remove('open');
-    updateNavLogado();
-    showToast('✅ Conta criada! (modo demo)');
+    updateNavLogado(); showToast('✅ Conta criada! (demo)');
   }
 }
 
 function updateNavLogado(){
-  const guest = document.getElementById('nav-guest');
-  const user = document.getElementById('nav-user');
-  const admin = document.getElementById('nav-admin');
-  if(!currentUser){
-    guest.style.display='flex'; user.style.display='none'; admin.style.display='none';
-    return;
-  }
-  if(currentUser.admin){
-    guest.style.display='none'; user.style.display='none'; admin.style.display='flex';
-  } else {
-    guest.style.display='none'; user.style.display='flex'; admin.style.display='none';
-    document.getElementById('nav-nome').textContent = currentUser.nome;
-    // Hide assinar button if already subscriber
-    const btnAssinar = document.getElementById('nav-btn-assinar');
-    if(btnAssinar) btnAssinar.style.display = userAssinante?'none':'flex';
-  }
+  const g=document.getElementById('nav-guest'), u=document.getElementById('nav-user'), a=document.getElementById('nav-admin');
+  if(!currentUser){ g.style.display='flex'; u.style.display='none'; a.style.display='none'; return; }
+  if(currentUser.admin){ g.style.display='none'; u.style.display='none'; a.style.display='flex'; }
+  else { g.style.display='none'; u.style.display='flex'; a.style.display='none'; document.getElementById('nav-nome').textContent=currentUser.nome; const b=document.getElementById('nav-btn-assinar'); if(b) b.style.display=userAssinante?'none':'flex'; }
 }
 
 function doLogout(){
   fetch('/api/logout').catch(()=>{});
-  currentUser=null; userAssinante=false;
-  updateNavLogado();
-  showPage('home');
-  showToast('Até logo!');
+  currentUser=null; userAssinante=false; updateNavLogado(); showPage('home'); showToast('Até logo!');
 }
 
 function updateCadastroView(){
-  const naoLogado = document.getElementById('cad-nao-logado');
-  const semAss = document.getElementById('cad-sem-assinatura');
-  const form = document.getElementById('cad-form-atleta');
-  if(!naoLogado) return;
-  if(!currentUser){
-    naoLogado.style.display='block'; semAss.style.display='none'; form.style.display='none';
-  } else if(!userAssinante){
-    naoLogado.style.display='none'; semAss.style.display='block'; form.style.display='none';
-  } else {
-    naoLogado.style.display='none'; semAss.style.display='none'; form.style.display='block';
+  const n=document.getElementById('cad-nao-logado'), s=document.getElementById('cad-sem-assinatura'), f=document.getElementById('cad-form-atleta');
+  if(!n) return;
+  if(!currentUser){ n.style.display='block'; s.style.display='none'; f.style.display='none'; }
+  else if(!userAssinante){ n.style.display='none'; s.style.display='block'; f.style.display='none'; }
+  else { n.style.display='none'; s.style.display='none'; f.style.display='block'; }
+}
+
+function assinar(){
+  if(!currentUser){ openAuthModal('criar'); return; }
+  showToast('Redirecionando para pagamento...');
+  fetch('/api/criar_pagamento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plano:'assinatura'})})
+    .then(r=>r.json()).then(d=>{ if(d.link) window.location.href=d.link; else showToast('⚠️ Erro ao gerar pagamento.'); })
+    .catch(()=>showToast('⚠️ Sem conexão com servidor.'));
+}
+
+// ===== CADASTRO ATLETA =====
+async function enviarCadastroAtleta(){
+  const nome=document.getElementById('c-nome').value.trim(), idade=document.getElementById('c-idade').value, pos=document.getElementById('c-posicao').value;
+  if(!nome||!idade||!pos){ showToast('⚠️ Preencha os campos obrigatórios'); return; }
+  const payload={nome,idade,posicao:pos,modalidade:'Futsal',clube:document.getElementById('c-clube').value,pe:document.getElementById('c-pe').value,altura:document.getElementById('c-altura').value,peso:document.getElementById('c-peso').value,instagram:document.getElementById('c-instagram').value,whatsapp:document.getElementById('c-whatsapp').value,agencia:document.getElementById('c-agencia').value,forte:document.getElementById('c-forte').value,video:document.getElementById('c-video').value};
+  try {
+    const r=await fetch('/api/atletas/solicitar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const d=await r.json();
+    if(d.ok){ showToast('✅ Solicitação enviada! Aguarde aprovação.'); document.querySelectorAll('#cad-form-atleta .form-input,#cad-form-atleta .form-select').forEach(i=>i.value=''); }
+    else showToast('⚠️ '+(d.erro||'Erro'));
+  } catch(e){ showToast('✅ Solicitação enviada! (demo)'); }
+}
+
+// ===== QUICK PUBLISH =====
+async function quickPublicar(){
+  const nome=document.getElementById('q-nome').value.trim(), idade=document.getElementById('q-idade').value, posicao=document.getElementById('q-posicao').value;
+  if(!nome||!idade||!posicao){ showToast('⚠️ Nome, idade e posição obrigatórios'); document.getElementById('q-nome').focus(); return; }
+  const payload={
+    nome, idade, posicao, modalidade:'Futsal',
+    clube: document.getElementById('q-clube').value||'Sem clube',
+    pe: document.getElementById('q-pe').value||'Direito',
+    agencia: document.getElementById('q-agencia').value||'',
+    instagram: document.getElementById('q-instagram').value||'',
+    whatsapp: document.getElementById('q-whatsapp').value||'',
+    altura:0, peso:0, disponivel:true, contrato:'', forte:'-', fraco:'-', video:'',
+    stats_gols:'-', stats_assists:'-', stats_passes:'-', stats_dribles:'-', stats_nota:'-', stats_jogos:'-',
+    foto: null
+  };
+  try {
+    const r=await fetch('/api/admin/atletas',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const d=await r.json();
+    if(d.ok || d.id){
+      ['q-nome','q-idade','q-posicao','q-pe','q-clube','q-agencia','q-instagram','q-whatsapp'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+      await carregarAtletas(); renderAdminAtletas();
+      showToast('✅ '+nome+' publicado!');
+      setTimeout(()=>document.getElementById('q-nome')?.focus(),100);
+    } else showToast('⚠️ '+(d.erro||'Erro'));
+  } catch(e){
+    // Fallback local
+    dbAtletas.unshift({id:Date.now(),...payload,status:'aprovado',emoji:emojis[posicao]||'⭐',disponivel:true});
+    ['q-nome','q-idade','q-posicao','q-pe','q-clube','q-agencia','q-instagram','q-whatsapp'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    renderAtletas(dbAtletas); renderAdminAtletas();
+    showToast('✅ '+nome+' publicado! (local)');
+    setTimeout(()=>document.getElementById('q-nome')?.focus(),100);
   }
 }
 
-// ===== CLUBES PAGE =====
-function showClubesPage(){
-  showPage('clubes');
-  renderClubes();
-}
-
-function renderClubes(){
-  const grid = document.getElementById('clubes-grid');
-  if(!grid) return;
-  grid.innerHTML = dbClubes.filter(c=>c.status!=='pendente').map(c=>`
-    <div style="background:var(--white);border:1.5px solid var(--border);border-radius:16px;overflow:hidden;transition:all 0.25s" onmouseover="this.style.borderColor='var(--blue)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='none'">
-      <div style="background:linear-gradient(135deg,var(--blue),var(--blue2));padding:20px 20px 16px">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:#fff;margin-bottom:4px">${c.nome}</div>
-        <div style="font-size:13px;color:rgba(255,255,255,0.7)">📍 ${c.cidade}</div>
-      </div>
-      <div style="padding:18px 20px">
-        <div style="display:inline-block;background:var(--blue-light);color:var(--blue);font-size:12px;font-weight:700;padding:4px 12px;border-radius:100px;margin-bottom:14px">${c.posicao}</div>
-        <div style="font-size:13px;color:var(--gray);margin-bottom:6px">⏳ Faixa etária: <strong style="color:var(--text)">${c.idade}</strong></div>
-        <div style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:16px">${c.detalhes}</div>
-        <a href="https://wa.me/55${c.contato.replace(/\D/g,'')}" target="_blank" style="display:flex;align-items:center;gap:8px;background:#f0fdf7;border:1.5px solid #86efac;color:#16a34a;padding:11px 18px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;transition:all 0.2s" onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#f0fdf7'">📱 Entrar em Contato</a>
-        ${currentUser&&currentUser.admin?`<button onclick="removerClube(${c.id})" style="display:block;width:100%;margin-top:8px;background:#fee2e2;border:none;color:#b91c1c;padding:9px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer">Remover</button>`:''}
-      </div>
-    </div>`).join('');
-}
-
-function aprovarClube(id){
-  const c = dbClubes.find(x=>x.id===id);
-  if(c){ c.status='aprovado'; renderAdminClubes(); renderClubes(); showToast('✅ Clube aprovado!'); }
-}
-
-function removerClube(id){
-  dbClubes = dbClubes.filter(c=>c.id!==id);
-  renderClubes(); renderAdminClubes();
-  showToast('Clube removido.');
-}
-
-// ===== ADMIN PANEL =====
-function adminPanelTab(tab){
-  ['atletas','clubes','add','csv'].forEach(t=>{
-    document.getElementById('atab-content-'+t).style.display = t===tab?'block':'none';
-    const btn = document.getElementById('atab-'+t);
-    if(btn) btn.classList.toggle('active', t===tab);
-  });
-}
-
-function renderAdminAtletas(){
-  const tbody = document.getElementById('admin-atletas-tbody');
-  if(!tbody) return;
-  const lista = db.atletas;
-  tbody.innerHTML = lista.map(a=>`
-    <tr>
-      <td><strong>${a.nome}</strong><br><small style="color:var(--gray)">${a.idade} anos</small></td>
-      <td>${a.posicao}</td>
-      <td>${a.clube}</td>
-      <td><span class="status-badge ${a.status==='pendente'?'s-pend':a.status==='aprovado'?'s-aprov':'s-recus'}">${a.status}</span></td>
-      <td style="color:var(--blue);font-weight:700">${a.stats_gols||'—'}</td>
-      <td style="color:var(--blue);font-weight:700">${a.stats_assists||'—'}</td>
-      <td style="color:var(--blue);font-weight:700">${a.stats_nota||'—'}</td>
-      <td>
-        <div style="display:flex;gap:6px;flex-wrap:wrap">
-          ${a.status!=='aprovado'?`<button class="btn-act btn-aprov" onclick="adminAcao(${a.id},'aprovado')">✓</button>`:''}
-          ${a.status!=='recusado'?`<button class="btn-act btn-recus" onclick="adminAcao(${a.id},'recusado')">✗</button>`:''}
-          <button class="btn-act btn-see" onclick="openProfile(${a.id})">Ver</button>
-          <button class="btn-act" style="background:#fee2e2;color:#b91c1c" onclick="removerAtleta(${a.id})">Del</button>
-        </div>
-      </td>
-    </tr>`).join('') || '<tr><td colspan="8" style="color:var(--gray);padding:32px;text-align:center">Nenhum atleta.</td></tr>';
-}
-
-function removerAtleta(id){
-  db.atletas = db.atletas.filter(a=>a.id!==id);
-  renderAdminAtletas(); init();
-  showToast('Atleta removido.');
-}
-
-function renderAdminClubes(){
-  const el = document.getElementById('admin-clubes-lista');
-  if(!el) return;
-  el.innerHTML = dbClubes.map(c=>`
-    <div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center">
-      <div>
-        <div style="font-weight:700;font-size:14px">${c.nome} ${c.status==='pendente'?'<span style="background:#fef9c3;color:#a16207;font-size:10px;padding:2px 8px;border-radius:100px;font-weight:700">PENDENTE</span>':''}</div>
-        <div style="font-size:12px;color:var(--gray)">${c.posicao} · ${c.cidade}</div>
-      </div>
-      <div style="display:flex;gap:6px">
-      ${c.status==='pendente'?`<button class="btn-act btn-aprov" onclick="aprovarClube(${c.id})">✓</button>`:''}
-      <button class="btn-act btn-recus" onclick="removerClube(${c.id})">Del</button>
-    </div>
-    </div>`).join('') || '<p style="color:var(--gray);font-size:14px">Nenhum clube ainda.</p>';
-}
-
-function adicionarClube(){
-  const nome = document.getElementById('ac-nome').value.trim();
-  const posicao = document.getElementById('ac-posicao').value;
-  if(!nome||!posicao){ showToast('⚠️ Nome e posição obrigatórios'); return; }
-  dbClubes.push({
-    id: Date.now(),
-    nome,
-    cidade: document.getElementById('ac-cidade').value||'Brasil',
-    posicao,
-    idade: document.getElementById('ac-idade').value||'Sem restrição',
-    detalhes: document.getElementById('ac-detalhes').value||'—',
-    contato: document.getElementById('ac-contato').value||''
-  });
-  ['ac-nome','ac-cidade','ac-posicao','ac-idade','ac-detalhes','ac-contato'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
-  renderAdminClubes();
-  showToast('✅ Clube adicionado!');
-}
-
-function adicionarAtletaAdmin(){
-  const nome = document.getElementById('aa-nome').value.trim();
-  const idade = document.getElementById('aa-idade').value;
-  const posicao = document.getElementById('aa-posicao').value;
-  if(!nome||!idade||!posicao){ showToast('⚠️ Preencha os campos obrigatórios'); return; }
-  const emojis = {Goleiro:'🧤',Fixo:'🛡️',Ala:'⚡',Pivô:'💪',Universal:'🌟'};
-  db.atletas.unshift({
-    id: Date.now(), nome, idade:parseInt(idade), posicao, modalidade:'Futsal',
+// ===== ADD COMPLETO =====
+async function adicionarAtletaAdmin(){
+  const nome=document.getElementById('aa-nome').value.trim(), idade=document.getElementById('aa-idade').value, posicao=document.getElementById('aa-posicao').value;
+  if(!nome||!idade||!posicao){ showToast('⚠️ Nome, idade e posição obrigatórios'); return; }
+  const payload={
+    nome, idade:parseInt(idade), posicao, modalidade:'Futsal',
     clube: document.getElementById('aa-clube').value||'Sem clube',
     pe: document.getElementById('aa-pe').value,
     altura: parseInt(document.getElementById('aa-altura').value)||0,
     peso: parseInt(document.getElementById('aa-peso').value)||0,
     disponivel: document.getElementById('aa-disponivel').value==='true',
-    agencia: document.getElementById('aa-agencia').value,
-    contrato: document.getElementById('aa-contrato').value,
-    instagram: document.getElementById('aa-instagram').value,
-    whatsapp: document.getElementById('aa-whatsapp').value,
-    forte: document.getElementById('aa-forte').value||'—',
-    fraco: document.getElementById('aa-fraco').value||'—',
-    video: document.getElementById('aa-video').value,
-    stats_gols: document.getElementById('aa-gols').value,
-    stats_assists: document.getElementById('aa-assists').value,
-    stats_passes: document.getElementById('aa-passes').value,
-    stats_dribles: document.getElementById('aa-dribles').value,
-    stats_nota: document.getElementById('aa-nota').value,
-    stats_jogos: document.getElementById('aa-jogos').value,
-    status:'aprovado',
-    foto: fotoAtualBase64||null,
-    emoji: emojis[posicao]||'⭐',
-    caracteristica: posicao,
-    clube_anterior: ''
-  });
-  document.querySelectorAll('#atab-content-add .form-input, #atab-content-add .form-select').forEach(el=>el.value='');
-  fotoAtualBase64=null;
-  document.getElementById('foto-preview').style.display='none';
-  document.getElementById('foto-placeholder').style.display='block';
-  document.getElementById('aa-foto-input').value='';
-  document.getElementById('foto-upload-area').style.borderColor='var(--border)';
-  renderAdminAtletas(); init();
-  showToast('✅ Atleta publicado com sucesso!');
-  adminPanelTab('atletas');
+    agencia: document.getElementById('aa-agencia').value||'',
+    contrato: document.getElementById('aa-contrato').value||'',
+    instagram: document.getElementById('aa-instagram').value||'',
+    whatsapp: document.getElementById('aa-whatsapp').value||'',
+    forte: document.getElementById('aa-forte').value||'-',
+    fraco: document.getElementById('aa-fraco').value||'-',
+    video: document.getElementById('aa-video').value||'',
+    stats_gols: document.getElementById('aa-gols').value||'-',
+    stats_assists: document.getElementById('aa-assists').value||'-',
+    stats_passes: document.getElementById('aa-passes').value||'-',
+    stats_dribles: document.getElementById('aa-dribles').value||'-',
+    stats_nota: document.getElementById('aa-nota').value||'-',
+    stats_jogos: document.getElementById('aa-jogos').value||'-',
+    foto: fotoAtualBase64||null
+  };
+  try {
+    const r=await fetch('/api/admin/atletas',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const d=await r.json();
+    if(d.ok||d.id){
+      document.querySelectorAll('#atab-content-add .form-input,#atab-content-add .form-select').forEach(el=>el.value='');
+      fotoAtualBase64=null;
+      const fp=document.getElementById('foto-preview'), fph=document.getElementById('foto-placeholder');
+      if(fp) fp.style.display='none'; if(fph) fph.style.display='block';
+      await carregarAtletas(); renderAdminAtletas();
+      showToast('✅ '+nome+' publicado com sucesso!');
+      adminPanelTab('atletas');
+    } else showToast('⚠️ '+(d.erro||'Erro'));
+  } catch(e){ showToast('⚠️ Erro ao salvar. Verifique o servidor.'); }
 }
 
+// ===== ADMIN TABLE =====
+function renderAdminAtletas(){
+  const tbody=document.getElementById('admin-atletas-tbody'); if(!tbody) return;
+  tbody.innerHTML=dbAtletas.length?dbAtletas.map(a=>`
+    <tr>
+      <td><strong>${a.nome}</strong><br><small style="color:var(--gray)">${a.idade} anos</small></td>
+      <td>${a.posicao}</td><td>${a.clube||'—'}</td>
+      <td><span class="status-badge ${a.status==='pendente'?'s-pend':'s-aprov'}">${a.status||'aprovado'}</span></td>
+      <td style="color:var(--blue);font-weight:700">${a.stats_gols||'—'}</td>
+      <td style="color:var(--blue);font-weight:700">${a.stats_nota||'—'}</td>
+      <td><div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn-act btn-see" onclick="openProfile('${a.id}')">Ver</button>
+        <button class="btn-act btn-recus" onclick="removerAtleta('${a.id}')">Del</button>
+      </div></td>
+    </tr>`).join(''):'<tr><td colspan="7" style="color:var(--gray);padding:32px;text-align:center">Nenhum atleta.</td></tr>';
+}
 
-// ===== ENVIAR VAGA CLUBE =====
+async function removerAtleta(id){
+  try { await fetch('/api/admin/atletas/'+id,{method:'DELETE'}); } catch(e){}
+  dbAtletas=dbAtletas.filter(a=>String(a.id)!==String(id));
+  renderAtletas(dbAtletas); renderAdminAtletas(); showToast('Atleta removido.');
+}
+
+// ===== CLUBES =====
+function renderClubes(){
+  const grid=document.getElementById('clubes-grid'); if(!grid) return;
+  grid.innerHTML=dbClubes.filter(c=>c.status==='aprovado').map(c=>`
+    <div style="background:var(--white);border:1.5px solid var(--border);border-radius:16px;overflow:hidden;transition:all 0.25s" onmouseover="this.style.borderColor='var(--blue)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='none'">
+      <div style="background:linear-gradient(135deg,var(--blue),var(--blue2));padding:20px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:#fff;margin-bottom:4px">${c.nome}</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.7)">📍 ${c.cidade||'Brasil'}</div>
+      </div>
+      <div style="padding:18px 20px">
+        <div style="display:inline-block;background:var(--blue-light);color:var(--blue);font-size:12px;font-weight:700;padding:4px 12px;border-radius:100px;margin-bottom:14px">${c.posicao}</div>
+        <div style="font-size:13px;color:var(--gray);margin-bottom:6px">⏳ ${c.idade||'Sem restrição'}</div>
+        <div style="font-size:13px;color:var(--text);line-height:1.6;margin-bottom:16px">${c.detalhes||'—'}</div>
+        <a href="https://wa.me/55${(c.contato||'').replace(/\D/g,'')}" target="_blank" style="display:flex;align-items:center;gap:8px;background:#f0fdf7;border:1.5px solid #86efac;color:#16a34a;padding:11px 18px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none">📱 Entrar em Contato</a>
+        ${currentUser&&currentUser.admin?'<button onclick="removerClube(''+c.id+'')" style="display:block;width:100%;margin-top:8px;background:#fee2e2;border:none;color:#b91c1c;padding:9px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer">Remover</button>':''}
+      </div>
+    </div>`).join('') || '<p style="color:var(--gray);padding:20px">Nenhum clube ainda.</p>';
+}
+
+function renderAdminClubes(){
+  const el=document.getElementById('admin-clubes-lista'); if(!el) return;
+  el.innerHTML=dbClubes.map(c=>`
+    <div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center">
+      <div><div style="font-weight:700;font-size:14px">${c.nome} ${c.status==='pendente'?'<span style="background:#fef9c3;color:#a16207;font-size:10px;padding:2px 8px;border-radius:100px">PENDENTE</span>':''}</div><div style="font-size:12px;color:var(--gray)">${c.posicao} · ${c.cidade||'—'}</div></div>
+      <div style="display:flex;gap:6px">
+        ${c.status==='pendente'?'<button class="btn-act btn-aprov" onclick="aprovarClube(''+c.id+'')">✓</button>':''}
+        <button class="btn-act btn-recus" onclick="removerClube('${c.id}')">Del</button>
+      </div>
+    </div>`).join('') || '<p style="color:var(--gray);font-size:14px">Nenhum clube.</p>';
+}
+
+async function adicionarClube(){
+  const nome=document.getElementById('ac-nome').value.trim(), posicao=document.getElementById('ac-posicao').value;
+  if(!nome||!posicao){ showToast('⚠️ Nome e posição obrigatórios'); return; }
+  const payload={nome,cidade:document.getElementById('ac-cidade').value||'Brasil',posicao,idade:document.getElementById('ac-idade').value||'Sem restrição',detalhes:document.getElementById('ac-detalhes').value||'',contato:document.getElementById('ac-contato').value||''};
+  try {
+    const r=await fetch('/api/admin/clubes',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...payload,status:'aprovado'})});
+    await r.json();
+  } catch(e){}
+  dbClubes.push({id:Date.now(),...payload,status:'aprovado'});
+  ['ac-nome','ac-cidade','ac-posicao','ac-idade','ac-detalhes','ac-contato'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  renderAdminClubes(); renderClubes(); showToast('✅ Clube adicionado!');
+}
+
+async function removerClube(id){
+  try { await fetch('/api/admin/clubes/'+id,{method:'DELETE'}); } catch(e){}
+  dbClubes=dbClubes.filter(c=>String(c.id)!==String(id));
+  renderClubes(); renderAdminClubes(); showToast('Clube removido.');
+}
+
+async function aprovarClube(id){
+  try { await fetch('/api/admin/clubes/'+id+'/status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'aprovado'})}); } catch(e){}
+  const c=dbClubes.find(x=>String(x.id)===String(id)); if(c) c.status='aprovado';
+  renderAdminClubes(); renderClubes(); showToast('✅ Clube aprovado!');
+}
+
+async function enviarVagaClube(){
+  const nome=document.getElementById('sc-nome').value.trim(), posicao=document.getElementById('sc-posicao').value, contato=document.getElementById('sc-contato').value.trim();
+  if(!nome||!posicao||!contato){ showToast('⚠️ Nome, posição e WhatsApp obrigatórios'); return; }
+  const payload={nome,cidade:document.getElementById('sc-cidade').value||'Brasil',posicao,idade:document.getElementById('sc-idade').value||'A definir',detalhes:document.getElementById('sc-detalhes').value||'',contato};
+  try { await fetch('/api/clubes/solicitar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); } catch(e){}
+  ['sc-nome','sc-cidade','sc-posicao','sc-idade','sc-detalhes','sc-contato'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  showToast('✅ Vaga enviada! Publicada em até 24h.');
+  setTimeout(()=>showPage('clubes'),1500);
+}
+
+// ===== ADMIN TAB =====
+function adminPanelTab(tab){
+  ['atletas','clubes','add','csv'].forEach(t=>{
+    const el=document.getElementById('atab-content-'+t); if(el) el.style.display=t===tab?'block':'none';
+    const btn=document.getElementById('atab-'+t); if(btn) btn.classList.toggle('active',t===tab);
+  });
+}
+
 // ===== FOTO UPLOAD =====
-let fotoAtualBase64 = null;
-
 function handleFotoUpload(input){
-  const file = input.files[0];
-  if(!file) return;
-  if(file.size > 5*1024*1024){ showToast('⚠️ Foto muito grande! Máx 5MB'); return; }
-  const reader = new FileReader();
-  reader.onload = e => {
-    fotoAtualBase64 = e.target.result;
-    document.getElementById('foto-img').src = fotoAtualBase64;
-    document.getElementById('foto-preview').style.display = 'block';
-    document.getElementById('foto-placeholder').style.display = 'none';
-    document.getElementById('foto-upload-area').style.borderColor = 'var(--blue)';
+  const file=input.files[0]; if(!file) return;
+  if(file.size>5*1024*1024){ showToast('⚠️ Foto muito grande! Máx 5MB'); return; }
+  const reader=new FileReader();
+  reader.onload=e=>{
+    fotoAtualBase64=e.target.result;
+    const img=document.getElementById('foto-img'); if(img) img.src=fotoAtualBase64;
+    const fp=document.getElementById('foto-preview'), fph=document.getElementById('foto-placeholder'), fa=document.getElementById('foto-upload-area');
+    if(fp) fp.style.display='block'; if(fph) fph.style.display='none'; if(fa) fa.style.borderColor='var(--blue)';
   };
   reader.readAsDataURL(file);
 }
-
 function handleFotoDrop(e){
   e.preventDefault();
-  const file = e.dataTransfer.files[0];
-  if(file && file.type.startsWith('image/')){
-    const fakeInput = {files:[file]};
-    handleFotoUpload(fakeInput);
-  }
+  const file=e.dataTransfer.files[0];
+  if(file&&file.type.startsWith('image/')) handleFotoUpload({files:[file]});
 }
 
-// ===== CSV IMPORT =====
-let csvAtletasParsed = [];
-
+// ===== CSV =====
+let csvAtletasParsedLocal = [];
 function downloadModelo(){
-  const header = 'nome,idade,posicao,pe,altura,peso,clube,agencia,contrato,instagram,whatsapp,forte,fraco,video,gols,assists,passes,dribles,nota,jogos,disponivel';
-  const exemplo = 'Guilherme Alves,23,Ala,Direito,174,70,Magnus Futsal,Elite Sports,1 ano,@guilherme.ala,11999999999,Velocidade e drible,Cabeceio,https://youtube.com,8,14,89%,4.2,7.8,22,true';
-  const csv = header + '\n' + exemplo;
-  const blob = new Blob([csv], {type:'text/csv'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'modelo_atletas_analise_io.csv';
-  a.click();
+  const header='nome,idade,posicao,pe,altura,peso,clube,agencia,contrato,instagram,whatsapp,forte,fraco,video,gols,assists,passes,dribles,nota,jogos,disponivel';
+  const exemplo='Guilherme Alves,23,Ala,Direito,174,70,Magnus Futsal,Elite Sports,1 ano,@guilherme,11999999999,Velocidade,Cabeceio,https://youtube.com,8,14,89%,4.2,7.8,22,true';
+  const blob=new Blob([header+'\n'+exemplo],{type:'text/csv'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='modelo_analise_io.csv'; a.click();
 }
-
-function handleCsvDrop(e){
-  e.preventDefault();
-  const file = e.dataTransfer.files[0];
-  if(file) processCsvFile(file);
-}
-
-function handleCsvUpload(input){
-  const file = input.files[0];
-  if(file) processCsvFile(file);
-}
-
+function handleCsvDrop(e){ e.preventDefault(); const f=e.dataTransfer.files[0]; if(f) processCsvFile(f); }
+function handleCsvUpload(input){ const f=input.files[0]; if(f) processCsvFile(f); }
 function processCsvFile(file){
-  const reader = new FileReader();
-  reader.onload = e => {
-    const text = e.target.result;
-    const lines = text.trim().split('\n');
-    const headers = lines[0].split(',').map(h=>h.trim().toLowerCase());
-    csvAtletasParsed = [];
-
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const lines=e.target.result.trim().split('\n');
+    const headers=lines[0].split(',').map(h=>h.trim().toLowerCase());
+    csvAtletasParsedLocal=[];
     for(let i=1;i<lines.length;i++){
       if(!lines[i].trim()) continue;
-      const vals = lines[i].split(',').map(v=>v.trim());
-      const obj = {};
-      headers.forEach((h,idx) => obj[h] = vals[idx]||'');
-      if(obj.nome) csvAtletasParsed.push(obj);
+      const vals=lines[i].split(',').map(v=>v.trim());
+      const obj={}; headers.forEach((h,idx)=>obj[h]=vals[idx]||'');
+      if(obj.nome) csvAtletasParsedLocal.push(obj);
     }
-
-    const emojis = {Goleiro:'🧤',Fixo:'🛡️',Ala:'⚡',Pivô:'💪',Universal:'🌟'};
-    document.getElementById('csv-preview-title').textContent = csvAtletasParsed.length + ' atleta(s) encontrado(s)';
-    document.getElementById('csv-preview-list').innerHTML = csvAtletasParsed.map((a,i)=>`
+    document.getElementById('csv-preview-title').textContent=csvAtletasParsedLocal.length+' atleta(s)';
+    document.getElementById('csv-preview-list').innerHTML=csvAtletasParsedLocal.map((a,i)=>`
       <div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;display:flex;align-items:center;gap:12px">
         <span style="font-size:24px">${emojis[a.posicao]||'⭐'}</span>
-        <div>
-          <div style="font-weight:700;font-size:14px">${a.nome}</div>
-          <div style="font-size:12px;color:var(--gray)">${a.posicao} · ${a.clube} · ${a.idade} anos</div>
-        </div>
+        <div><div style="font-weight:700;font-size:14px">${a.nome}</div><div style="font-size:12px;color:var(--gray)">${a.posicao} · ${a.clube} · ${a.idade} anos</div></div>
         <span style="margin-left:auto;background:var(--blue-light);color:var(--blue);font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px">#${i+1}</span>
       </div>`).join('');
-    document.getElementById('csv-preview').style.display = 'block';
-    document.getElementById('csv-upload-area').style.borderColor = 'var(--blue)';
+    document.getElementById('csv-preview').style.display='block';
+    document.getElementById('csv-upload-area').style.borderColor='var(--blue)';
   };
   reader.readAsText(file);
 }
-
-function importarCsv(){
-  if(!csvAtletasParsed.length){ showToast('⚠️ Nenhum atleta no CSV'); return; }
-  const emojis = {Goleiro:'🧤',Fixo:'🛡️',Ala:'⚡',Pivô:'💪',Universal:'🌟'};
-  let count = 0;
-  csvAtletasParsed.forEach(a => {
-    if(!a.nome||!a.posicao) return;
-    db.atletas.unshift({
-      id: Date.now() + count,
-      nome: a.nome,
-      idade: parseInt(a.idade)||0,
-      posicao: a.posicao,
-      modalidade: 'Futsal',
-      clube: a.clube||'Sem clube',
-      pe: a.pe||'Direito',
-      altura: parseInt(a.altura)||0,
-      peso: parseInt(a.peso)||0,
-      disponivel: a.disponivel!=='false',
-      agencia: a.agencia||'',
-      contrato: a.contrato||'',
-      instagram: a.instagram||'',
-      whatsapp: a.whatsapp||'',
-      forte: a.forte||'—',
-      fraco: a.fraco||'—',
-      video: a.video||'',
-      stats_gols: a.gols||'',
-      stats_assists: a.assists||'',
-      stats_passes: a.passes||'',
-      stats_dribles: a.dribles||'',
-      stats_nota: a.nota||'',
-      stats_jogos: a.jogos||'',
-      status: 'aprovado',
-      emoji: emojis[a.posicao]||'⭐',
-      caracteristica: a.posicao,
-      clube_anterior: '',
-      foto: null
-    });
+async function importarCsv(){
+  if(!csvAtletasParsedLocal.length){ showToast('⚠️ Nenhum atleta no CSV'); return; }
+  showToast('Importando...');
+  let count=0;
+  for(const a of csvAtletasParsedLocal){
+    if(!a.nome||!a.posicao) continue;
+    const payload={nome:a.nome,idade:parseInt(a.idade)||0,posicao:a.posicao,modalidade:'Futsal',clube:a.clube||'Sem clube',pe:a.pe||'Direito',altura:parseInt(a.altura)||0,peso:parseInt(a.peso)||0,disponivel:a.disponivel!=='false',agencia:a.agencia||'',contrato:a.contrato||'',instagram:a.instagram||'',whatsapp:a.whatsapp||'',forte:a.forte||'-',fraco:a.fraco||'-',video:a.video||'',stats_gols:a.gols||'-',stats_assists:a.assists||'-',stats_passes:a.passes||'-',stats_dribles:a.dribles||'-',stats_nota:a.nota||'-',stats_jogos:a.jogos||'-',foto:null};
+    try { await fetch('/api/admin/atletas',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); } catch(e){ dbAtletas.unshift({id:Date.now()+count,...payload,status:'aprovado',emoji:emojis[a.posicao]||'⭐'}); }
     count++;
-  });
-  csvAtletasParsed = [];
-  document.getElementById('csv-preview').style.display = 'none';
-  document.getElementById('csv-upload-area').style.borderColor = 'var(--border)';
-  document.getElementById('csv-input').value = '';
-  renderAdminAtletas(); init();
-  showToast('✅ '+count+' atleta(s) importado(s) com sucesso!');
+  }
+  csvAtletasParsedLocal=[];
+  document.getElementById('csv-preview').style.display='none';
+  document.getElementById('csv-upload-area').style.borderColor='var(--border)';
+  document.getElementById('csv-input').value='';
+  await carregarAtletas(); renderAdminAtletas();
+  showToast('✅ '+count+' atleta(s) importado(s)!');
   adminPanelTab('atletas');
 }
 
-
-function enviarVagaClube(){
-  const nome = document.getElementById('sc-nome').value.trim();
-  const posicao = document.getElementById('sc-posicao').value;
-  const contato = document.getElementById('sc-contato').value.trim();
-  if(!nome||!posicao||!contato){ showToast('⚠️ Preencha nome, posição e WhatsApp'); return; }
-
-  // Adiciona como pendente — admin aprova
-  dbClubes.push({
-    id: Date.now(),
-    nome,
-    cidade: document.getElementById('sc-cidade').value||'Brasil',
-    posicao,
-    idade: document.getElementById('sc-idade').value||'A definir',
-    detalhes: document.getElementById('sc-detalhes').value||'—',
-    contato,
-    status: 'pendente'
-  });
-
-  ['sc-nome','sc-cidade','sc-posicao','sc-idade','sc-detalhes','sc-contato'].forEach(id=>{
-    const el=document.getElementById(id); if(el) el.value='';
-  });
-
-  showToast('✅ Vaga enviada! Será publicada em até 24h.');
-  setTimeout(()=>showPage('clubes'), 1500);
-  renderClubes();
-}
-
-
-init();
+// ===== INIT =====
+(async()=>{
+  // Check session
+  try {
+    const r=await fetch('/api/me');
+    const d=await r.json();
+    if(d.logado){ currentUser=d; userAssinante=d.plano==='assinatura'||d.admin; updateNavLogado(); if(d.admin){} }
+  } catch(e){}
+  await carregarAtletas();
+  await carregarClubes();
+  animCount('sClubes', dbClubes.filter(c=>c.status==='aprovado').length);
+})();
 </script>
 </body>
 </html>
