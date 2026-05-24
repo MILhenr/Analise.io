@@ -6,35 +6,190 @@ const { Pool } = require('pg');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const helmet = require('helmet');
 
 const app = express();
 
-app.use(cors());
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
+// ===== SECURITY =====
+app.use(helmet());
+
+app.use(cors({
+  origin: '*'
+}));
+
+app.use(express.json({
+  limit: '10mb'
+}));
+
+app.use(express.urlencoded({
+  extended: true,
+  limit: '10mb'
+}));
+
+// ===== STATIC =====
 app.use(express.static('.'));
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Upload local
-if (!fs.existsSync('uploads')) fs.mkdirSync('uploads');
+// ===== UPLOADS =====
+if (!fs.existsSync(path.join(__dirname, 'uploads'))) {
+  fs.mkdirSync(path.join(__dirname, 'uploads'));
+}
+
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'uploads/'),
-  filename:    (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
-});
-const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } });
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, 'uploads'));
+  },
 
-// Banco
+  filename: (req, file, cb) => {
+    const uniqueName =
+      Date.now() +
+      '-' +
+      Math.round(Math.random() * 1e9) +
+      path.extname(file.originalname);
+
+    cb(null, uniqueName);
+  }
+});
+
+const upload = multer({
+  storage,
+
+  limits: {
+    fileSize: 5 * 1024 * 1024
+  },
+
+  fileFilter: (req, file, cb) => {
+    const allowed = ['image/png', 'image/jpeg', 'image/jpg'];
+
+    if (!allowed.includes(file.mimetype)) {
+      return cb(new Error('Formato inválido'));
+    }
+
+    cb(null, true);
+  }
+});
+
+// ===== DATABASE =====
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+
+  ssl: process.env.NODE_ENV === 'production'
+    ? { rejectUnauthorized: false }
+    : false
 });
 
-const JWT_SECRET = process.env.JWT_SECRET || 'analise_io_secret_2024';
+// ===== JWT =====
+const JWT_SECRET =
+  process.env.JWT_SECRET ||
+  'analise_io_secret_2024';
 
-// Cria tabelas
+// ===== INIT DB =====
 async function initDB() {
   const client = await pool.connect();
+
   try {
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        nome TEXT,
+        email TEXT UNIQUE,
+        senha_hash TEXT,
+        admin BOOLEAN DEFAULT FALSE,
+        plano TEXT DEFAULT 'gratuito',
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS atletas (
+        id SERIAL PRIMARY KEY,
+        nome TEXT,
+        idade INT,
+        posicao TEXT,
+        modalidade TEXT,
+        clube TEXT,
+        pe TEXT,
+        altura INT,
+        peso INT,
+        forte TEXT,
+        fraco TEXT,
+        disponivel BOOLEAN DEFAULT true,
+        instagram TEXT,
+        whatsapp TEXT,
+        agencia TEXT,
+        video TEXT,
+        foto TEXT,
+        contrato TEXT,
+        status TEXT DEFAULT 'pendente',
+        stats_gols TEXT,
+        stats_assists TEXT,
+        stats_passes TEXT,
+        stats_dribles TEXT,
+        stats_nota TEXT,
+        stats_jogos TEXT,
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS clubes (
+        id SERIAL PRIMARY KEY,
+        nome TEXT,
+        cidade TEXT,
+        posicao TEXT,
+        idade TEXT,
+        detalhes TEXT,
+        contato TEXT,
+        status TEXT DEFAULT 'pendente',
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+
+    console.log('✅ Banco conectado');
+
+  } catch (err) {
+
+    console.error('❌ Erro DB:', err);
+
+  } finally {
+
+    client.release();
+
+  }
+}
+
+initDB();
+
+// ===== TEST ROUTE =====
+app.get('/api/test', async (req, res) => {
+
+  try {
+
+    const result = await pool.query('SELECT NOW()');
+
+    res.json({
+      ok: true,
+      time: result.rows[0]
+    });
+
+  } catch (err) {
+
+    res.status(500).json({
+      ok: false,
+      erro: err.message
+    });
+
+  }
+
+});
+
+// ===== START =====
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log('🚀 Server rodando na porta ' + PORT);
+});  try {
     await client.query(`
       CREATE TABLE IF NOT EXISTS usuarios (
         id        SERIAL PRIMARY KEY,
