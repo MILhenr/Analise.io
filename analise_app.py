@@ -1,8 +1,6 @@
 import os
 import uuid
 import hashlib
-import json
-import urllib.request
 from datetime import datetime
 from flask import Flask, request, jsonify, session, send_from_directory
 
@@ -13,14 +11,17 @@ import cloudinary
 import cloudinary.uploader
 
 app = Flask(__name__)
-app.secret_key = "imperio_analise_2024_secret"
+
+# SECRET_KEY fixo via variável de ambiente — obrigatório para sessão funcionar com gunicorn
+app.secret_key = os.environ.get("SECRET_KEY", "analiseio_super_secret_2024_fixo")
+
+# Sessão dura 7 dias
+from datetime import timedelta
+app.permanent_session_lifetime = timedelta(days=7)
 
 # ================= CONFIG =================
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
-
-MP_ACCESS_TOKEN = os.environ.get("MP_ACCESS_TOKEN")
-MP_PUBLIC_KEY = os.environ.get("MP_PUBLIC_KEY")
 
 ADMIN_USER = "admin"
 ADMIN_SENHA = hashlib.sha256("admin123".encode()).hexdigest()
@@ -49,8 +50,6 @@ def init_db():
     with get_db() as conn:
         with conn.cursor() as c:
 
-            # ================= USUÁRIOS =================
-
             c.execute('''
                 CREATE TABLE IF NOT EXISTS usuarios (
                     email TEXT PRIMARY KEY,
@@ -60,8 +59,6 @@ def init_db():
                     criado_em TEXT
                 )
             ''')
-
-            # ================= ANÁLISES =================
 
             c.execute('''
                 CREATE TABLE IF NOT EXISTS analises (
@@ -80,8 +77,6 @@ def init_db():
                     criado_em TEXT
                 )
             ''')
-
-            # ================= ATLETAS =================
 
             c.execute('''
                 CREATE TABLE IF NOT EXISTS atletas (
@@ -113,8 +108,6 @@ def init_db():
                     criado_em TEXT
                 )
             ''')
-
-            # ================= CLUBES =================
 
             c.execute('''
                 CREATE TABLE IF NOT EXISTS clubes (
@@ -148,11 +141,7 @@ def upload_image_cloudinary(base64_image):
         )
 
         url = result.get("secure_url")
-
-        url = url.replace(
-            "/upload/",
-            "/upload/f_auto,q_auto/"
-        )
+        url = url.replace("/upload/", "/upload/f_auto,q_auto/")
 
         return url
 
@@ -195,10 +184,8 @@ def cadastro():
     try:
         with get_db() as conn:
             with conn.cursor() as c:
-                c.execute(
-                    "SELECT email FROM usuarios WHERE email=%s",
-                    (email,)
-                )
+
+                c.execute("SELECT email FROM usuarios WHERE email=%s", (email,))
 
                 if c.fetchone():
                     return jsonify({"erro": "Email já cadastrado"}), 400
@@ -206,18 +193,8 @@ def cadastro():
                 plano = "assinatura" if email == OWNER_EMAIL else "gratuito"
 
                 c.execute(
-                    """
-                    INSERT INTO usuarios
-                    (email, nome, senha, plano, criado_em)
-                    VALUES (%s, %s, %s, %s, %s)
-                    """,
-                    (
-                        email,
-                        nome,
-                        senha,
-                        plano,
-                        datetime.now().strftime("%d/%m/%Y %H:%M")
-                    )
+                    "INSERT INTO usuarios (email, nome, senha, plano, criado_em) VALUES (%s,%s,%s,%s,%s)",
+                    (email, nome, senha, plano, datetime.now().strftime("%d/%m/%Y %H:%M"))
                 )
 
             conn.commit()
@@ -228,6 +205,7 @@ def cadastro():
         print("ERRO CADASTRO:", e)
         return jsonify({"erro": str(e)}), 500
 
+
 @app.route("/api/login", methods=["POST"])
 def login():
     data = request.json
@@ -235,30 +213,19 @@ def login():
     user = data.get("user", "").strip()
     senha = hash_senha(data.get("senha", ""))
 
-    # ================= ADMIN =================
-
     if user == ADMIN_USER and senha == ADMIN_SENHA:
+        session.permanent = True
         session["user"] = "admin"
         session["admin"] = True
-
-        return jsonify({
-            "ok": True,
-            "admin": True,
-            "nome": "Admin"
-        })
-
-    # ================= EMAIL =================
+        return jsonify({"ok": True, "admin": True, "nome": "Admin"})
 
     email = user.lower()
 
     try:
         with get_db() as conn:
             with conn.cursor() as c:
-                c.execute(
-                    "SELECT * FROM usuarios WHERE email=%s",
-                    (email,)
-                )
 
+                c.execute("SELECT * FROM usuarios WHERE email=%s", (email,))
                 u = c.fetchone()
 
                 if not u:
@@ -270,31 +237,26 @@ def login():
                 plano = u["plano"]
 
                 if email == OWNER_EMAIL and plano != "assinatura":
-                    c.execute(
-                        "UPDATE usuarios SET plano='assinatura' WHERE email=%s",
-                        (email,)
-                    )
+                    c.execute("UPDATE usuarios SET plano='assinatura' WHERE email=%s", (email,))
                     conn.commit()
                     plano = "assinatura"
 
+                session.permanent = True
                 session["user"] = email
                 session["admin"] = False
 
-                return jsonify({
-                    "ok": True,
-                    "admin": False,
-                    "nome": u["nome"],
-                    "plano": plano
-                })
+                return jsonify({"ok": True, "admin": False, "nome": u["nome"], "plano": plano})
 
     except Exception as e:
         print("ERRO LOGIN:", e)
         return jsonify({"erro": str(e)}), 500
 
+
 @app.route("/api/logout")
 def logout():
     session.clear()
     return jsonify({"ok": True})
+
 
 @app.route("/api/me")
 def me():
@@ -302,22 +264,14 @@ def me():
         return jsonify({"logado": False})
 
     if session.get("admin"):
-        return jsonify({
-            "logado": True,
-            "admin": True,
-            "nome": "Admin"
-        })
+        return jsonify({"logado": True, "admin": True, "nome": "Admin"})
 
     email = session["user"]
 
     try:
         with get_db() as conn:
             with conn.cursor() as c:
-                c.execute(
-                    "SELECT * FROM usuarios WHERE email=%s",
-                    (email,)
-                )
-
+                c.execute("SELECT * FROM usuarios WHERE email=%s", (email,))
                 u = c.fetchone()
 
                 if not u:
@@ -336,27 +290,22 @@ def me():
         print("ERRO ME:", e)
         return jsonify({"logado": False})
 
-# ================= ATLETAS =================
+# ================= ATLETAS PÚBLICO =================
 
 @app.route("/api/atletas", methods=["GET"])
 def listar_atletas():
     try:
         with get_db() as conn:
             with conn.cursor() as c:
-                c.execute("""
-                    SELECT *
-                    FROM atletas
-                    WHERE status='aprovado'
-                    ORDER BY criado_em DESC
-                """)
-
+                c.execute("SELECT * FROM atletas WHERE status='aprovado' ORDER BY criado_em DESC")
                 rows = [dict(r) for r in c.fetchall()]
-
                 return jsonify(rows)
 
     except Exception as e:
         print("ERRO LISTAR ATLETAS:", e)
         return jsonify([])
+
+# ================= ATLETAS ADMIN =================
 
 @app.route("/api/admin/atletas", methods=["GET"])
 def admin_listar_atletas():
@@ -366,25 +315,19 @@ def admin_listar_atletas():
     try:
         with get_db() as conn:
             with conn.cursor() as c:
-                c.execute("""
-                    SELECT *
-                    FROM atletas
-                    ORDER BY criado_em DESC
-                """)
-
+                c.execute("SELECT * FROM atletas ORDER BY criado_em DESC")
                 rows = [dict(r) for r in c.fetchall()]
-
                 return jsonify(rows)
 
     except Exception as e:
         print("ERRO ADMIN LISTAR ATLETAS:", e)
         return jsonify([])
 
-# ================= CRIAR ATLETA =================
 
 @app.route("/api/admin/atletas", methods=["POST"])
 def admin_criar_atleta():
     if not session.get("admin"):
+        print("ERRO CRIAR ATLETA: sessão não tem admin", dict(session))
         return jsonify({"erro": "Não autorizado"}), 401
 
     data = request.json
@@ -399,38 +342,14 @@ def admin_criar_atleta():
             with conn.cursor() as c:
                 c.execute('''
                     INSERT INTO atletas (
-                        id,
-                        nome,
-                        idade,
-                        posicao,
-                        modalidade,
-                        clube,
-                        agencia,
-                        contrato,
-                        pe,
-                        altura,
-                        peso,
-                        disponivel,
-                        instagram,
-                        whatsapp,
-                        forte,
-                        fraco,
-                        video,
-                        foto,
-                        stats_gols,
-                        stats_assists,
-                        stats_passes,
-                        stats_dribles,
-                        stats_nota,
-                        stats_jogos,
-                        status,
-                        criado_em
-                    )
-                    VALUES (
+                        id, nome, idade, posicao, modalidade, clube, agencia, contrato,
+                        pe, altura, peso, disponivel, instagram, whatsapp, forte, fraco,
+                        video, foto, stats_gols, stats_assists, stats_passes, stats_dribles,
+                        stats_nota, stats_jogos, status, criado_em
+                    ) VALUES (
                         %s,%s,%s,%s,%s,%s,%s,%s,
-                        %s,%s,%s,%s,%s,%s,
-                        %s,%s,%s,%s,
-                        %s,%s,%s,%s,%s,%s,
+                        %s,%s,%s,%s,%s,%s,%s,%s,
+                        %s,%s,%s,%s,%s,%s,%s,%s,
                         %s,%s
                     )
                 ''', (
@@ -464,17 +383,13 @@ def admin_criar_atleta():
 
             conn.commit()
 
-        return jsonify({
-            "ok": True,
-            "id": aid,
-            "foto": foto
-        })
+        print(f"ATLETA CRIADO COM SUCESSO: id={aid} nome={data.get('nome')}")
+        return jsonify({"ok": True, "id": aid, "foto": foto})
 
     except Exception as e:
         print("ERRO CRIAR ATLETA:", e)
         return jsonify({"erro": str(e)}), 500
 
-# ================= EDITAR ATLETA =================
 
 @app.route("/api/admin/atletas/<aid>", methods=["PUT"])
 def admin_editar_atleta(aid):
@@ -488,29 +403,11 @@ def admin_editar_atleta(aid):
             with conn.cursor() as c:
                 c.execute("""
                     UPDATE atletas SET
-                        nome=%s,
-                        idade=%s,
-                        posicao=%s,
-                        modalidade=%s,
-                        clube=%s,
-                        agencia=%s,
-                        contrato=%s,
-                        pe=%s,
-                        altura=%s,
-                        peso=%s,
-                        disponivel=%s,
-                        instagram=%s,
-                        whatsapp=%s,
-                        forte=%s,
-                        fraco=%s,
-                        video=%s,
-                        stats_gols=%s,
-                        stats_assists=%s,
-                        stats_passes=%s,
-                        stats_dribles=%s,
-                        stats_nota=%s,
-                        stats_jogos=%s,
-                        status=%s
+                        nome=%s, idade=%s, posicao=%s, modalidade=%s, clube=%s,
+                        agencia=%s, contrato=%s, pe=%s, altura=%s, peso=%s,
+                        disponivel=%s, instagram=%s, whatsapp=%s, forte=%s, fraco=%s,
+                        video=%s, stats_gols=%s, stats_assists=%s, stats_passes=%s,
+                        stats_dribles=%s, stats_nota=%s, stats_jogos=%s, status=%s
                     WHERE id=%s
                 """, (
                     data.get("nome", ""),
@@ -547,7 +444,6 @@ def admin_editar_atleta(aid):
         print("ERRO EDITAR ATLETA:", e)
         return jsonify({"erro": str(e)}), 500
 
-# ================= DELETAR ATLETA =================
 
 @app.route("/api/admin/atletas/<aid>", methods=["DELETE"])
 def admin_deletar_atleta(aid):
@@ -557,11 +453,7 @@ def admin_deletar_atleta(aid):
     try:
         with get_db() as conn:
             with conn.cursor() as c:
-                c.execute(
-                    "DELETE FROM atletas WHERE id=%s",
-                    (aid,)
-                )
-
+                c.execute("DELETE FROM atletas WHERE id=%s", (aid,))
             conn.commit()
 
         return jsonify({"ok": True})
@@ -577,20 +469,14 @@ def listar_clubes():
     try:
         with get_db() as conn:
             with conn.cursor() as c:
-                c.execute("""
-                    SELECT *
-                    FROM clubes
-                    WHERE status='aprovado'
-                    ORDER BY criado_em DESC
-                """)
-
+                c.execute("SELECT * FROM clubes WHERE status='aprovado' ORDER BY criado_em DESC")
                 rows = [dict(r) for r in c.fetchall()]
-
                 return jsonify(rows)
 
     except Exception as e:
         print("ERRO LISTAR CLUBES:", e)
         return jsonify([])
+
 
 @app.route("/api/admin/clubes", methods=["GET"])
 def admin_listar_clubes():
@@ -600,19 +486,14 @@ def admin_listar_clubes():
     try:
         with get_db() as conn:
             with conn.cursor() as c:
-                c.execute("""
-                    SELECT *
-                    FROM clubes
-                    ORDER BY criado_em DESC
-                """)
-
+                c.execute("SELECT * FROM clubes ORDER BY criado_em DESC")
                 rows = [dict(r) for r in c.fetchall()]
-
                 return jsonify(rows)
 
     except Exception as e:
         print("ERRO ADMIN LISTAR CLUBES:", e)
         return jsonify([])
+
 
 @app.route("/api/admin/clubes", methods=["POST"])
 def admin_criar_clube():
@@ -627,17 +508,7 @@ def admin_criar_clube():
         with get_db() as conn:
             with conn.cursor() as c:
                 c.execute('''
-                    INSERT INTO clubes (
-                        id,
-                        nome,
-                        cidade,
-                        posicao,
-                        idade,
-                        detalhes,
-                        contato,
-                        status,
-                        criado_em
-                    )
+                    INSERT INTO clubes (id, nome, cidade, posicao, idade, detalhes, contato, status, criado_em)
                     VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 ''', (
                     cid,
@@ -659,6 +530,7 @@ def admin_criar_clube():
         print("ERRO CRIAR CLUBE:", e)
         return jsonify({"erro": str(e)}), 500
 
+
 @app.route("/api/admin/clubes/<cid>", methods=["DELETE"])
 def admin_deletar_clube(cid):
     if not session.get("admin"):
@@ -667,11 +539,7 @@ def admin_deletar_clube(cid):
     try:
         with get_db() as conn:
             with conn.cursor() as c:
-                c.execute(
-                    "DELETE FROM clubes WHERE id=%s",
-                    (cid,)
-                )
-
+                c.execute("DELETE FROM clubes WHERE id=%s", (cid,))
             conn.commit()
 
         return jsonify({"ok": True})
@@ -683,7 +551,6 @@ def admin_deletar_clube(cid):
 # ================= START =================
 
 if __name__ == "__main__":
-
     init_db()
 
     try:
