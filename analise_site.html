@@ -1169,44 +1169,43 @@ function popularFiltroAgencias(){
 
 // ===== PROFILE MODAL =====
 function openProfile(id){
-  const a = atletasCache.find(x=>x.id===id); if(!a) return;
+  const sid = String(id);
+  const a = atletasCache.find(x=>String(x.id)===sid);
+  if(!a){ showToast('⚠️ Atleta não encontrado'); return; }
   const bloqueado = !userAssinante;
 
-  // Linha livre (sempre visível)
-  const rowFree = (label, value) => {
-    const v = value||'—';
-    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">
-      <span style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray)">${label}</span>
-      <span style="font-weight:600;color:var(--text)">${v}</span>
-    </div>`;
-  };
+  const blur = (content) => bloqueado
+    ? `<span style="filter:blur(7px);user-select:none;pointer-events:none">${content}</span>`
+    : content;
 
-  // Linha bloqueada — dado real aparece mas borrado se não assinante
-  const rowLocked = (label, value) => {
-    const v = value||'—';
-    const isEmpty = !value || value==='—' || value==='-';
-    if(bloqueado){
-      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">
-        <span style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray)">${label}</span>
-        <span style="display:flex;align-items:center;gap:8px">
-          <span style="filter:blur(6px);user-select:none;font-weight:600;color:var(--text);background:var(--gray-light);padding:2px 10px;border-radius:4px">${isEmpty?'••••••':v}</span>
-          <span style="background:var(--blue);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:100px;letter-spacing:0.06em;text-transform:uppercase;flex-shrink:0">🔒 VER</span>
-        </span>
-      </div>`;
-    }
-    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">
-      <span style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray)">${label}</span>
-      <span style="font-weight:600;color:var(--text)">${isEmpty?'—':v}</span>
-    </div>`;
-  };
+  const lockBadge = bloqueado
+    ? `<span style="background:var(--blue);color:#fff;font-size:9px;font-weight:700;padding:3px 9px;border-radius:100px;flex-shrink:0">🔒 ASSINE</span>`
+    : '';
 
-  // Bloco de estatística individual
-  const statBox = (val, label) => `
-    <div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center;${bloqueado?'cursor:pointer':''};" ${bloqueado?`onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')"`:''}>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:var(--blue);display:block;line-height:1;${bloqueado?'filter:blur(5px)':''}">${val||'—'}</span>
+  const rowFree = (label, value) =>
+    `<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">
+      <span style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray)">${label}</span>
+      <span style="font-weight:600;color:var(--text)">${value||'—'}</span>
+    </div>`;
+
+  const rowLocked = (label, value) =>
+    `<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border);${bloqueado?'cursor:pointer':''}" ${bloqueado?`onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')"`:''}>
+      <span style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray)">${label}</span>
+      <span style="display:flex;align-items:center;gap:8px">
+        ${blur(`<span style="font-weight:600;color:var(--text)">${value||'—'}</span>`)}
+        ${lockBadge}
+      </span>
+    </div>`;
+
+  const statBox = (val, label) =>
+    `<div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center;${bloqueado?'cursor:pointer':''}" ${bloqueado?`onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')"`:''}>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--blue);display:block;line-height:1;${bloqueado?'filter:blur(6px)':''}">${val||'—'}</span>
       <span style="font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;display:block">${label}</span>
-      ${bloqueado?`<span style="display:block;font-size:9px;color:var(--blue);font-weight:700;margin-top:4px">🔒 Assine</span>`:''}
+      ${bloqueado?`<span style="display:block;font-size:9px;color:var(--blue);font-weight:700;margin-top:4px">🔒</span>`:''}
     </div>`;
+
+  const forteVal = a.forte || a.caracteristica || 'Velocidade e finalização';
+  const fracoVal = a.fraco || 'Marcação defensiva';
 
   document.getElementById('modalBody').innerHTML = `
     <div class="modal-hero">
@@ -1224,7 +1223,6 @@ function openProfile(id){
       </div>
     </div>
 
-    <!-- STATS BAR — sempre visível -->
     <div class="modal-stats-bar">
       <div class="mstat"><span class="mstat-val">${a.idade||'—'}</span><span class="mstat-label">Idade</span></div>
       <div class="mstat"><span class="mstat-val">${a.altura?a.altura+'cm':'—'}</span><span class="mstat-label">Altura</span></div>
@@ -1234,11 +1232,9 @@ function openProfile(id){
 
     <div class="modal-body">
 
-      ${bloqueado?`
-      <!-- BANNER ASSINE -->
-      <div style="background:linear-gradient(135deg,var(--blue),var(--blue2));border-radius:12px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:12px;flex-wrap:wrap">
+      ${bloqueado?`<div style="background:linear-gradient(135deg,var(--blue),var(--blue2));border-radius:12px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:12px;flex-wrap:wrap">
         <div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;color:#fff;text-transform:uppercase">🔒 Dados completos bloqueados</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:900;color:#fff;text-transform:uppercase">🔒 Dados completos bloqueados</div>
           <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-top:2px">Assine R$40/mês para ver tudo desbloqueado</div>
         </div>
         <button onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')" style="background:#fff;border:none;color:var(--blue);padding:10px 20px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;text-transform:uppercase;cursor:pointer;white-space:nowrap;flex-shrink:0">⚡ ASSINAR →</button>
@@ -1253,24 +1249,36 @@ function openProfile(id){
         ${rowFree('Disponibilidade', a.disponivel?'✅ Disponível no mercado':'❌ Contratado')}
       </div>
 
-      <!-- PERFIL & CONTATO — bloqueado -->
+      <!-- PONTO FORTE E FRACO — destaque visual, borrado -->
+      <div class="modal-sec" ${bloqueado?`style="cursor:pointer" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')"`:''}>
+        <div class="modal-sec-title">🎯 Análise Técnica</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+          <!-- FORTE -->
+          <div style="background:#f0fdf4;border:2px solid #86efac;border-radius:12px;padding:16px;text-align:center;position:relative">
+            <div style="font-size:11px;font-weight:700;color:#15803d;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px">💚 Ponto Forte</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:#15803d;text-transform:uppercase;line-height:1.1;${bloqueado?'filter:blur(6px)':''}">${forteVal}</div>
+            ${bloqueado?`<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:10px"><span style="background:#15803d;color:#fff;font-size:10px;font-weight:700;padding:4px 10px;border-radius:100px">🔒 ASSINE</span></div>`:''}
+          </div>
+          <!-- FRACO -->
+          <div style="background:#fff1f2;border:2px solid #fca5a5;border-radius:12px;padding:16px;text-align:center;position:relative">
+            <div style="font-size:11px;font-weight:700;color:#b91c1c;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px">❤️ A Desenvolver</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:#b91c1c;text-transform:uppercase;line-height:1.1;${bloqueado?'filter:blur(6px)':''}">${fracoVal}</div>
+            ${bloqueado?`<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:10px"><span style="background:#b91c1c;color:#fff;font-size:10px;font-weight:700;padding:4px 10px;border-radius:100px">🔒 ASSINE</span></div>`:''}
+          </div>
+        </div>
+        ${rowLocked('Link de Highlights / Vídeos', a.video?'🎬 Ver vídeos':'Disponível')}
+      </div>
+
+      <!-- CONTATO — bloqueado -->
       <div class="modal-sec">
-        <div class="modal-sec-title">👤 Perfil & Contato</div>
+        <div class="modal-sec-title">👤 Contato & Agência</div>
         ${rowLocked('Instagram', a.instagram||'@atleta')}
         ${rowLocked('WhatsApp', a.whatsapp?'('+a.whatsapp.slice(0,2)+') '+a.whatsapp.slice(2,7)+'-'+a.whatsapp.slice(7):'(11) 9••••-••••')}
         ${rowLocked('Agência', a.agencia||'Sem agência')}
         ${rowLocked('Tempo de Contrato', a.contrato||'A combinar')}
       </div>
 
-      <!-- ANÁLISE TÉCNICA — bloqueado -->
-      <div class="modal-sec">
-        <div class="modal-sec-title">🎯 Análise Técnica</div>
-        ${rowLocked('Ponto Forte', a.forte||a.caracteristica||'Velocidade')}
-        ${rowLocked('A Desenvolver', a.fraco||'Marcação')}
-        ${rowLocked('Link de Highlights', a.video?'Ver vídeos':'Disponível')}
-      </div>
-
-      <!-- ESTATÍSTICAS — bloqueado -->
+      <!-- ESTATÍSTICAS — borradas -->
       <div class="modal-sec">
         <div class="modal-sec-title">📊 Estatísticas da Temporada</div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px">
@@ -1283,12 +1291,10 @@ function openProfile(id){
         </div>
       </div>
 
-      ${bloqueado?`
-      <!-- CTA FINAL -->
-      <div style="background:var(--black);border-radius:16px;padding:28px;text-align:center;margin-top:8px">
-        <div style="font-size:32px;margin-bottom:12px">🔓</div>
+      ${bloqueado?`<div style="background:var(--black);border-radius:16px;padding:28px;text-align:center;margin-top:8px">
+        <div style="font-size:28px;margin-bottom:10px">🔓</div>
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:#fff;text-transform:uppercase;margin-bottom:8px">Desbloqueie tudo por R$40/mês</div>
-        <p style="font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:20px;line-height:1.6">Veja contatos, estatísticas reais, análise técnica completa e vídeos de todos os atletas.</p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:20px;line-height:1.6">Contatos, estatísticas reais, análise técnica e vídeos de todos os atletas.</p>
         <button class="btn-hero-primary" style="padding:14px 36px;font-size:18px" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">⚡ ASSINAR R$40/MÊS →</button>
       </div>`:''}
 
@@ -1296,6 +1302,7 @@ function openProfile(id){
 
   document.getElementById('profileModal').classList.add('open');
 }
+
 
 // ===== AUTH =====
 function openAuthModal(tab){
@@ -1518,7 +1525,9 @@ function renderAdminAtletas(){
   const tbody = document.getElementById('admin-atletas-tbody');
   if(!tbody) return;
   const lista = atletasCache;
-  tbody.innerHTML = lista.length ? lista.map(a=>`
+  tbody.innerHTML = lista.length ? lista.map(a=>{
+    const sid = JSON.stringify(String(a.id)); // garante string escapada
+    return `
     <tr>
       <td><strong>${a.nome}</strong><br><small style="color:var(--gray)">${a.idade} anos</small></td>
       <td>${a.posicao}</td>
@@ -1529,14 +1538,29 @@ function renderAdminAtletas(){
       <td style="color:var(--blue);font-weight:700">${a.stats_nota||a.nota||'—'}</td>
       <td>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
-          ${a.status!=='aprovado'?`<button class="btn-act btn-aprov" onclick="adminAcao(${a.id},'aprovado')">✓</button>`:''}
-          ${a.status!=='recusado'?`<button class="btn-act btn-recus" onclick="adminAcao(${a.id},'recusado')">✗</button>`:''}
-          <button class="btn-act btn-see" onclick="openProfile(${a.id})">Ver</button>
-          <button class="btn-act" style="background:#fee2e2;color:#b91c1c" onclick="removerAtleta(${a.id})">Del</button>
+          ${a.status!=='aprovado'?`<button class="btn-act btn-aprov" onclick="adminAcao(${sid},'aprovado')">✓ Aprovar</button>`:''}
+          ${a.status!=='recusado'?`<button class="btn-act btn-recus" onclick="adminAcao(${sid},'recusado')">✗ Recusar</button>`:''}
+          <button class="btn-act btn-see" onclick="adminVerAtleta(${sid})">👁 Ver</button>
+          <button class="btn-act" style="background:#fee2e2;color:#b91c1c" onclick="adminDeletarAtleta(${sid})">🗑 Del</button>
         </div>
       </td>
-    </tr>`).join('')
-    : '<tr><td colspan="8" style="color:var(--gray);padding:32px;text-align:center">Nenhum atleta.</td></tr>';
+    </tr>`;
+  }).join('')
+  : '<tr><td colspan="8" style="color:var(--gray);padding:32px;text-align:center">Nenhum atleta.</td></tr>';
+}
+
+function adminVerAtleta(id){
+  // Garante que o painel admin está aberto e depois abre o modal
+  openProfile(id);
+}
+
+async function adminDeletarAtleta(id){
+  if(!confirm('Remover este atleta permanentemente?')) return;
+  await apiFetch(`/api/admin/atletas/${id}`,{method:'DELETE'});
+  atletasCache = atletasCache.filter(a=>String(a.id)!==String(id));
+  renderAdminAtletas();
+  await init();
+  showToast('✅ Atleta removido.');
 }
 
 async function adminAcao(id, status){
@@ -1544,28 +1568,15 @@ async function adminAcao(id, status){
     method:'PUT',
     body: JSON.stringify({status})
   });
-  if(!data.erro){
-    // Atualiza cache local
-    const a = atletasCache.find(x=>x.id===id);
-    if(a) a.status = status;
-    renderAdminAtletas();
-    await init();
-    showToast(status==='aprovado'?'✅ Atleta aprovado!':'❌ Atleta recusado.');
-  } else {
-    // fallback: atualiza só localmente
-    const a = atletasCache.find(x=>x.id===id);
-    if(a){ a.status=status; renderAdminAtletas(); init(); }
-    showToast(status==='aprovado'?'✅ Aprovado':'❌ Recusado');
-  }
+  const a = atletasCache.find(x=>String(x.id)===String(id));
+  if(a) a.status = status;
+  renderAdminAtletas();
+  await init();
+  showToast(status==='aprovado'?'✅ Atleta aprovado!':'❌ Atleta recusado.');
 }
 
 async function removerAtleta(id){
-  if(!confirm('Remover este atleta do banco?')) return;
-  const data = await apiFetch(`/api/admin/atletas/${id}`,{method:'DELETE'});
-  atletasCache = atletasCache.filter(a=>a.id!==id);
-  renderAdminAtletas();
-  await init();
-  showToast('Atleta removido.');
+  adminDeletarAtleta(id);
 }
 
 function renderAdminClubes(){
