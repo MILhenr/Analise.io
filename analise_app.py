@@ -6,8 +6,8 @@ import urllib.request
 from datetime import datetime
 from flask import Flask, request, jsonify, session, send_from_directory
 
-import psycopg2
-from psycopg2.extras import RealDictCursor
+import psycopg
+from psycopg.rows import dict_row
 
 import cloudinary
 import cloudinary.uploader
