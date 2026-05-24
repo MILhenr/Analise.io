@@ -681,13 +681,27 @@ function renderCard(a){
 }
 
 // ===== CARREGAR ATLETAS DO BACKEND =====
+const ATLETAS_DEMO = [
+  {id:1,nome:"Guilherme Alves",idade:23,posicao:"Ala",clube:"Magnus Futsal",pe:"Direito",altura:174,peso:70,forte:"Velocidade e drible",fraco:"Cabeceio",disponivel:true,instagram:"@guilherme.ala",whatsapp:"11999999999",agencia:"Elite Sports",video:"https://youtube.com",status:"aprovado",stats_gols:"8",stats_assists:"14",stats_passes:"89%",stats_dribles:"4.2",stats_nota:"7.8",stats_jogos:"22"},
+  {id:2,nome:"Lucas Mendonça",idade:26,posicao:"Fixo",clube:"Corinthians Futsal",pe:"Esquerdo",altura:180,peso:78,forte:"Marcação e liderança",fraco:"Finalização",disponivel:false,instagram:"@lucas.fixo",whatsapp:"11988888888",agencia:"Pro Athletes",video:"https://youtube.com",status:"aprovado",stats_gols:"-",stats_assists:"-",stats_passes:"-",stats_dribles:"-",stats_nota:"-",stats_jogos:"-"},
+  {id:3,nome:"Rafael Costa",idade:19,posicao:"Pivô",clube:"Joinville",pe:"Direito",altura:182,peso:82,forte:"Jogo aéreo e físico",fraco:"Visão de jogo",disponivel:true,instagram:"@rafael.pivo",whatsapp:"11977777777",agencia:"",video:"https://youtube.com",status:"aprovado",stats_gols:"-",stats_assists:"-",stats_passes:"-",stats_dribles:"-",stats_nota:"-",stats_jogos:"-"},
+  {id:4,nome:"André Souza",idade:28,posicao:"Goleiro",clube:"Brasília Futsal",pe:"Direito",altura:185,peso:80,forte:"Reflexos e bola aérea",fraco:"Jogo com os pés",disponivel:true,instagram:"@andre.goleiro",whatsapp:"11966666666",agencia:"GoalKeeper Brasil",video:"https://youtube.com",status:"aprovado",stats_gols:"-",stats_assists:"-",stats_passes:"-",stats_dribles:"-",stats_nota:"-",stats_jogos:"-"},
+];
+
 async function carregarAtletas(){
   try {
     const r = await fetch('/api/atletas');
-    dbAtletas = await r.json();
-  } catch(e){ /* usa local */ }
+    if(!r.ok) throw new Error('no server');
+    const data = await r.json();
+    if(Array.isArray(data) && data.length >= 0) dbAtletas = data;
+    else dbAtletas = ATLETAS_DEMO;
+  } catch(e){
+    // Sem servidor rodando - usa dados de demo
+    if(dbAtletas.length === 0) dbAtletas = ATLETAS_DEMO;
+  }
+  const destaque = document.getElementById('destaque-grid');
+  if(destaque) destaque.innerHTML = dbAtletas.slice(0,6).map(renderCard).join('') || '<p style="color:var(--gray);padding:20px">Nenhum atleta ainda.</p>';
   renderAtletas(dbAtletas);
-  document.getElementById('destaque-grid').innerHTML = dbAtletas.slice(0,6).map(renderCard).join('') || '<p style="color:var(--gray);padding:20px">Nenhum atleta ainda.</p>';
   animCount('sAtletas', dbAtletas.length);
 }
 
