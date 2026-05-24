@@ -1,1 +1,1 @@
-web: gunicorn analise_app:app
+web: python app.py
