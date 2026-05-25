@@ -891,7 +891,7 @@ function forteBox(val,bgCol,borderCol,titulo){
     +sStat(a.stats_gols||a.gols,'Gols')+sStat(a.stats_assists||a.assists,'Assist.')+sStat(a.stats_passes||a.passes,'Passes')
     +sStat(a.stats_dribles||a.dribles,'Dribles/jogo')+sStat(a.stats_nota||a.nota,'Nota média')+sStat(a.stats_jogos||a.jogos,'Jogos')
     +'</div></div>'
-    +(userAssinante?'<div style="margin-top:16px;text-align:center"><button onclick="abrirCorrecao(a)" style="background:transparent;border:1.5px solid var(--border);color:var(--gray);padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">✏️ Solicitar Correção de Dados</button></div>':'')
+    +'<div style="margin-top:16px;text-align:center"><button onclick="'+(userAssinante?'abrirCorrecao(atletasCache.find(function(x){return x.id==='+JSON.stringify(a.id)+';}))':'document.getElementById(\'profileModal\').classList.remove(\'open\');showPage(\'assinatura\')')+'" style="background:transparent;border:1.5px solid var(--border);color:var(--gray);padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">✏️ Solicitar Correção de Dados</button></div>'
     +(b?'<div style="background:var(--black);border-radius:14px;padding:24px;text-align:center;margin-top:8px">'
       +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;font-weight:900;color:#fff;text-transform:uppercase;margin-bottom:6px">Desbloqueie tudo por R$40/mês</div>'
       +'<p style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:18px">Veja contatos, análise técnica e estatísticas reais.</p>'
