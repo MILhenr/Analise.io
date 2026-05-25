@@ -632,6 +632,38 @@ footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align
   <div style="font-size:13px;color:var(--gray)">A Plataforma do Futsal Brasileiro</div>
 </footer>
 
+<!-- CORRECTION MODAL -->
+<div class="modal-overlay" id="correctionModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:560px">
+    <button class="modal-close" onclick="document.getElementById('correctionModal').classList.remove('open')">✕</button>
+    <div style="padding:32px 40px 40px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:6px">✏️ Solicitar Correção</div>
+      <p style="font-size:13px;color:var(--gray);margin-bottom:24px">Informe o que precisa ser corrigido. Nossa equipe vai revisar e atualizar.</p>
+      <input type="hidden" id="corr-atleta-id">
+      <input type="hidden" id="corr-atleta-nome">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="form-group"><label class="form-label">O que precisa corrigir? *</label>
+          <select class="form-select" id="corr-campo">
+            <option value="">Selecionar campo</option>
+            <option>Nome</option><option>Idade</option><option>Clube</option>
+            <option>Posição</option><option>Altura / Peso</option><option>Agência</option>
+            <option>Instagram</option><option>WhatsApp</option><option>Ponto Forte</option>
+            <option>Pontos Fracos</option><option>Estatísticas</option><option>Foto</option><option>Outro</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Valor correto / Detalhes *</label>
+          <textarea class="form-input" id="corr-detalhe" rows="4" placeholder="Ex: Meu clube atual é Magnus Futsal, não ACBF."></textarea>
+        </div>
+        <div class="form-group"><label class="form-label">Seu contato (WhatsApp ou Instagram)</label>
+          <input class="form-input" id="corr-contato" placeholder="@seuinstagram">
+        </div>
+        <button class="btn-submit" id="btn-enviar-corr" onclick="enviarCorrecao()">ENVIAR SOLICITAÇÃO →</button>
+        <p class="form-note">Analisamos todas as solicitações em até 48h.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 var currentUser=null,userAssinante=false,atletasCache=[],atletaDestaqueId=null,fotoAtualBase64=null,editFotoBase64=null;
 var dbClubes=[
@@ -859,6 +891,7 @@ function forteBox(val,bgCol,borderCol,titulo){
     +sStat(a.stats_gols||a.gols,'Gols')+sStat(a.stats_assists||a.assists,'Assist.')+sStat(a.stats_passes||a.passes,'Passes')
     +sStat(a.stats_dribles||a.dribles,'Dribles/jogo')+sStat(a.stats_nota||a.nota,'Nota média')+sStat(a.stats_jogos||a.jogos,'Jogos')
     +'</div></div>'
+    +(userAssinante?'<div style="margin-top:16px;text-align:center"><button onclick="abrirCorrecao(a)" style="background:transparent;border:1.5px solid var(--border);color:var(--gray);padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">✏️ Solicitar Correção de Dados</button></div>':'')
     +(b?'<div style="background:var(--black);border-radius:14px;padding:24px;text-align:center;margin-top:8px">'
       +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;font-weight:900;color:#fff;text-transform:uppercase;margin-bottom:6px">Desbloqueie tudo por R$40/mês</div>'
       +'<p style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:18px">Veja contatos, análise técnica e estatísticas reais.</p>'
@@ -1378,6 +1411,34 @@ async function importarCSV(){
   adminPanelTab('atletas');
 }
 
+// CORREÇÃO
+var atletaCorrecaoAtual=null;
+function abrirCorrecao(a){
+  atletaCorrecaoAtual=a;
+  document.getElementById('corr-atleta-id').value=a.id||'';
+  document.getElementById('corr-atleta-nome').value=a.nome||'';
+  document.getElementById('corr-campo').value='';
+  document.getElementById('corr-detalhe').value='';
+  document.getElementById('corr-contato').value='';
+  document.getElementById('profileModal').classList.remove('open');
+  document.getElementById('correctionModal').classList.add('open');
+}
+async function enviarCorrecao(){
+  var campo=document.getElementById('corr-campo').value;
+  var detalhe=document.getElementById('corr-detalhe').value.trim();
+  var contato=document.getElementById('corr-contato').value.trim();
+  var atletaId=document.getElementById('corr-atleta-id').value;
+  var atletaNome=document.getElementById('corr-atleta-nome').value;
+  if(!campo){showToast('⚠️ Selecione o campo a corrigir');return;}
+  if(!detalhe){showToast('⚠️ Descreva a correção');return;}
+  var btn=document.getElementById('btn-enviar-corr');
+  btn.innerHTML='<span class="spin"></span> Enviando...';btn.disabled=true;
+  var d=await api('/api/solicitar_correcao',{method:'POST',body:JSON.stringify({atleta_id:atletaId,atleta_nome:atletaNome,campo:campo,detalhe:detalhe,contato:contato})});
+  btn.innerHTML='ENVIAR SOLICITAÇÃO →';btn.disabled=false;
+  if(d&&!d.erro){document.getElementById('correctionModal').classList.remove('open');showToast('✅ Solicitação enviada! Analisamos em até 48h.');}
+  else{showToast('⚠️ Erro ao enviar. Tente novamente.');}
+}
+  
 // PAGES
 function showPage(p){
   ['home','atletas','cadastro-atleta','assinatura','clubes','admin-panel','sou-jogador','pagar-atleta'].forEach(function(pg){
