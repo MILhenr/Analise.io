@@ -807,12 +807,24 @@ function rLock(label,val){
   var fotoHtml=a.foto?'<img src="'+a.foto+'" style="width:100%;height:100%;object-fit:cover">':(a.emoji||'⭐');
   var forte=a.forte||a.caracteristica||'';
   var fraco=a.fraco||'';
-  function forteBox(val,bgCol,borderCol,titulo){
-    var emptyHtml='<span style="font-size:12px;color:var(--gray);font-style:italic">Dado não disponível</span>';
-    var inner=(!val||val==='-')?emptyHtml:'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;line-height:1.1;margin-bottom:'+(b&&val?'10px':'0')+(b&&val?';filter:blur(7px)':'')+'">'+(val||'')+'</div>'+(b&&val?'<span style="display:inline-block;background:var(--black);color:#fff;font-size:10px;font-weight:700;padding:5px 14px;border-radius:100px;cursor:pointer" onclick="document.getElementById(\'profileModal\').classList.remove(\'open\');showPage(\'assinatura\')">ASSINE</span>':'');
+function forteBox(val,bgCol,borderCol,titulo){
+    if(b){
+      var display=val&&val!=='-'&&val!=='—'?val:'Velocidade Finalizacao';
+      return '<div style="background:'+bgCol+';border:2px solid '+borderCol+';border-radius:12px;padding:16px;text-align:center">'
+        +'<div style="font-size:10px;font-weight:700;color:'+borderCol+';letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">'+titulo+'</div>'
+        +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;line-height:1.1;margin-bottom:10px;filter:blur(7px);user-select:none">'+display+'</div>'
+        +'<span style="display:inline-block;background:var(--black);color:#fff;font-size:10px;font-weight:700;padding:5px 14px;border-radius:100px;cursor:pointer" onclick="document.getElementById(\'profileModal\').classList.remove(\'open\');showPage(\'assinatura\')">ASSINE</span>'
+        +'</div>';
+    }
+    if(!val||val==='-'||val==='—'){
+      return '<div style="background:'+bgCol+';border:2px solid '+borderCol+';border-radius:12px;padding:16px;text-align:center">'
+        +'<div style="font-size:10px;font-weight:700;color:'+borderCol+';letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">'+titulo+'</div>'
+        +'<span style="font-size:12px;color:var(--gray);font-style:italic">Dado não disponível</span></div>';
+    }
     return '<div style="background:'+bgCol+';border:2px solid '+borderCol+';border-radius:12px;padding:16px;text-align:center">'
       +'<div style="font-size:10px;font-weight:700;color:'+borderCol+';letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">'+titulo+'</div>'
-      +inner+'</div>';
+      +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;line-height:1.1">'+val+'</div>'
+      +'</div>';
   }
   var html='<div class="modal-hero">'
     +'<div class="modal-photo" style="'+(a.foto?'background:none;overflow:hidden':'')+'">'+fotoHtml+'</div>'
