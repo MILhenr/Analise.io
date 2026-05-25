@@ -1044,8 +1044,9 @@ async function carregarAtletas(){
 }
 
 // ===== RENDER CARD =====
-function renderCard(a){
-  return `<div class="athlete-card" onclick="openProfile(${a.id})">
+function renderCard(a, idx){
+  const _idx = (idx !== undefined) ? idx : atletasCache.indexOf(a);
+  return `<div class="athlete-card" onclick="openProfileByIdx(${_idx})">
     <div class="ac-photo" style="${a.foto?'background:none':''}">
       ${a.foto ? `<img src="${a.foto}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">` : (a.emoji||'⭐')}
       <div class="ac-pos-over">${a.posicao}</div>
@@ -1074,7 +1075,7 @@ async function init(){
   atletasCache = await carregarAtletas();
   const aprov = atletasCache.filter(a=>a.status==='aprovado');
   document.getElementById('destaque-grid').innerHTML = aprov.length
-    ? aprov.slice(0,6).map(renderCard).join('')
+    ? aprov.slice(0,6).map((a)=>renderCard(a, atletasCache.indexOf(a))).join('')
     : '<p style="color:var(--gray);padding:40px">Nenhum atleta cadastrado ainda.</p>';
   renderAtletas(aprov);
   popularFiltroAgencias();
@@ -1091,7 +1092,7 @@ function animCount(id, target){
 function renderAtletas(lista){
   const el=document.getElementById('atletas-grid');
   if(!el) return;
-  el.innerHTML=lista.length?lista.map(renderCard).join(''):'<p style="color:var(--gray);padding:40px">Nenhum atleta encontrado.</p>';
+  el.innerHTML=lista.length?lista.map((a)=>renderCard(a, atletasCache.indexOf(a))).join(''):'<p style="color:var(--gray);padding:40px">Nenhum atleta encontrado.</p>';
 }
 
 // ===== FILTERS =====
@@ -1168,9 +1169,14 @@ function popularFiltroAgencias(){
 }
 
 // ===== PROFILE MODAL =====
-function openProfile(id){
-  const sid = String(id);
-  const a = atletasCache.find(x=>String(x.id)===sid);
+// Abre perfil pelo índice no cache (seguro, sem problema de tipo de ID)
+function openProfileByIdx(idx){
+  const a = atletasCache[idx];
+  if(!a){ showToast('⚠️ Atleta não encontrado'); return; }
+  openProfile(a);
+}
+
+function openProfile(a){
   if(!a){ showToast('⚠️ Atleta não encontrado'); return; }
   const bloqueado = !userAssinante;
 
@@ -1525,9 +1531,7 @@ function renderAdminAtletas(){
   const tbody = document.getElementById('admin-atletas-tbody');
   if(!tbody) return;
   const lista = atletasCache;
-  tbody.innerHTML = lista.length ? lista.map(a=>{
-    const sid = JSON.stringify(String(a.id)); // garante string escapada
-    return `
+  tbody.innerHTML = lista.length ? lista.map((a, idx)=>`
     <tr>
       <td><strong>${a.nome}</strong><br><small style="color:var(--gray)">${a.idade} anos</small></td>
       <td>${a.posicao}</td>
@@ -1538,45 +1542,48 @@ function renderAdminAtletas(){
       <td style="color:var(--blue);font-weight:700">${a.stats_nota||a.nota||'—'}</td>
       <td>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
-          ${a.status!=='aprovado'?`<button class="btn-act btn-aprov" onclick="adminAcao(${sid},'aprovado')">✓ Aprovar</button>`:''}
-          ${a.status!=='recusado'?`<button class="btn-act btn-recus" onclick="adminAcao(${sid},'recusado')">✗ Recusar</button>`:''}
-          <button class="btn-act btn-see" onclick="adminVerAtleta(${sid})">👁 Ver</button>
-          <button class="btn-act" style="background:#fee2e2;color:#b91c1c" onclick="adminDeletarAtleta(${sid})">🗑 Del</button>
+          ${a.status!=='aprovado'?`<button class="btn-act btn-aprov" onclick="adminAcao(${idx},'aprovado')">✓ Aprovar</button>`:''}
+          ${a.status!=='recusado'?`<button class="btn-act btn-recus" onclick="adminAcao(${idx},'recusado')">✗ Recusar</button>`:''}
+          <button class="btn-act btn-see" onclick="adminVerAtleta(${idx})">👁 Ver</button>
+          <button class="btn-act" style="background:#fee2e2;color:#b91c1c" onclick="adminDeletarAtleta(${idx})">🗑 Del</button>
         </div>
       </td>
-    </tr>`;
-  }).join('')
+    </tr>`).join('')
   : '<tr><td colspan="8" style="color:var(--gray);padding:32px;text-align:center">Nenhum atleta.</td></tr>';
 }
 
-function adminVerAtleta(id){
-  // Garante que o painel admin está aberto e depois abre o modal
-  openProfile(id);
+function adminVerAtleta(idx){
+  const a = atletasCache[idx];
+  if(!a) return;
+  openProfile(a);
 }
 
-async function adminDeletarAtleta(id){
-  if(!confirm('Remover este atleta permanentemente?')) return;
-  await apiFetch(`/api/admin/atletas/${id}`,{method:'DELETE'});
-  atletasCache = atletasCache.filter(a=>String(a.id)!==String(id));
+async function adminDeletarAtleta(idx){
+  const a = atletasCache[idx];
+  if(!a) return;
+  if(!confirm('Remover "'+a.nome+'" permanentemente?')) return;
+  await apiFetch('/api/admin/atletas/'+a.id, {method:'DELETE'});
+  atletasCache.splice(idx, 1);
   renderAdminAtletas();
   await init();
   showToast('✅ Atleta removido.');
 }
 
-async function adminAcao(id, status){
-  const data = await apiFetch(`/api/admin/atletas/${id}`, {
+async function adminAcao(idx, status){
+  const a = atletasCache[idx];
+  if(!a) return;
+  await apiFetch('/api/admin/atletas/'+a.id, {
     method:'PUT',
     body: JSON.stringify({status})
   });
-  const a = atletasCache.find(x=>String(x.id)===String(id));
-  if(a) a.status = status;
+  a.status = status;
   renderAdminAtletas();
   await init();
-  showToast(status==='aprovado'?'✅ Atleta aprovado!':'❌ Atleta recusado.');
+  showToast(status==='aprovado'?'✅ '+a.nome+' aprovado!':'❌ '+a.nome+' recusado.');
 }
 
-async function removerAtleta(id){
-  adminDeletarAtleta(id);
+async function removerAtleta(idx){
+  adminDeletarAtleta(idx);
 }
 
 function renderAdminClubes(){
