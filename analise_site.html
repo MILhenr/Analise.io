@@ -773,127 +773,127 @@ function popularFiltroAgencias(){
 }
 
 // ===== PERFIL MODAL =====
+// ===== PERFIL MODAL =====
 function openProfile(a){
-  if(!a){showToast('⚠️ Atleta não encontrado');return;}
+  if(!a){showToast('Atleta nao encontrado');return;}
   const bloqueado=!userAssinante;
+  const semDado='<span style="font-size:12px;color:#6b7591;font-style:italic">Dado nao disponivel para esse atleta</span>';
+  const vazio=(v)=>!v||v==='-'||v==='--'||String(v).trim()==='';
 
-  const assineBtn = `<span style="background:var(--black);color:#fff;font-size:9px;font-weight:700;padding:4px 10px;border-radius:100px;cursor:pointer;letter-spacing:.06em;flex-shrink:0" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">ASSINE</span>`;
+  function rowFree(label,value){
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #e4e7f0">'+
+      '<span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6b7591">'+label+'</span>'+
+      (vazio(value)?semDado:'<span style="font-weight:600;color:#1a1f35">'+value+'</span>')+
+    '</div>';
+  }
 
-  const semDado='<span style="font-size:12px;color:var(--gray);font-style:italic">Dado não disponível para esse atleta</span>';
-  const vazio=(v)=>!v||v==='-'||v==='—'||v.trim()==='';
-  const rowFree=(label,value)=>
-    `<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">
-      <span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray)">${label}</span>
-      ${vazio(value)?semDado:`<span style="font-weight:600;color:var(--text)">${value}</span>`}
-    </div>`;
-
-  const rowLocked=(label,value)=>{
+  function rowLocked(label,value){
     if(vazio(value)){
-      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">
-        <span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray)">${label}</span>
-        ${semDado}
-      </div>`;
+      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #e4e7f0">'+
+        '<span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6b7591">'+label+'</span>'+
+        semDado+'</div>';
     }
-    const v=value;
     if(bloqueado){
-      const fake=v+v+v.slice(0,3);
-      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">
-        <span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray)">${label}</span>
-        <span style="display:flex;align-items:center;gap:8px">
-          <span style="font-weight:600;color:var(--text);filter:blur(7px);user-select:none">${fake}</span>
-          ${assineBtn}
-        </span>
-      </div>`;
+      const fake=value+value+String(value).slice(0,3);
+      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #e4e7f0">'+
+        '<span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6b7591">'+label+'</span>'+
+        '<span style="display:flex;align-items:center;gap:8px">'+
+          '<span style="font-weight:600;color:#1a1f35;filter:blur(7px);user-select:none">'+fake+'</span>'+
+          '<span style="background:#060a12;color:#fff;font-size:9px;font-weight:700;padding:4px 10px;border-radius:100px;cursor:pointer;letter-spacing:.06em" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">ASSINE</span>'+
+        '</span></div>';
     }
-    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">
-      <span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray)">${label}</span>
-      <span style="font-weight:600;color:var(--text)">${v}</span>
-    </div>`;
-  };
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #e4e7f0">'+
+      '<span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6b7591">'+label+'</span>'+
+      '<span style="font-weight:600;color:#1a1f35">'+value+'</span></div>';
+  }
 
-  const statBox=(val,label)=>
-    `<div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center">
-      <span style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--blue);display:block;line-height:1;${bloqueado?'filter:blur(6px)':''}">${val||'—'}</span>
-      <span style="font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;margin-top:4px;display:block">${label}</span>
-      ${bloqueado?`<span style="display:inline-block;margin-top:6px;background:var(--black);color:#fff;font-size:9px;font-weight:700;padding:3px 9px;border-radius:100px;cursor:pointer" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">ASSINE</span>`:''}
-    </div>`;
+  function statBox(val,label){
+    var empty=vazio(val);
+    var numEl=empty?semDado:'<span style="font-family:Barlow Condensed,sans-serif;font-size:28px;font-weight:900;color:#1a56ff;display:block;line-height:1;'+(bloqueado&&!empty?'filter:blur(6px)':'')+'">'+val+'</span>';
+    var assineEl=(bloqueado&&!empty)?'<span style="display:inline-block;margin-top:6px;background:#060a12;color:#fff;font-size:9px;font-weight:700;padding:3px 9px;border-radius:100px;cursor:pointer" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">ASSINE</span>':'';
+    return '<div style="background:#f4f5f8;border:1.5px solid #e4e7f0;border-radius:10px;padding:14px 10px;text-align:center">'+
+      numEl+
+      '<span style="font-size:10px;color:#6b7591;text-transform:uppercase;letter-spacing:.06em;margin-top:4px;display:block">'+label+'</span>'+
+      assineEl+'</div>';
+  }
 
-  const forteVal=a.forte||a.caracteristica||null;
-  const fracoVal=a.fraco||null;
+  function forteBox(val,cor,bordaCor,titulo){
+    if(vazio(val)){
+      return '<div style="background:'+cor+';border:2px solid '+bordaCor+';border-radius:12px;padding:16px;text-align:center">'+
+        '<div style="font-size:10px;font-weight:700;color:'+bordaCor+';letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">'+titulo+'</div>'+
+        semDado+'</div>';
+    }
+    var textStyle='font-family:Barlow Condensed,sans-serif;font-size:20px;font-weight:900;color:'+bordaCor+';text-transform:uppercase;line-height:1.1;margin-bottom:'+(bloqueado?'10px':'0')+(bloqueado?';filter:blur(7px)':'');
+    var assineBtn=bloqueado?'<span style="display:inline-block;background:#060a12;color:#fff;font-size:10px;font-weight:700;padding:5px 14px;border-radius:100px;cursor:pointer" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">ASSINE</span>':'';
+    return '<div style="background:'+cor+';border:2px solid '+bordaCor+';border-radius:12px;padding:16px;text-align:center">'+
+      '<div style="font-size:10px;font-weight:700;color:'+bordaCor+';letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">'+titulo+'</div>'+
+      '<div style="'+textStyle+'">'+val+'</div>'+
+      assineBtn+'</div>';
+  }
 
-  document.getElementById('modalBody').innerHTML=`
-    <div class="modal-hero">
-      <div class="modal-photo" style="${a.foto?'background:none;overflow:hidden':''}">
-        ${a.foto?`<img src="${a.foto}" style="width:100%;height:100%;object-fit:cover">`:(a.emoji||'⭐')}
-      </div>
-      <div class="modal-meta">
-        <span class="modal-pos-badge">${a.posicao} · ${a.modalidade||'Futsal'}</span>
-        <div class="modal-name">${a.nome}</div>
-        <div class="modal-club">🏟 ${a.clube||'Sem clube'}</div>
-        <div class="modal-avail-badge">
-          <span style="width:8px;height:8px;background:${a.disponivel?'#00c878':'#ff5050'};border-radius:50%;display:inline-block"></span>
-          ${a.disponivel?'Disponível no Mercado':'Contratado'}
-        </div>
-      </div>
-    </div>
-    <div class="modal-stats-bar">
-      <div class="mstat"><span class="mstat-val">${a.idade||'—'}</span><span class="mstat-label">Idade</span></div>
-      <div class="mstat"><span class="mstat-val">${a.altura?a.altura+'cm':'—'}</span><span class="mstat-label">Altura</span></div>
-      <div class="mstat"><span class="mstat-val">${a.peso?a.peso+'kg':'—'}</span><span class="mstat-label">Peso</span></div>
-      <div class="mstat"><span class="mstat-val">${a.pe?a.pe.charAt(0):'—'}</span><span class="mstat-label">Pé Dom.</span></div>
-    </div>
-    <div class="modal-body">
-      <div class="modal-sec">
-        <div class="modal-sec-title">Dados Básicos</div>
-        ${rowFree('Posição',a.posicao)}
-        ${rowFree('Modalidade',a.modalidade||'Futsal')}
-        ${rowFree('Pé Dominante',a.pe)}
-        ${rowFree('Disponibilidade',a.disponivel?'✅ Disponível':'❌ Contratado')}
-      </div>
-      <div class="modal-sec">
-        <div class="modal-sec-title">Análise Técnica</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-          <div style="background:#f0fdf4;border:2px solid #86efac;border-radius:12px;padding:16px;text-align:center">
-            <div style="font-size:10px;font-weight:700;color:#15803d;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Ponto Forte</div>
-            ${forteVal
-              ? `<div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#15803d;text-transform:uppercase;line-height:1.1;margin-bottom:${bloqueado?'10':'0'}px;${bloqueado?'filter:blur(7px)':''}">${forteVal}</div>${bloqueado?'<span style=\"display:inline-block;background:var(--black);color:#fff;font-size:10px;font-weight:700;padding:5px 14px;border-radius:100px;cursor:pointer\" onclick=\"document.getElementById('profileModal').classList.remove('open');showPage('assinatura')\">' + 'ASSINE</span>' : ''}`
-              : '<span style=\"font-size:12px;color:var(--gray);font-style:italic\">Dado não disponível para esse atleta</span>'
-            }
-          </div>
-          <div style="background:#fff1f2;border:2px solid #fca5a5;border-radius:12px;padding:16px;text-align:center">
-            <div style="font-size:10px;font-weight:700;color:#b91c1c;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Pontos Fracos</div>
-            ${fracoVal
-              ? `<div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#b91c1c;text-transform:uppercase;line-height:1.1;margin-bottom:${bloqueado?'10':'0'}px;${bloqueado?'filter:blur(7px)':''}">${fracoVal}</div>${bloqueado?'<span style=\"display:inline-block;background:var(--black);color:#fff;font-size:10px;font-weight:700;padding:5px 14px;border-radius:100px;cursor:pointer\" onclick=\"document.getElementById('profileModal').classList.remove('open');showPage('assinatura')\">' + 'ASSINE</span>' : ''}`
-              : '<span style=\"font-size:12px;color:var(--gray);font-style:italic\">Dado não disponível para esse atleta</span>'
-            }
-          </div>
-        </div>
-        ${rowLocked('Link de Highlights / Vídeos',a.video)}
-      </div>
-      <div class="modal-sec">
-        <div class="modal-sec-title">Contato & Agência</div>
-        ${rowLocked('Instagram',a.instagram)}
-        ${rowLocked('WhatsApp',a.whatsapp)}
-        ${rowLocked('Agência',a.agencia)}
-        ${rowLocked('Tempo de Contrato',a.contrato)}
-      </div>
-      <div class="modal-sec">
-        <div class="modal-sec-title">Estatísticas da Temporada</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-          ${statBox(a.stats_gols||a.gols||'8','Gols')}
-          ${statBox(a.stats_assists||a.assists||'14','Assist.')}
-          ${statBox(a.stats_passes||a.passes||'89%','Passes')}
-          ${statBox(a.stats_dribles||a.dribles||'4.2','Dribles/jogo')}
-          ${statBox(a.stats_nota||a.nota||'7.8','Nota média')}
-          ${statBox(a.stats_jogos||a.jogos||'22','Jogos')}
-        </div>
-      </div>
-      ${bloqueado?`<div style="background:var(--black);border-radius:14px;padding:24px;text-align:center;margin-top:8px">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:#fff;text-transform:uppercase;margin-bottom:6px">Desbloqueie tudo por R$40/mês</div>
-        <p style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:18px">Veja contatos, análise técnica e estatísticas reais.</p>
-        <button style="background:var(--blue);border:none;color:#fff;padding:14px 36px;border-radius:9px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;cursor:pointer" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">⚡ ASSINAR R$40/MÊS →</button>
-      </div>`:''}
-    </div>`;
+  var fotoHtml=a.foto
+    ?'<img src="'+a.foto+'" style="width:100%;height:100%;object-fit:cover">'
+    :(a.emoji||'⭐');
+
+  var html='<div class="modal-hero">'+
+    '<div class="modal-photo" style="'+(a.foto?'background:none;overflow:hidden':'')+'">'+fotoHtml+'</div>'+
+    '<div class="modal-meta">'+
+      '<span class="modal-pos-badge">'+(a.posicao||'')+(a.modalidade?' · '+a.modalidade:' · Futsal')+'</span>'+
+      '<div class="modal-name">'+(a.nome||'')+'</div>'+
+      '<div class="modal-club">🏟 '+(a.clube&&a.clube!=='-'?a.clube:'Sem clube')+'</div>'+
+      '<div class="modal-avail-badge"><span style="width:8px;height:8px;background:'+(a.disponivel?'#00c878':'#ff5050')+';border-radius:50%;display:inline-block"></span> '+(a.disponivel?'Disponivel no Mercado':'Contratado')+'</div>'+
+    '</div></div>'+
+
+    '<div class="modal-stats-bar">'+
+      '<div class="mstat"><span class="mstat-val">'+(a.idade||'--')+'</span><span class="mstat-label">Idade</span></div>'+
+      '<div class="mstat"><span class="mstat-val">'+(a.altura?a.altura+'cm':'--')+'</span><span class="mstat-label">Altura</span></div>'+
+      '<div class="mstat"><span class="mstat-val">'+(a.peso?a.peso+'kg':'--')+'</span><span class="mstat-label">Peso</span></div>'+
+      '<div class="mstat"><span class="mstat-val">'+(a.pe?a.pe.charAt(0):'--')+'</span><span class="mstat-label">Pe Dom.</span></div>'+
+    '</div>'+
+
+    '<div class="modal-body">'+
+      '<div class="modal-sec"><div class="modal-sec-title">Dados Basicos</div>'+
+        rowFree('Posicao',a.posicao)+
+        rowFree('Modalidade',a.modalidade||'Futsal')+
+        rowFree('Pe Dominante',a.pe)+
+        rowFree('Disponibilidade',a.disponivel?'✅ Disponivel':'❌ Contratado')+
+      '</div>'+
+
+      '<div class="modal-sec"><div class="modal-sec-title">Analise Tecnica</div>'+
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">'+
+          forteBox(a.forte||a.caracteristica,'#f0fdf4','#15803d','Ponto Forte')+
+          forteBox(a.fraco,'#fff1f2','#b91c1c','Pontos Fracos')+
+        '</div>'+
+        rowLocked('Link de Highlights / Videos',a.video)+
+      '</div>'+
+
+      '<div class="modal-sec"><div class="modal-sec-title">Contato & Agencia</div>'+
+        rowLocked('Instagram',a.instagram)+
+        rowLocked('WhatsApp',a.whatsapp)+
+        rowLocked('Agencia',a.agencia)+
+        rowLocked('Tempo de Contrato',a.contrato)+
+      '</div>'+
+
+      '<div class="modal-sec"><div class="modal-sec-title">Estatisticas da Temporada</div>'+
+        '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">'+
+          statBox(a.stats_gols||a.gols,'Gols')+
+          statBox(a.stats_assists||a.assists,'Assist.')+
+          statBox(a.stats_passes||a.passes,'Passes')+
+          statBox(a.stats_dribles||a.dribles,'Dribles/jogo')+
+          statBox(a.stats_nota||a.nota,'Nota media')+
+          statBox(a.stats_jogos||a.jogos,'Jogos')+
+        '</div>'+
+      '</div>'+
+
+      (bloqueado?
+        '<div style="background:#060a12;border-radius:14px;padding:24px;text-align:center;margin-top:8px">'+
+          '<div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:900;color:#fff;text-transform:uppercase;margin-bottom:6px">Desbloqueie tudo por R$40/mes</div>'+
+          '<p style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:18px">Veja contatos, analise tecnica e estatisticas reais.</p>'+
+          '<button style="background:#1a56ff;border:none;color:#fff;padding:14px 36px;border-radius:9px;font-family:Barlow Condensed,sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;cursor:pointer;letter-spacing:.5px" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">⚡ ASSINAR R$40/MES →</button>'+
+        '</div>'
+      :'')+'</div>';
+
+  document.getElementById('modalBody').innerHTML=html;
   document.getElementById('profileModal').classList.add('open');
 }
 
