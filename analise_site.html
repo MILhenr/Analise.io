@@ -1180,35 +1180,42 @@ function openProfile(a){
   if(!a){ showToast('⚠️ Atleta não encontrado'); return; }
   const bloqueado = !userAssinante;
 
+  // Linha livre — fundo branco
   const rowFree = (label, value) =>
-    `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06)">
-      <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.35)">${label}</span>
-      <span style="font-weight:600;color:#fff;font-size:14px">${value||'—'}</span>
+    `<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">
+      <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray)">${label}</span>
+      <span style="font-weight:600;color:var(--text);font-size:14px">${value||'—'}</span>
     </div>`;
 
+  // Linha bloqueada — texto borrado + badge ASSINE preto
   const rowLocked = (label, value) => {
-    const v = value||'Disponível';
+    const v = value||'disponivel';
     if(bloqueado){
       const fake = v+v+v.slice(0,4);
-      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06)">
-        <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.35)">${label}</span>
-        <span style="font-weight:600;color:#fff;font-size:14px;filter:blur(7px);user-select:none;pointer-events:none">${fake}</span>
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray)">${label}</span>
+        <span style="display:flex;align-items:center;gap:8px">
+          <span style="font-weight:600;color:var(--text);font-size:14px;filter:blur(7px);user-select:none;pointer-events:none">${fake}</span>
+          <span style="background:var(--black);color:#fff;font-size:9px;font-weight:700;padding:4px 10px;border-radius:100px;flex-shrink:0;letter-spacing:0.06em;cursor:pointer" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">ASSINE</span>
+        </span>
       </div>`;
     }
-    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06)">
-      <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.35)">${label}</span>
-      <span style="font-weight:600;color:#fff;font-size:14px">${v}</span>
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">
+      <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray)">${label}</span>
+      <span style="font-weight:600;color:var(--text);font-size:14px">${v}</span>
     </div>`;
   };
 
+  // Box de estatística — fundo cinza claro, número azul borrado
   const statBox = (val, label) =>
-    `<div style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 10px;text-align:center">
+    `<div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center">
       <span style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--blue);display:block;line-height:1;${bloqueado?'filter:blur(6px)':''}">${val||'—'}</span>
-      <span style="font-size:10px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;display:block">${label}</span>
+      <span style="font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;display:block">${label}</span>
+      ${bloqueado?`<span style="display:inline-block;margin-top:6px;background:var(--black);color:#fff;font-size:9px;font-weight:700;padding:3px 9px;border-radius:100px;cursor:pointer;letter-spacing:0.06em" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">ASSINE</span>`:''}
     </div>`;
 
   const secTitle = (label) =>
-    `<div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:900;letter-spacing:0.14em;text-transform:uppercase;color:var(--blue);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(26,86,255,0.25)">${label}</div>`;
+    `<div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:900;letter-spacing:0.14em;text-transform:uppercase;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:1.5px solid var(--border)">${label}</div>`;
 
   const forteVal = a.forte || a.caracteristica || 'Velocidade e finalização';
   const fracoVal = a.fraco || 'Marcação defensiva';
@@ -1229,39 +1236,48 @@ function openProfile(a){
       </div>
     </div>
 
+    <!-- STATS BAR — números pretos -->
     <div class="modal-stats-bar">
-      <div class="mstat"><span class="mstat-val">${a.idade||'—'}</span><span class="mstat-label">Idade</span></div>
-      <div class="mstat"><span class="mstat-val">${a.altura?a.altura+'cm':'—'}</span><span class="mstat-label">Altura</span></div>
-      <div class="mstat"><span class="mstat-val">${a.peso?a.peso+'kg':'—'}</span><span class="mstat-label">Peso</span></div>
-      <div class="mstat"><span class="mstat-val">${a.pe?a.pe.charAt(0):'—'}</span><span class="mstat-label">Pé Dom.</span></div>
+      <div class="mstat"><span style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--black);display:block">${a.idade||'—'}</span><span class="mstat-label">Idade</span></div>
+      <div class="mstat"><span style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--black);display:block">${a.altura?a.altura+'cm':'—'}</span><span class="mstat-label">Altura</span></div>
+      <div class="mstat"><span style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--black);display:block">${a.peso?a.peso+'kg':'—'}</span><span class="mstat-label">Peso</span></div>
+      <div class="mstat"><span style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--black);display:block">${a.pe?a.pe.charAt(0):'—'}</span><span class="mstat-label">Pé Dom.</span></div>
     </div>
 
-    <div style="background:#0a0e1a;padding:28px 32px 32px">
+    <!-- CORPO BRANCO -->
+    <div class="modal-body">
 
-      <div style="margin-bottom:28px">
+      <!-- DADOS BÁSICOS -->
+      <div class="modal-sec">
         ${secTitle('Dados Básicos')}
         ${rowFree('Posição', a.posicao)}
         ${rowFree('Modalidade', a.modalidade||'Futsal')}
         ${rowFree('Pé Dominante', a.pe)}
-        ${rowFree('Disponibilidade', a.disponivel?'Disponível no mercado':'Contratado')}
+        ${rowFree('Disponibilidade', a.disponivel?'✅ Disponível no mercado':'❌ Contratado')}
       </div>
 
-      <div style="margin-bottom:28px">
+      <!-- ANÁLISE TÉCNICA -->
+      <div class="modal-sec">
         ${secTitle('Análise Técnica')}
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
-          <div style="background:rgba(21,128,61,0.12);border:1.5px solid rgba(21,128,61,0.3);border-radius:12px;padding:16px;text-align:center;overflow:hidden">
-            <div style="font-size:10px;font-weight:700;color:#4ade80;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">Ponto Forte</div>
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#4ade80;text-transform:uppercase;line-height:1.1;${bloqueado?'filter:blur(7px)':''}">${forteVal}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+          <!-- FORTE -->
+          <div style="background:#f0fdf4;border:2px solid #86efac;border-radius:12px;padding:16px;text-align:center">
+            <div style="font-size:10px;font-weight:700;color:#15803d;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">Ponto Forte</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#15803d;text-transform:uppercase;line-height:1.1;margin-bottom:10px;${bloqueado?'filter:blur(7px)':''}">${forteVal}</div>
+            ${bloqueado?`<span style="display:inline-block;background:var(--black);color:#fff;font-size:10px;font-weight:700;padding:5px 14px;border-radius:100px;cursor:pointer;letter-spacing:0.06em" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">ASSINE</span>`:''}
           </div>
-          <div style="background:rgba(185,28,28,0.12);border:1.5px solid rgba(185,28,28,0.3);border-radius:12px;padding:16px;text-align:center;overflow:hidden">
-            <div style="font-size:10px;font-weight:700;color:#f87171;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">A Desenvolver</div>
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#f87171;text-transform:uppercase;line-height:1.1;${bloqueado?'filter:blur(7px)':''}">${fracoVal}</div>
+          <!-- FRACO -->
+          <div style="background:#fff1f2;border:2px solid #fca5a5;border-radius:12px;padding:16px;text-align:center">
+            <div style="font-size:10px;font-weight:700;color:#b91c1c;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">Pontos Fracos</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#b91c1c;text-transform:uppercase;line-height:1.1;margin-bottom:10px;${bloqueado?'filter:blur(7px)':''}">${fracoVal}</div>
+            ${bloqueado?`<span style="display:inline-block;background:var(--black);color:#fff;font-size:10px;font-weight:700;padding:5px 14px;border-radius:100px;cursor:pointer;letter-spacing:0.06em" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">ASSINE</span>`:''}
           </div>
         </div>
         ${rowLocked('Link de Highlights / Vídeos', a.video||'youtube.com/highlights')}
       </div>
 
-      <div style="margin-bottom:28px">
+      <!-- CONTATO -->
+      <div class="modal-sec">
         ${secTitle('Contato & Agência')}
         ${rowLocked('Instagram', a.instagram||'@nomeatleta')}
         ${rowLocked('WhatsApp', a.whatsapp||'(11) 99999-9999')}
@@ -1269,7 +1285,8 @@ function openProfile(a){
         ${rowLocked('Tempo de Contrato', a.contrato||'6 meses')}
       </div>
 
-      <div style="margin-bottom:${bloqueado?'28':'0'}px">
+      <!-- ESTATÍSTICAS -->
+      <div class="modal-sec">
         ${secTitle('Estatísticas da Temporada')}
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
           ${statBox(a.stats_gols||a.gols||'8', 'Gols')}
@@ -1281,16 +1298,17 @@ function openProfile(a){
         </div>
       </div>
 
-      ${bloqueado?`
-      <div style="margin-top:28px;background:rgba(26,86,255,0.1);border:1.5px solid rgba(26,86,255,0.25);border-radius:14px;padding:24px;text-align:center">
+      ${bloqueado?`<div style="background:var(--black);border-radius:14px;padding:24px;text-align:center;margin-top:8px">
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:#fff;text-transform:uppercase;margin-bottom:6px">Desbloqueie tudo por R$40/mês</div>
-        <p style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:18px">Veja contatos, análise técnica e estatísticas reais de todos os atletas.</p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:18px">Veja contatos, análise técnica e estatísticas reais de todos os atletas.</p>
         <button style="background:var(--blue);border:none;color:#fff;padding:14px 36px;border-radius:9px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;cursor:pointer;letter-spacing:0.5px" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">⚡ ASSINAR R$40/MÊS →</button>
       </div>`:''}
 
     </div>`;
 
   document.getElementById('profileModal').classList.add('open');
+}
+
 }
 
 // ===== AUTH =====
