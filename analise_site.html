@@ -1259,17 +1259,59 @@ function handleCsvUpload(input){
   if(file)processCSV(file);
 }
 
+function parseCSVLine(line){
+  var result=[],cur='',inQ=false;
+  for(var i=0;i<line.length;i++){
+    var c=line[i];
+    if(c==='"'){inQ=!inQ;}
+    else if(c===','&&!inQ){result.push(cur.trim());cur='';}
+    else{cur+=c;}
+  }
+  result.push(cur.trim());
+  return result;
+}
+
+function normHeader(h){
+  var map={
+    'nome':'nome','name':'nome',
+    'idade':'idade','age':'idade',
+    'posição':'posicao','posicao':'posicao','position':'posicao','posicao':'posicao',
+    'pé dominante':'pe','pe dominante':'pe','pe':'pe','foot':'pe',
+    'altura':'altura','height':'altura',
+    'peso':'peso','weight':'peso',
+    'disponível':'disponivel','disponivel':'disponivel','available':'disponivel',
+    'clube atual':'clube','clube':'clube','club':'clube',
+    'tempo de contrato':'contrato','contrato':'contrato',
+    'agência':'agencia','agencia':'agencia','agency':'agencia',
+    'instagram':'instagram',
+    'whatsapp':'whatsapp','telefone':'whatsapp','phone':'whatsapp',
+    'ponto forte':'forte','forte':'forte','strong':'forte',
+    'ponto fraco':'fraco','fraco':'fraco','pontos fracos':'fraco','weak':'fraco',
+    'link highlights':'video','video':'video','highlights':'video',
+    'foto':'foto','photo':'foto',
+    'gols':'gols','goals':'gols',
+    'assistências':'assists','assistencias':'assists','assists':'assists',
+    'passes %':'passes','passes':'passes',
+    'dribles/jogo':'dribles','dribles':'dribles',
+    'nota média':'nota','nota media':'nota','nota':'nota',
+    'jogos':'jogos','games':'jogos'
+  };
+  var k=h.toLowerCase().trim().replace(/[áàãâ]/g,'a').replace(/[éê]/g,'e').replace(/[í]/g,'i').replace(/[óõô]/g,'o').replace(/[ú]/g,'u').replace(/[ç]/g,'c');
+  return map[k]||map[h.toLowerCase().trim()]||h.toLowerCase().trim();
+}
+
 function processCSV(file){
   var reader=new FileReader();
   reader.onload=function(e){
     var lines=e.target.result.trim().split('\n');
-    var headers=lines[0].split(',').map(function(h){return h.trim().toLowerCase();});
+    var rawHeaders=parseCSVLine(lines[0]);
+    var headers=rawHeaders.map(normHeader);
     csvParsed=[];
     for(var i=1;i<lines.length;i++){
       if(!lines[i].trim())continue;
-      var vals=lines[i].split(',').map(function(v){return v.trim();});
+      var vals=parseCSVLine(lines[i]);
       var obj={};
-      headers.forEach(function(h,idx){obj[h]=vals[idx]||'';});
+      headers.forEach(function(h,idx){obj[h]=(vals[idx]||'').replace(/^"|"$/g,'').trim();});
       if(obj.nome)csvParsed.push(obj);
     }
     var title=document.getElementById('csv-preview-title');
