@@ -209,7 +209,7 @@ footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align
             </select>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
           <div class="form-group"><label class="form-label">Clube Atual</label><input class="form-input" id="edit-clube"></div>
           <div class="form-group"><label class="form-label">Tempo de Contrato</label><input class="form-input" id="edit-contrato"></div>
         </div>
@@ -281,7 +281,7 @@ footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align
     <div class="hero-left fade-up">
       <div class="hero-badge"><span class="badge-dot"></span> Feito para o Futsal</div>
       <h1>DESCUBRA.<br><span class="blue italic">CONTRATE.</span><br>VENÇA.</h1>
-      <p class="hero-sub">A plataforma mais completa para conectar <strong>atletas de futsal</strong> com clubes, agentes e olheiros do Brasil inteiro.</p>
+      <p class="hero-sub">A plataforma mais completa para conectar <strong>atletas de futsal e futebol</strong> com clubes, agentes e olheiros do Brasil inteiro.</p>
       <div class="hero-btns">
         <button class="btn-hero-primary" onclick="showPage('atletas')">Ver Atletas →</button>
         <button class="btn-hero-secondary" onclick="showPage('cadastro-atleta');updateCadastroView()">Cadastrar Atleta</button>
@@ -494,7 +494,7 @@ footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align
               <select class="form-select" id="aa-disponivel"><option value="true">Sim</option><option value="false">Não</option></select>
             </div>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
             <div class="form-group"><label class="form-label">Clube Atual</label><input class="form-input" id="aa-clube" placeholder="Magnus Futsal"></div>
             <div class="form-group"><label class="form-label">Tempo de Contrato</label><input class="form-input" id="aa-contrato" placeholder="Ex: 1 ano, Livre"></div>
           </div>
@@ -754,7 +754,7 @@ function aplicarFiltros(){
   }
   if(agencia==='sem')lista=lista.filter(function(a){return !a.agencia||a.agencia===''||a.agencia==='-';});
   else if(agencia)lista=lista.filter(function(a){return (a.agencia||'').toLowerCase()===agencia.toLowerCase();});
-  if(disp==='sim')lista=lista.filter(function(a){return a.disponivel;});
+if(disp==='sim')lista=lista.filter(function(a){return a.disponivel;});
   if(disp==='nao')lista=lista.filter(function(a){return !a.disponivel;});
   renderAtletas(lista);showToast(lista.length+' atleta(s) encontrado(s)');
 }
@@ -777,13 +777,8 @@ function openProfile(a){
       +'<span style="font-weight:600;color:var(--text)">'+(val||'—')+'</span></div>';
   }
   function rLock(label,val){
-    if(!val||val==='-'||val==='—'){
-      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">'
-        +'<span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray)">'+label+'</span>'
-        +'<span style="font-size:12px;color:var(--gray);font-style:italic">Dado não disponível</span></div>';
-    }
     if(b){
-      var fake=val+val+val.slice(0,3);
+      var fake=val&&val!=='-'&&val!='\u2014'?val+val+val.slice(0,3):'\u25cf\u25cf\u25cf\u25cf\u25cf\u25cf\u25cf\u25cf';
       return '<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">'
         +'<span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray)">'+label+'</span>'
         +'<span style="display:flex;align-items:center;gap:8px">'
@@ -791,25 +786,47 @@ function openProfile(a){
         +'<span style="background:var(--black);color:#fff;font-size:9px;font-weight:700;padding:4px 10px;border-radius:100px;cursor:pointer" onclick="document.getElementById(\'profileModal\').classList.remove(\'open\');showPage(\'assinatura\')">ASSINE</span>'
         +'</span></div>';
     }
+    if(!val||val===\'-\'||val===\'\u2014\'){
+      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">'
+        +'<span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray)">'+label+'</span>'
+        +'<span style="font-size:12px;color:var(--gray);font-style:italic">Dado nao disponivel</span></div>';
+    }
     return '<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">'
       +'<span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray)">'+label+'</span>'
       +'<span style="font-weight:600;color:var(--text)">'+val+'</span></div>';
   }
   function sStat(val,label){
-    var v=val||'—';
-    var numStyle='font-family:\'Barlow Condensed\',sans-serif;font-size:28px;font-weight:900;color:var(--blue);display:block;line-height:1;'+(b?'filter:blur(6px)':'');
+    var v=val&&val!=='-'&&val!='—'?val:'●●';
+    if(b){
+      return '<div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center">'
+        +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:28px;font-weight:900;color:var(--blue);display:block;line-height:1;filter:blur(6px);user-select:none">'+v+'</span>'
+        +'<span style="font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;margin-top:4px;display:block">'+label+'</span>'
+        +'<span style="display:inline-block;margin-top:6px;background:var(--black);color:#fff;font-size:9px;font-weight:700;padding:3px 9px;border-radius:100px;cursor:pointer" onclick="document.getElementById(\'profileModal\').classList.remove(\'open\');showPage(\'assinatura\')">ASSINE</span>'
+        +'</div>';
+    }
+    var real=val&&val!=='-'&&val!='—'?val:'—';
     return '<div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center">'
-      +'<span style="'+numStyle+'">'+v+'</span>'
+      +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:28px;font-weight:900;color:var(--blue);display:block;line-height:1">'+real+'</span>'
       +'<span style="font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;margin-top:4px;display:block">'+label+'</span>'
-      +(b?'<span style="display:inline-block;margin-top:6px;background:var(--black);color:#fff;font-size:9px;font-weight:700;padding:3px 9px;border-radius:100px;cursor:pointer" onclick="document.getElementById(\'profileModal\').classList.remove(\'open\');showPage(\'assinatura\')">ASSINE</span>':'')
       +'</div>';
   }
   var fotoHtml=a.foto?'<img src="'+a.foto+'" style="width:100%;height:100%;object-fit:cover">':(a.emoji||'⭐');
   var forte=a.forte||a.caracteristica||'';
   var fraco=a.fraco||'';
   function forteBox(val,bgCol,borderCol,titulo){
-    var emptyHtml='<span style="font-size:12px;color:var(--gray);font-style:italic">Dado não disponível</span>';
-    var inner=(!val||val==='-')?emptyHtml:'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;line-height:1.1;margin-bottom:'+(b&&val?'10px':'0')+(b&&val?';filter:blur(7px)':'')+'">'+(val||'')+'</div>'+(b&&val?'<span style="display:inline-block;background:var(--black);color:#fff;font-size:10px;font-weight:700;padding:5px 14px;border-radius:100px;cursor:pointer" onclick="document.getElementById(\'profileModal\').classList.remove(\'open\');showPage(\'assinatura\')">ASSINE</span>':'');
+    var display=val&&val!=='-'&&val!='—'?val:'●●●●●●';
+    if(b){
+      // Nao assinante: sempre blur + ASSINE
+      return '<div style="background:'+bgCol+';border:2px solid '+borderCol+';border-radius:12px;padding:16px;text-align:center">'
+        +'<div style="font-size:10px;font-weight:700;color:'+borderCol+';letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">'+titulo+'</div>'
+        +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;line-height:1.1;margin-bottom:10px;filter:blur(7px);user-select:none">'+display+'</div>'
+        +'<span style="display:inline-block;background:var(--black);color:#fff;font-size:10px;font-weight:700;padding:5px 14px;border-radius:100px;cursor:pointer" onclick="document.getElementById(\'profileModal\').classList.remove(\'open\');showPage(\'assinatura\')">ASSINE</span>'
+        +'</div>';
+    }
+    // Assinante: mostra valor ou "Dado nao disponivel"
+    var inner=(!val||val==='-'||val==='—')
+      ?'<span style="font-size:12px;color:var(--gray);font-style:italic">Dado nao disponivel</span>'
+      :'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;line-height:1.1">'+val+'</div>';
     return '<div style="background:'+bgCol+';border:2px solid '+borderCol+';border-radius:12px;padding:16px;text-align:center">'
       +'<div style="font-size:10px;font-weight:700;color:'+borderCol+';letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">'+titulo+'</div>'
       +inner+'</div>';
