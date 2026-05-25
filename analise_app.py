@@ -46,7 +46,17 @@ def init_db():
                     stats_gols TEXT, stats_assists TEXT, stats_passes TEXT,
                     stats_dribles TEXT, stats_nota TEXT, stats_jogos TEXT,
                     status TEXT DEFAULT 'pendente', criado_em TEXT)''')
-                c.execute('''CREATE TABLE IF NOT EXISTS clubes (
+                c.execute('''CREATE TABLE IF NOT EXISTS correcoes (
+                    id TEXT PRIMARY KEY,
+                    atleta_id TEXT,
+                    atleta_nome TEXT,
+                    campo TEXT,
+                    detalhe TEXT,
+                    contato TEXT,
+                    status TEXT DEFAULT 'pendente',
+                    criado_em TEXT
+                )''')
+                        c.execute('''CREATE TABLE IF NOT EXISTS clubes (
                     id TEXT PRIMARY KEY, nome TEXT, cidade TEXT, posicao TEXT,
                     idade TEXT, detalhes TEXT, contato TEXT,
                     status TEXT DEFAULT 'pendente', criado_em TEXT)''')
@@ -396,6 +406,39 @@ def admin_deletar_clube(cid):
         return jsonify({"ok": True})
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
+
+# ================= CORREÇÕES =================
+@app.route("/api/solicitar_correcao", methods=["POST"])
+def solicitar_correcao():
+    data = request.json
+    try:
+        cid = str(uuid.uuid4())[:8].upper()
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute('''INSERT INTO correcoes (id,atleta_id,atleta_nome,campo,detalhe,contato,status,criado_em)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s)''',
+                    (cid, data.get('atleta_id',''), data.get('atleta_nome',''),
+                     data.get('campo',''), data.get('detalhe',''),
+                     data.get('contato',''), 'pendente',
+                     datetime.now().strftime("%d/%m/%Y %H:%M")))
+            conn.commit()
+        print(f"✅ CORRECAO RECEBIDA: atleta={data.get('atleta_nome')} campo={data.get('campo')}")
+        return jsonify({"ok": True})
+    except Exception as e:
+        print("ERRO CORRECAO:", e)
+        return jsonify({"erro": str(e)}), 500
+
+@app.route("/api/admin/correcoes", methods=["GET"])
+def admin_correcoes():
+    if not session.get("admin"):
+        return jsonify({"erro": "Não autorizado"}), 401
+    try:
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute("SELECT * FROM correcoes ORDER BY criado_em DESC")
+                return jsonify([dict(r) for r in c.fetchall()])
+    except Exception as e:
+        return jsonify([])
 
 # ================= PAGAMENTO =================
 @app.route("/api/criar_pagamento", methods=["POST"])
