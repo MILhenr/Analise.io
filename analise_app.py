@@ -47,16 +47,10 @@ def init_db():
                     stats_dribles TEXT, stats_nota TEXT, stats_jogos TEXT,
                     status TEXT DEFAULT 'pendente', criado_em TEXT)''')
                 c.execute('''CREATE TABLE IF NOT EXISTS correcoes (
-                    id TEXT PRIMARY KEY,
-                    atleta_id TEXT,
-                    atleta_nome TEXT,
-                    campo TEXT,
-                    detalhe TEXT,
-                    contato TEXT,
-                    status TEXT DEFAULT 'pendente',
-                    criado_em TEXT
-                )''')
-                        c.execute('''CREATE TABLE IF NOT EXISTS clubes (
+                    id TEXT PRIMARY KEY, atleta_id TEXT, atleta_nome TEXT,
+                    campo TEXT, detalhe TEXT, contato TEXT,
+                    status TEXT DEFAULT 'pendente', criado_em TEXT)''')
+                c.execute('''CREATE TABLE IF NOT EXISTS clubes (
                     id TEXT PRIMARY KEY, nome TEXT, cidade TEXT, posicao TEXT,
                     idade TEXT, detalhes TEXT, contato TEXT,
                     status TEXT DEFAULT 'pendente', criado_em TEXT)''')
@@ -65,7 +59,6 @@ def init_db():
     except Exception as e:
         print("❌ ERRO init_db:", e)
 
-# Roda SEMPRE — inclusive com gunicorn
 init_db()
 
 # ================= HELPERS =================
@@ -73,10 +66,8 @@ def hash_senha(s):
     return hashlib.sha256(s.encode()).hexdigest()
 
 def upload_foto(base64_image):
-    """Faz upload para Cloudinary. Retorna URL ou None."""
     if not base64_image:
         return None
-    # Aceita tanto base64 puro quanto data URI
     try:
         result = cloudinary.uploader.upload(
             base64_image,
@@ -84,7 +75,6 @@ def upload_foto(base64_image):
             resource_type="image"
         )
         url = result.get("secure_url", "")
-        # Otimiza imagem automaticamente
         if url:
             url = url.replace("/upload/", "/upload/f_auto,q_auto,w_400,h_400,c_fill/")
         print(f"✅ FOTO UPLOAD OK: {url}")
@@ -244,10 +234,7 @@ def admin_criar_atleta():
     data = request.json
     try:
         aid = str(uuid.uuid4())[:8].upper()
-
-        # ===== UPLOAD FOTO =====
         foto_url = upload_foto(data.get("foto"))
-
         with get_db() as conn:
             with conn.cursor() as c:
                 c.execute('''INSERT INTO atletas (
@@ -256,8 +243,7 @@ def admin_criar_atleta():
                     video,foto,stats_gols,stats_assists,stats_passes,stats_dribles,
                     stats_nota,stats_jogos,status,criado_em)
                     VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)''',
-                    (aid,
-                     data.get("nome",""), int(data.get("idade") or 0),
+                    (aid, data.get("nome",""), int(data.get("idade") or 0),
                      data.get("posicao",""), data.get("modalidade","Futsal"),
                      data.get("clube",""), data.get("agencia",""),
                      data.get("contrato",""), data.get("pe","Direito"),
@@ -265,14 +251,13 @@ def admin_criar_atleta():
                      bool(data.get("disponivel", True)),
                      data.get("instagram",""), data.get("whatsapp",""),
                      data.get("forte",""), data.get("fraco",""),
-                     data.get("video",""),
-                     foto_url,  # URL do Cloudinary
+                     data.get("video",""), foto_url,
                      data.get("stats_gols",""), data.get("stats_assists",""),
                      data.get("stats_passes",""), data.get("stats_dribles",""),
                      data.get("stats_nota",""), data.get("stats_jogos",""),
                      "aprovado", datetime.now().strftime("%d/%m/%Y %H:%M")))
             conn.commit()
-        print(f"✅ ATLETA CRIADO: id={aid} nome={data.get('nome')} foto={'SIM' if foto_url else 'NÃO'}")
+        print(f"✅ ATLETA CRIADO: id={aid} nome={data.get('nome')} foto={'SIM' if foto_url else 'NAO'}")
         return jsonify({"ok": True, "id": aid, "foto": foto_url})
     except Exception as e:
         print("❌ ERRO CRIAR ATLETA:", e)
@@ -284,21 +269,15 @@ def admin_editar_atleta(aid):
         return jsonify({"erro": "Não autorizado"}), 401
     data = request.json
     try:
-        # Verifica se veio nova foto
         nova_foto_base64 = data.get("foto")
         nova_foto_url = None
-
         if nova_foto_base64 and not nova_foto_base64.startswith("http"):
-            # É base64 nova — faz upload
             nova_foto_url = upload_foto(nova_foto_base64)
         elif nova_foto_base64 and nova_foto_base64.startswith("http"):
-            # Já é URL — mantém
             nova_foto_url = nova_foto_base64
-
         with get_db() as conn:
             with conn.cursor() as c:
                 if nova_foto_url:
-                    # Atualiza incluindo foto
                     c.execute("""UPDATE atletas SET
                         nome=%s,idade=%s,posicao=%s,modalidade=%s,clube=%s,
                         agencia=%s,contrato=%s,pe=%s,altura=%s,peso=%s,
@@ -320,7 +299,6 @@ def admin_editar_atleta(aid):
                          data.get("stats_nota",""), data.get("stats_jogos",""),
                          data.get("status","aprovado"), aid))
                 else:
-                    # Atualiza SEM mexer na foto
                     c.execute("""UPDATE atletas SET
                         nome=%s,idade=%s,posicao=%s,modalidade=%s,clube=%s,
                         agencia=%s,contrato=%s,pe=%s,altura=%s,peso=%s,
@@ -342,7 +320,7 @@ def admin_editar_atleta(aid):
                          data.get("stats_nota",""), data.get("stats_jogos",""),
                          data.get("status","aprovado"), aid))
             conn.commit()
-        print(f"✅ ATLETA EDITADO: id={aid} foto={'atualizada' if nova_foto_url else 'mantida'}")
+        print(f"✅ ATLETA EDITADO: id={aid}")
         return jsonify({"ok": True})
     except Exception as e:
         print("❌ ERRO EDITAR ATLETA:", e)
@@ -443,7 +421,6 @@ def admin_correcoes():
 # ================= PAGAMENTO =================
 @app.route("/api/criar_pagamento", methods=["POST"])
 def criar_pagamento():
-    # Integrar Mercado Pago aqui quando necessário
     return jsonify({"erro": "Pagamento não configurado"}), 400
 
 # ================= START =================
