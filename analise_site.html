@@ -1180,35 +1180,35 @@ function openProfile(a){
   if(!a){ showToast('⚠️ Atleta não encontrado'); return; }
   const bloqueado = !userAssinante;
 
-  const blur = (content) => bloqueado
-    ? `<span style="filter:blur(7px);user-select:none;pointer-events:none">${content}</span>`
-    : content;
-
-  const lockBadge = bloqueado
-    ? `<span style="background:var(--blue);color:#fff;font-size:9px;font-weight:700;padding:3px 9px;border-radius:100px;flex-shrink:0">🔒 ASSINE</span>`
-    : '';
-
   const rowFree = (label, value) =>
-    `<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">
-      <span style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray)">${label}</span>
-      <span style="font-weight:600;color:var(--text)">${value||'—'}</span>
+    `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06)">
+      <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.35)">${label}</span>
+      <span style="font-weight:600;color:#fff;font-size:14px">${value||'—'}</span>
     </div>`;
 
-  const rowLocked = (label, value) =>
-    `<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border);${bloqueado?'cursor:pointer':''}" ${bloqueado?`onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')"`:''}>
-      <span style="font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray)">${label}</span>
-      <span style="display:flex;align-items:center;gap:8px">
-        ${blur(`<span style="font-weight:600;color:var(--text)">${value||'—'}</span>`)}
-        ${lockBadge}
-      </span>
+  const rowLocked = (label, value) => {
+    const v = value||'Disponível';
+    if(bloqueado){
+      const fake = v+v+v.slice(0,4);
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06)">
+        <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.35)">${label}</span>
+        <span style="font-weight:600;color:#fff;font-size:14px;filter:blur(7px);user-select:none;pointer-events:none">${fake}</span>
+      </div>`;
+    }
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06)">
+      <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.35)">${label}</span>
+      <span style="font-weight:600;color:#fff;font-size:14px">${v}</span>
     </div>`;
+  };
 
   const statBox = (val, label) =>
-    `<div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center;${bloqueado?'cursor:pointer':''}" ${bloqueado?`onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')"`:''}>
+    `<div style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 10px;text-align:center">
       <span style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--blue);display:block;line-height:1;${bloqueado?'filter:blur(6px)':''}">${val||'—'}</span>
-      <span style="font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;display:block">${label}</span>
-      ${bloqueado?`<span style="display:block;font-size:9px;color:var(--blue);font-weight:700;margin-top:4px">🔒</span>`:''}
+      <span style="font-size:10px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;display:block">${label}</span>
     </div>`;
+
+  const secTitle = (label) =>
+    `<div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:900;letter-spacing:0.14em;text-transform:uppercase;color:var(--blue);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(26,86,255,0.25)">${label}</div>`;
 
   const forteVal = a.forte || a.caracteristica || 'Velocidade e finalização';
   const fracoVal = a.fraco || 'Marcação defensiva';
@@ -1236,58 +1236,42 @@ function openProfile(a){
       <div class="mstat"><span class="mstat-val">${a.pe?a.pe.charAt(0):'—'}</span><span class="mstat-label">Pé Dom.</span></div>
     </div>
 
-    <div class="modal-body">
+    <div style="background:#0a0e1a;padding:28px 32px 32px">
 
-      ${bloqueado?`<div style="background:linear-gradient(135deg,var(--blue),var(--blue2));border-radius:12px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:12px;flex-wrap:wrap">
-        <div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:900;color:#fff;text-transform:uppercase">🔒 Dados completos bloqueados</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-top:2px">Assine R$40/mês para ver tudo desbloqueado</div>
-        </div>
-        <button onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')" style="background:#fff;border:none;color:var(--blue);padding:10px 20px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;text-transform:uppercase;cursor:pointer;white-space:nowrap;flex-shrink:0">⚡ ASSINAR →</button>
-      </div>`:''}
-
-      <!-- DADOS BÁSICOS — sempre visível -->
-      <div class="modal-sec">
-        <div class="modal-sec-title">📋 Dados Básicos</div>
+      <div style="margin-bottom:28px">
+        ${secTitle('Dados Básicos')}
         ${rowFree('Posição', a.posicao)}
         ${rowFree('Modalidade', a.modalidade||'Futsal')}
         ${rowFree('Pé Dominante', a.pe)}
-        ${rowFree('Disponibilidade', a.disponivel?'✅ Disponível no mercado':'❌ Contratado')}
+        ${rowFree('Disponibilidade', a.disponivel?'Disponível no mercado':'Contratado')}
       </div>
 
-      <!-- PONTO FORTE E FRACO — destaque visual, borrado -->
-      <div class="modal-sec" ${bloqueado?`style="cursor:pointer" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')"`:''}>
-        <div class="modal-sec-title">🎯 Análise Técnica</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-          <!-- FORTE -->
-          <div style="background:#f0fdf4;border:2px solid #86efac;border-radius:12px;padding:16px;text-align:center;position:relative">
-            <div style="font-size:11px;font-weight:700;color:#15803d;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px">💚 Ponto Forte</div>
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:#15803d;text-transform:uppercase;line-height:1.1;${bloqueado?'filter:blur(6px)':''}">${forteVal}</div>
-            ${bloqueado?`<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:10px"><span style="background:#15803d;color:#fff;font-size:10px;font-weight:700;padding:4px 10px;border-radius:100px">🔒 ASSINE</span></div>`:''}
+      <div style="margin-bottom:28px">
+        ${secTitle('Análise Técnica')}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+          <div style="background:rgba(21,128,61,0.12);border:1.5px solid rgba(21,128,61,0.3);border-radius:12px;padding:16px;text-align:center;overflow:hidden">
+            <div style="font-size:10px;font-weight:700;color:#4ade80;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">Ponto Forte</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#4ade80;text-transform:uppercase;line-height:1.1;${bloqueado?'filter:blur(7px)':''}">${forteVal}</div>
           </div>
-          <!-- FRACO -->
-          <div style="background:#fff1f2;border:2px solid #fca5a5;border-radius:12px;padding:16px;text-align:center;position:relative">
-            <div style="font-size:11px;font-weight:700;color:#b91c1c;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px">❤️ A Desenvolver</div>
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:#b91c1c;text-transform:uppercase;line-height:1.1;${bloqueado?'filter:blur(6px)':''}">${fracoVal}</div>
-            ${bloqueado?`<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:10px"><span style="background:#b91c1c;color:#fff;font-size:10px;font-weight:700;padding:4px 10px;border-radius:100px">🔒 ASSINE</span></div>`:''}
+          <div style="background:rgba(185,28,28,0.12);border:1.5px solid rgba(185,28,28,0.3);border-radius:12px;padding:16px;text-align:center;overflow:hidden">
+            <div style="font-size:10px;font-weight:700;color:#f87171;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">A Desenvolver</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#f87171;text-transform:uppercase;line-height:1.1;${bloqueado?'filter:blur(7px)':''}">${fracoVal}</div>
           </div>
         </div>
-        ${rowLocked('Link de Highlights / Vídeos', a.video?'🎬 Ver vídeos':'Disponível')}
+        ${rowLocked('Link de Highlights / Vídeos', a.video||'youtube.com/highlights')}
       </div>
 
-      <!-- CONTATO — bloqueado -->
-      <div class="modal-sec">
-        <div class="modal-sec-title">👤 Contato & Agência</div>
-        ${rowLocked('Instagram', a.instagram||'@atleta')}
-        ${rowLocked('WhatsApp', a.whatsapp?'('+a.whatsapp.slice(0,2)+') '+a.whatsapp.slice(2,7)+'-'+a.whatsapp.slice(7):'(11) 9••••-••••')}
-        ${rowLocked('Agência', a.agencia||'Sem agência')}
-        ${rowLocked('Tempo de Contrato', a.contrato||'A combinar')}
+      <div style="margin-bottom:28px">
+        ${secTitle('Contato & Agência')}
+        ${rowLocked('Instagram', a.instagram||'@nomeatleta')}
+        ${rowLocked('WhatsApp', a.whatsapp||'(11) 99999-9999')}
+        ${rowLocked('Agência', a.agencia||'Elite Sports Agency')}
+        ${rowLocked('Tempo de Contrato', a.contrato||'6 meses')}
       </div>
 
-      <!-- ESTATÍSTICAS — borradas -->
-      <div class="modal-sec">
-        <div class="modal-sec-title">📊 Estatísticas da Temporada</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px">
+      <div style="margin-bottom:${bloqueado?'28':'0'}px">
+        ${secTitle('Estatísticas da Temporada')}
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
           ${statBox(a.stats_gols||a.gols||'8', 'Gols')}
           ${statBox(a.stats_assists||a.assists||'14', 'Assist.')}
           ${statBox(a.stats_passes||a.passes||'89%', 'Passes')}
@@ -1297,18 +1281,17 @@ function openProfile(a){
         </div>
       </div>
 
-      ${bloqueado?`<div style="background:var(--black);border-radius:16px;padding:28px;text-align:center;margin-top:8px">
-        <div style="font-size:28px;margin-bottom:10px">🔓</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:#fff;text-transform:uppercase;margin-bottom:8px">Desbloqueie tudo por R$40/mês</div>
-        <p style="font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:20px;line-height:1.6">Contatos, estatísticas reais, análise técnica e vídeos de todos os atletas.</p>
-        <button class="btn-hero-primary" style="padding:14px 36px;font-size:18px" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">⚡ ASSINAR R$40/MÊS →</button>
+      ${bloqueado?`
+      <div style="margin-top:28px;background:rgba(26,86,255,0.1);border:1.5px solid rgba(26,86,255,0.25);border-radius:14px;padding:24px;text-align:center">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:#fff;text-transform:uppercase;margin-bottom:6px">Desbloqueie tudo por R$40/mês</div>
+        <p style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:18px">Veja contatos, análise técnica e estatísticas reais de todos os atletas.</p>
+        <button style="background:var(--blue);border:none;color:#fff;padding:14px 36px;border-radius:9px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;cursor:pointer;letter-spacing:0.5px" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">⚡ ASSINAR R$40/MÊS →</button>
       </div>`:''}
 
     </div>`;
 
   document.getElementById('profileModal').classList.add('open');
 }
-
 
 // ===== AUTH =====
 function openAuthModal(tab){
