@@ -433,7 +433,7 @@ footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align
             <div class="form-group"><label class="form-label">Altura (cm)</label><input class="form-input" id="aa-altura" type="number" placeholder="175"></div>
             <div class="form-group"><label class="form-label">Peso (kg)</label><input class="form-input" id="aa-peso" type="number" placeholder="72"></div>
             <div class="form-group"><label class="form-label">Disponível?</label>
-              <select class="form-select" id="aa-disponivel"><option value="true">Sim</option><option value="false">Não</option></select>
+              <select class="form-select" id="aa-disponivel" onchange="addDisponivel(this.value)"><option value="true">Sim</option><option value="false">Não</option></select>
             </div>
           </div>
           <div class="form-group"><label class="form-label">Clube Atual</label><input class="form-input" id="aa-clube" placeholder="Magnus Futsal"></div>
@@ -533,6 +533,77 @@ footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align
     </div>
     <button onclick="showPage('atletas')" style="background:transparent;border:none;color:var(--gray);font-size:14px;cursor:pointer;text-decoration:underline">Voltar para atletas</button>
   </section>
+</div>
+
+<!-- MODAL EDITAR ATLETA -->
+<div class="modal-overlay" id="editModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:760px">
+    <button class="modal-close" onclick="document.getElementById('editModal').classList.remove('open')">✕</button>
+    <div style="padding:32px 40px 40px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;text-transform:uppercase;margin-bottom:24px">✏️ Editar Atleta</div>
+      <input type="hidden" id="edit-id">
+      <div style="display:grid;gap:14px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="edit-nome"></div>
+          <div class="form-group"><label class="form-label">Idade *</label><input class="form-input" id="edit-idade" type="number"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-group"><label class="form-label">Posição *</label>
+            <select class="form-select" id="edit-posicao"><option value="">Selecionar</option><option>Goleiro</option><option>Fixo</option><option>Ala</option><option>Pivô</option><option>Universal</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Pé Dominante</label>
+            <select class="form-select" id="edit-pe"><option>Direito</option><option>Esquerdo</option><option>Ambidestro</option></select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+          <div class="form-group"><label class="form-label">Altura (cm)</label><input class="form-input" id="edit-altura" type="number"></div>
+          <div class="form-group"><label class="form-label">Peso (kg)</label><input class="form-input" id="edit-peso" type="number"></div>
+          <div class="form-group"><label class="form-label">Disponível?</label>
+            <select class="form-select" id="edit-disponivel" onchange="editDisponivel(this.value)">
+              <option value="true">Sim</option><option value="false">Não</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-group"><label class="form-label">Clube Atual</label><input class="form-input" id="edit-clube"></div>
+          <div class="form-group"><label class="form-label">Tempo de Contrato</label><input class="form-input" id="edit-contrato"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Agência</label><input class="form-input" id="edit-agencia"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="edit-instagram"></div>
+          <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="edit-whatsapp"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Ponto Forte</label><input class="form-input" id="edit-forte"></div>
+        <div class="form-group"><label class="form-label">Pontos Fracos</label><input class="form-input" id="edit-fraco"></div>
+        <div class="form-group"><label class="form-label">Link Highlights / Vídeo</label><input class="form-input" id="edit-video"></div>
+        <div class="form-group">
+          <label class="form-label">Foto do Atleta (deixe vazio para manter a atual)</label>
+          <div id="edit-foto-area" style="border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer;background:var(--white)" onclick="document.getElementById('edit-foto-input').click()">
+            <div id="edit-foto-preview" style="display:none;margin-bottom:8px"><img id="edit-foto-img" style="width:70px;height:70px;border-radius:10px;object-fit:cover;border:2px solid var(--border)"></div>
+            <div id="edit-foto-placeholder"><div style="font-size:24px;margin-bottom:6px">📸</div><div style="font-size:13px;color:var(--gray)">Clique para trocar a foto</div></div>
+          </div>
+          <input type="file" id="edit-foto-input" accept="image/*" style="display:none" onchange="handleEditFoto(this)">
+          <input type="hidden" id="edit-foto-base64">
+          <input type="hidden" id="edit-foto-url-atual">
+        </div>
+        <div style="background:var(--gray-light);border-radius:12px;padding:16px;border:1.5px solid var(--border)">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;text-transform:uppercase;margin-bottom:14px;color:var(--gray)">Estatísticas</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+            <div class="form-group"><label class="form-label">Gols</label><input class="form-input" id="edit-gols" type="number"></div>
+            <div class="form-group"><label class="form-label">Assistências</label><input class="form-input" id="edit-assists" type="number"></div>
+            <div class="form-group"><label class="form-label">Passes %</label><input class="form-input" id="edit-passes"></div>
+            <div class="form-group"><label class="form-label">Dribles/jogo</label><input class="form-input" id="edit-dribles"></div>
+            <div class="form-group"><label class="form-label">Nota média</label><input class="form-input" id="edit-nota"></div>
+            <div class="form-group"><label class="form-label">Jogos</label><input class="form-input" id="edit-jogos" type="number"></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px">
+          <button class="btn-submit" id="btn-salvar-edit" onclick="salvarEdicao()">SALVAR ALTERAÇÕES →</button>
+          <button onclick="document.getElementById('editModal').classList.remove('open')" style="background:var(--gray-light);border:1.5px solid var(--border);color:var(--text);padding:16px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;text-transform:uppercase;cursor:pointer">CANCELAR</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- PAGAR ATLETA -->
@@ -708,14 +779,22 @@ function openProfile(a){
 
   const assineBtn = `<span style="background:var(--black);color:#fff;font-size:9px;font-weight:700;padding:4px 10px;border-radius:100px;cursor:pointer;letter-spacing:.06em;flex-shrink:0" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">ASSINE</span>`;
 
+  const semDado='<span style="font-size:12px;color:var(--gray);font-style:italic">Dado não disponível para esse atleta</span>';
+  const vazio=(v)=>!v||v==='-'||v==='—'||v.trim()==='';
   const rowFree=(label,value)=>
     `<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">
       <span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray)">${label}</span>
-      <span style="font-weight:600;color:var(--text)">${value||'—'}</span>
+      ${vazio(value)?semDado:`<span style="font-weight:600;color:var(--text)">${value}</span>`}
     </div>`;
 
   const rowLocked=(label,value)=>{
-    const v=value||'disponivel';
+    if(vazio(value)){
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray)">${label}</span>
+        ${semDado}
+      </div>`;
+    }
+    const v=value;
     if(bloqueado){
       const fake=v+v+v.slice(0,3);
       return `<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">
@@ -739,8 +818,8 @@ function openProfile(a){
       ${bloqueado?`<span style="display:inline-block;margin-top:6px;background:var(--black);color:#fff;font-size:9px;font-weight:700;padding:3px 9px;border-radius:100px;cursor:pointer" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">ASSINE</span>`:''}
     </div>`;
 
-  const forteVal=a.forte||a.caracteristica||'Velocidade e finalização';
-  const fracoVal=a.fraco||'Marcação defensiva';
+  const forteVal=a.forte||a.caracteristica||null;
+  const fracoVal=a.fraco||null;
 
   document.getElementById('modalBody').innerHTML=`
     <div class="modal-hero">
@@ -776,23 +855,27 @@ function openProfile(a){
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
           <div style="background:#f0fdf4;border:2px solid #86efac;border-radius:12px;padding:16px;text-align:center">
             <div style="font-size:10px;font-weight:700;color:#15803d;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Ponto Forte</div>
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#15803d;text-transform:uppercase;line-height:1.1;margin-bottom:${bloqueado?'10':'0'}px;${bloqueado?'filter:blur(7px)':''}">${forteVal}</div>
-            ${bloqueado?`<span style="display:inline-block;background:var(--black);color:#fff;font-size:10px;font-weight:700;padding:5px 14px;border-radius:100px;cursor:pointer" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">ASSINE</span>`:''}
+            ${forteVal
+              ? `<div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#15803d;text-transform:uppercase;line-height:1.1;margin-bottom:${bloqueado?'10':'0'}px;${bloqueado?'filter:blur(7px)':''}">${forteVal}</div>${bloqueado?'<span style=\"display:inline-block;background:var(--black);color:#fff;font-size:10px;font-weight:700;padding:5px 14px;border-radius:100px;cursor:pointer\" onclick=\"document.getElementById('profileModal').classList.remove('open');showPage('assinatura')\">' + 'ASSINE</span>' : ''}`
+              : '<span style=\"font-size:12px;color:var(--gray);font-style:italic\">Dado não disponível para esse atleta</span>'
+            }
           </div>
           <div style="background:#fff1f2;border:2px solid #fca5a5;border-radius:12px;padding:16px;text-align:center">
             <div style="font-size:10px;font-weight:700;color:#b91c1c;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Pontos Fracos</div>
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#b91c1c;text-transform:uppercase;line-height:1.1;margin-bottom:${bloqueado?'10':'0'}px;${bloqueado?'filter:blur(7px)':''}">${fracoVal}</div>
-            ${bloqueado?`<span style="display:inline-block;background:var(--black);color:#fff;font-size:10px;font-weight:700;padding:5px 14px;border-radius:100px;cursor:pointer" onclick="document.getElementById('profileModal').classList.remove('open');showPage('assinatura')">ASSINE</span>`:''}
+            ${fracoVal
+              ? `<div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#b91c1c;text-transform:uppercase;line-height:1.1;margin-bottom:${bloqueado?'10':'0'}px;${bloqueado?'filter:blur(7px)':''}">${fracoVal}</div>${bloqueado?'<span style=\"display:inline-block;background:var(--black);color:#fff;font-size:10px;font-weight:700;padding:5px 14px;border-radius:100px;cursor:pointer\" onclick=\"document.getElementById('profileModal').classList.remove('open');showPage('assinatura')\">' + 'ASSINE</span>' : ''}`
+              : '<span style=\"font-size:12px;color:var(--gray);font-style:italic\">Dado não disponível para esse atleta</span>'
+            }
           </div>
         </div>
-        ${rowLocked('Link de Highlights / Vídeos',a.video||'youtube.com/highlights')}
+        ${rowLocked('Link de Highlights / Vídeos',a.video)}
       </div>
       <div class="modal-sec">
         <div class="modal-sec-title">Contato & Agência</div>
-        ${rowLocked('Instagram',a.instagram||'@nomeatleta')}
-        ${rowLocked('WhatsApp',a.whatsapp||'(11) 99999-9999')}
-        ${rowLocked('Agência',a.agencia||'Elite Sports Agency')}
-        ${rowLocked('Tempo de Contrato',a.contrato||'6 meses')}
+        ${rowLocked('Instagram',a.instagram)}
+        ${rowLocked('WhatsApp',a.whatsapp)}
+        ${rowLocked('Agência',a.agencia)}
+        ${rowLocked('Tempo de Contrato',a.contrato)}
       </div>
       <div class="modal-sec">
         <div class="modal-sec-title">Estatísticas da Temporada</div>
@@ -907,6 +990,7 @@ function renderAdminAtletas(){
         ${a.status!=='aprovado'?`<button class="btn-act btn-aprov" onclick="adminAcao(${idx},'aprovado')">✓ Aprovar</button>`:''}
         ${a.status!=='recusado'?`<button class="btn-act btn-recus" onclick="adminAcao(${idx},'recusado')">✗ Recusar</button>`:''}
         <button class="btn-act btn-see" onclick="openProfile(atletasCache[${idx}])">👁 Ver</button>
+        <button class="btn-act" style="background:#fef9c3;color:#a16207" onclick="adminEditar(${idx})">✏️ Editar</button>
         <button class="btn-act" style="background:#fee2e2;color:#b91c1c" onclick="adminDel(${idx})">🗑 Del</button>
       </div></td>
     </tr>`).join('')
@@ -925,6 +1009,117 @@ async function adminDel(idx){
   if(!confirm('Remover "'+a.nome+'"?'))return;
   await apiFetch('/api/admin/atletas/'+a.id,{method:'DELETE'});
   atletasCache.splice(idx,1);renderAdminAtletas();await init();showToast('✅ Atleta removido.');
+}
+
+// ===== EDITAR ATLETA =====
+function adminEditar(idx){
+  const a=atletasCache[idx];if(!a)return;
+  document.getElementById('edit-id').value=a.id;
+  document.getElementById('edit-nome').value=a.nome||'';
+  document.getElementById('edit-idade').value=a.idade||'';
+  document.getElementById('edit-posicao').value=a.posicao||'';
+  document.getElementById('edit-pe').value=a.pe||'Direito';
+  document.getElementById('edit-altura').value=a.altura||'';
+  document.getElementById('edit-peso').value=a.peso||'';
+  document.getElementById('edit-disponivel').value=a.disponivel?'true':'false';
+  document.getElementById('edit-clube').value=a.clube||'';
+  document.getElementById('edit-contrato').value=a.contrato||'';
+  document.getElementById('edit-agencia').value=a.agencia||'';
+  document.getElementById('edit-instagram').value=a.instagram||'';
+  document.getElementById('edit-whatsapp').value=a.whatsapp||'';
+  document.getElementById('edit-forte').value=a.forte||'';
+  document.getElementById('edit-fraco').value=a.fraco||'';
+  document.getElementById('edit-video').value=a.video||'';
+  document.getElementById('edit-gols').value=a.stats_gols||a.gols||'';
+  document.getElementById('edit-assists').value=a.stats_assists||a.assists||'';
+  document.getElementById('edit-passes').value=a.stats_passes||a.passes||'';
+  document.getElementById('edit-dribles').value=a.stats_dribles||a.dribles||'';
+  document.getElementById('edit-nota').value=a.stats_nota||a.nota||'';
+  document.getElementById('edit-jogos').value=a.stats_jogos||a.jogos||'';
+  // Foto atual
+  document.getElementById('edit-foto-base64').value='';
+  document.getElementById('edit-foto-url-atual').value=a.foto||'';
+  if(a.foto){
+    document.getElementById('edit-foto-img').src=a.foto;
+    document.getElementById('edit-foto-preview').style.display='block';
+    document.getElementById('edit-foto-placeholder').style.display='none';
+  } else {
+    document.getElementById('edit-foto-preview').style.display='none';
+    document.getElementById('edit-foto-placeholder').style.display='block';
+  }
+  document.getElementById('editModal').classList.add('open');
+}
+
+function handleEditFoto(input){
+  const file=input.files[0];if(!file)return;
+  if(file.size>5*1024*1024){showToast('⚠️ Foto muito grande! Máx 5MB');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    document.getElementById('edit-foto-base64').value=e.target.result;
+    document.getElementById('edit-foto-img').src=e.target.result;
+    document.getElementById('edit-foto-preview').style.display='block';
+    document.getElementById('edit-foto-placeholder').style.display='none';
+    document.getElementById('edit-foto-area').style.borderColor='var(--blue)';
+  };
+  reader.readAsDataURL(file);
+}
+
+function editDisponivel(val){
+  if(val==='false'){
+    document.getElementById('edit-clube').value='-';
+    document.getElementById('edit-contrato').value='Livre';
+  }
+}
+
+function addDisponivel(val){
+  if(val==='false'){
+    document.getElementById('aa-clube').value='-';
+    document.getElementById('aa-contrato').value='Livre';
+  }
+}
+
+async function salvarEdicao(){
+  const id=document.getElementById('edit-id').value;
+  const nome=document.getElementById('edit-nome').value.trim();
+  const idade=document.getElementById('edit-idade').value;
+  const posicao=document.getElementById('edit-posicao').value;
+  if(!nome||!idade||!posicao){showToast('⚠️ Preencha nome, idade e posição');return;}
+  const btn=document.getElementById('btn-salvar-edit');
+  btn.innerHTML='<span class="loading-spinner"></span> Salvando...';btn.disabled=true;
+  const fotoBase64=document.getElementById('edit-foto-base64').value;
+  const fotoUrlAtual=document.getElementById('edit-foto-url-atual').value;
+  const fotoEnviar=fotoBase64||fotoUrlAtual||null;
+  const payload={
+    nome,idade:parseInt(idade),posicao,modalidade:'Futsal',
+    clube:document.getElementById('edit-clube').value||'-',
+    pe:document.getElementById('edit-pe').value,
+    altura:parseInt(document.getElementById('edit-altura').value)||0,
+    peso:parseInt(document.getElementById('edit-peso').value)||0,
+    disponivel:document.getElementById('edit-disponivel').value==='true',
+    agencia:document.getElementById('edit-agencia').value,
+    contrato:document.getElementById('edit-contrato').value,
+    instagram:document.getElementById('edit-instagram').value,
+    whatsapp:document.getElementById('edit-whatsapp').value,
+    forte:document.getElementById('edit-forte').value,
+    fraco:document.getElementById('edit-fraco').value,
+    video:document.getElementById('edit-video').value,
+    foto:fotoEnviar,
+    stats_gols:document.getElementById('edit-gols').value,
+    stats_assists:document.getElementById('edit-assists').value,
+    stats_passes:document.getElementById('edit-passes').value,
+    stats_dribles:document.getElementById('edit-dribles').value,
+    stats_nota:document.getElementById('edit-nota').value,
+    stats_jogos:document.getElementById('edit-jogos').value,
+    status:atletasCache.find(x=>String(x.id)===String(id))?.status||'aprovado'
+  };
+  const data=await apiFetch('/api/admin/atletas/'+id,{method:'PUT',body:JSON.stringify(payload)});
+  btn.innerHTML='SALVAR ALTERAÇÕES →';btn.disabled=false;
+  if(data.erro){showToast('⚠️ '+data.erro);return;}
+  const idx=atletasCache.findIndex(x=>String(x.id)===String(id));
+  if(idx>=0) atletasCache[idx]={...atletasCache[idx],...payload,id,foto:fotoUrlAtual||atletasCache[idx].foto};
+  document.getElementById('editModal').classList.remove('open');
+  renderAdminAtletas();await init();
+  showToast('✅ Atleta atualizado com sucesso!');
 }
 
 async function adicionarAtletaAdmin(){
