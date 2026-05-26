@@ -209,7 +209,7 @@ footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align
             </select>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
           <div class="form-group"><label class="form-label">Clube Atual</label><input class="form-input" id="edit-clube"></div>
           <div class="form-group"><label class="form-label">Tempo de Contrato</label><input class="form-input" id="edit-contrato"></div>
         </div>
@@ -281,7 +281,7 @@ footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align
     <div class="hero-left fade-up">
       <div class="hero-badge"><span class="badge-dot"></span> Feito para o Futsal</div>
       <h1>DESCUBRA.<br><span class="blue italic">CONTRATE.</span><br>VENÇA.</h1>
-      <p class="hero-sub">A plataforma mais completa para conectar <strong>atletas de futsal</strong> com clubes, agentes e olheiros do Brasil inteiro.</p>
+      <p class="hero-sub">A plataforma mais completa para conectar <strong>atletas de futsal e futebol</strong> com clubes, agentes e olheiros do Brasil inteiro.</p>
       <div class="hero-btns">
         <button class="btn-hero-primary" onclick="showPage('atletas')">Ver Atletas →</button>
         <button class="btn-hero-secondary" onclick="showPage('cadastro-atleta');updateCadastroView()">Cadastrar Atleta</button>
@@ -440,6 +440,7 @@ footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align
       <button class="admin-tab" id="atab-add" onclick="adminPanelTab('add')">+ Adicionar Atleta</button>
       <button class="admin-tab" id="atab-destaque" onclick="adminPanelTab('destaque')">⭐ Capa</button>
       <button class="admin-tab" id="atab-csv" onclick="adminPanelTab('csv')">📊 CSV</button>
+      <button class="admin-tab" id="atab-correcoes" onclick="adminPanelTab('correcoes');carregarCorrecoes()">🔔 Correções</button>
     </div>
     <div id="atab-content-atletas">
       <div style="overflow-x:auto">
@@ -494,7 +495,7 @@ footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align
               <select class="form-select" id="aa-disponivel"><option value="true">Sim</option><option value="false">Não</option></select>
             </div>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
             <div class="form-group"><label class="form-label">Clube Atual</label><input class="form-input" id="aa-clube" placeholder="Magnus Futsal"></div>
             <div class="form-group"><label class="form-label">Tempo de Contrato</label><input class="form-input" id="aa-contrato" placeholder="Ex: 1 ano, Livre"></div>
           </div>
@@ -548,19 +549,49 @@ footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align
       </div>
     </div>
 
-    <div id="atab-content-destaque" style="display:none">
-      <div style="max-width:600px">
-        <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:8px">Atleta da Capa</h3>
-        <p style="font-size:14px;color:var(--gray);margin-bottom:24px">Escolha qual atleta aparece no card principal da página inicial.</p>
-        <div id="destaque-atual" style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:12px;padding:16px;margin-bottom:24px;display:none">
-          <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Atleta atual na capa</div>
-          <div id="destaque-atual-nome" style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900"></div>
+    <div id="atab-content-correcoes" style="display:none">
+      <div>
+        <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:8px">🔔 Solicitações de Correção</h3>
+        <p style="font-size:14px;color:var(--gray);margin-bottom:24px">Atletas pedindo correção de dados.</p>
+        <div id="correcoes-lista" style="display:flex;flex-direction:column;gap:12px">
+          <p style="color:var(--gray)">Carregando...</p>
         </div>
-        <div class="form-group" style="margin-bottom:16px">
-          <label class="form-label">Escolher Atleta</label>
-          <select class="form-select" id="select-destaque"><option value="">Selecionar atleta...</option></select>
+      </div>
+    </div>
+
+        <div id="atab-content-destaque" style="display:none">
+      <div style="max-width:700px;display:flex;flex-direction:column;gap:40px">
+
+        <!-- CARD CAPA HERO -->
+        <div>
+          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:8px">Card da Capa (Hero)</h3>
+          <p style="font-size:14px;color:var(--gray);margin-bottom:24px">Atleta que aparece no card principal animado da home.</p>
+          <div id="destaque-atual" style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:12px;padding:16px;margin-bottom:24px;display:none">
+            <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Atual na capa</div>
+            <div id="destaque-atual-nome" style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900"></div>
+          </div>
+          <div class="form-group" style="margin-bottom:16px">
+            <label class="form-label">Escolher Atleta</label>
+            <select class="form-select" id="select-destaque"><option value="">Selecionar atleta...</option></select>
+          </div>
+          <button class="btn-submit" onclick="salvarDestaque()">⭐ DEFINIR COMO CAPA →</button>
+        <div style="margin-top:32px">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;margin-bottom:8px">🏆 Talentos do Momento</div>
+          <p style="font-size:13px;color:var(--gray);margin-bottom:16px">Escolha até 6 atletas que aparecem na home. Segure Ctrl (ou toque em cada um) para selecionar múltiplos.</p>
+          <select class="form-select" id="select-talentos" multiple style="height:220px;padding:8px"></select>
+          <button class="btn-submit" style="margin-top:12px" onclick="salvarTalentos()">🏆 SALVAR TALENTOS DO MOMENTO →</button>
         </div>
-        <button class="btn-submit" onclick="salvarDestaque()">⭐ DEFINIR COMO CAPA →</button>
+        </div>
+
+        <!-- TALENTOS DO MOMENTO -->
+        <div style="border-top:1.5px solid var(--border);padding-top:32px">
+          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:8px">Talentos do Momento</h3>
+          <p style="font-size:14px;color:var(--gray);margin-bottom:8px">Escolha até 8 atletas que aparecem na seção "Talentos do Momento" da home. Marque na ordem que quiser.</p>
+          <div id="talentos-selecionados-info" style="font-size:12px;color:var(--blue);font-weight:700;margin-bottom:16px">0 selecionados</div>
+          <div id="talentos-lista" style="display:flex;flex-direction:column;gap:8px;max-height:420px;overflow-y:auto;margin-bottom:16px;border:1.5px solid var(--border);border-radius:10px;padding:8px"></div>
+          <button class="btn-submit" onclick="salvarTalentos()">🌟 SALVAR TALENTOS DO MOMENTO →</button>
+        </div>
+
       </div>
     </div>
   </section>
@@ -638,24 +669,36 @@ footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align
     <button class="modal-close" onclick="document.getElementById('correctionModal').classList.remove('open')">✕</button>
     <div style="padding:32px 40px 40px">
       <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:6px">✏️ Solicitar Correção</div>
-      <p style="font-size:13px;color:var(--gray);margin-bottom:24px">Informe o que precisa ser corrigido. Nossa equipe vai revisar e atualizar.</p>
+      <p style="font-size:13px;color:var(--gray);margin-bottom:24px">Informe o que precisa ser corrigido no perfil deste atleta. Nossa equipe vai revisar e atualizar.</p>
       <input type="hidden" id="corr-atleta-id">
       <input type="hidden" id="corr-atleta-nome">
       <div style="display:flex;flex-direction:column;gap:14px">
-        <div class="form-group"><label class="form-label">O que precisa corrigir? *</label>
+        <div class="form-group">
+          <label class="form-label">O que precisa corrigir? *</label>
           <select class="form-select" id="corr-campo">
             <option value="">Selecionar campo</option>
-            <option>Nome</option><option>Idade</option><option>Clube</option>
-            <option>Posição</option><option>Altura / Peso</option><option>Agência</option>
-            <option>Instagram</option><option>WhatsApp</option><option>Ponto Forte</option>
-            <option>Pontos Fracos</option><option>Estatísticas</option><option>Foto</option><option>Outro</option>
+            <option>Nome</option>
+            <option>Idade</option>
+            <option>Clube</option>
+            <option>Posição</option>
+            <option>Altura / Peso</option>
+            <option>Agência</option>
+            <option>Instagram</option>
+            <option>WhatsApp</option>
+            <option>Ponto Forte</option>
+            <option>Pontos Fracos</option>
+            <option>Estatísticas</option>
+            <option>Foto</option>
+            <option>Outro</option>
           </select>
         </div>
-        <div class="form-group"><label class="form-label">Valor correto / Detalhes *</label>
-          <textarea class="form-input" id="corr-detalhe" rows="4" placeholder="Ex: Meu clube atual é Magnus Futsal, não ACBF."></textarea>
+        <div class="form-group">
+          <label class="form-label">Valor correto / Detalhes *</label>
+          <textarea class="form-input" id="corr-detalhe" rows="4" placeholder="Descreva a correção necessária. Ex: Meu clube atual é Magnus Futsal, não ACBF."></textarea>
         </div>
-        <div class="form-group"><label class="form-label">Seu contato (WhatsApp ou Instagram)</label>
-          <input class="form-input" id="corr-contato" placeholder="@seuinstagram">
+        <div class="form-group">
+          <label class="form-label">Seu contato (para confirmarmos)</label>
+          <input class="form-input" id="corr-contato" placeholder="WhatsApp ou Instagram">
         </div>
         <button class="btn-submit" id="btn-enviar-corr" onclick="enviarCorrecao()">ENVIAR SOLICITAÇÃO →</button>
         <p class="form-note">Analisamos todas as solicitações em até 48h.</p>
@@ -665,7 +708,7 @@ footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align
 </div>
 
 <script>
-var currentUser=null,userAssinante=false,atletasCache=[],atletaDestaqueId=null,fotoAtualBase64=null,editFotoBase64=null;
+var currentUser=null,userAssinante=false,atletasCache=[],atletaDestaqueId=null,fotoAtualBase64=null,editFotoBase64=null,atletasDestaqueIds=[];
 var dbClubes=[
   {id:1,nome:"Magnus Futsal",cidade:"Sorocaba, SP",posicao:"Ala",idade:"20-28 anos",detalhes:"Procuramos ala destro com experiência em Liga Nacional.",contato:"(15) 99999-9999",status:"aprovado"},
   {id:2,nome:"ACBF",cidade:"Carlos Barbosa, RS",posicao:"Fixo",idade:"22-30 anos",detalhes:"Buscamos fixo com liderança e boa saída de bola.",contato:"(54) 98888-8888",status:"aprovado"}
@@ -727,7 +770,10 @@ async function init(){
   atletasCache=await carregarAtletas();
   var aprov=atletasCache.filter(function(a){return a.status==='aprovado';});
   var dg=document.getElementById('destaque-grid');
-  dg.innerHTML=aprov.length?aprov.slice(0,6).map(function(a){return renderCard(a,atletasCache.indexOf(a));}).join(''):'<p style="color:var(--gray);padding:40px">Nenhum atleta ainda.</p>';
+  var destaqueList=atletasDestaqueIds.length
+    ?atletasDestaqueIds.map(function(id){return atletasCache.find(function(x){return String(x.id)===String(id);});}).filter(Boolean)
+    :aprov.slice(0,6);
+  dg.innerHTML=destaqueList.length?destaqueList.map(function(a){return renderCard(a,atletasCache.indexOf(a));}).join(''):'<p style="color:var(--gray);padding:40px">Nenhum atleta ainda.</p>';
   renderAtletas(aprov);
   popularFiltroAgencias();
   atualizarHeroDestaque();
@@ -786,7 +832,7 @@ function aplicarFiltros(){
   }
   if(agencia==='sem')lista=lista.filter(function(a){return !a.agencia||a.agencia===''||a.agencia==='-';});
   else if(agencia)lista=lista.filter(function(a){return (a.agencia||'').toLowerCase()===agencia.toLowerCase();});
-  if(disp==='sim')lista=lista.filter(function(a){return a.disponivel;});
+if(disp==='sim')lista=lista.filter(function(a){return a.disponivel;});
   if(disp==='nao')lista=lista.filter(function(a){return !a.disponivel;});
   renderAtletas(lista);showToast(lista.length+' atleta(s) encontrado(s)');
 }
@@ -801,14 +847,16 @@ function popularFiltroAgencias(){
 
 // PROFILE MODAL
 function openProfile(a){
-  if(!a){showToast('Atleta não encontrado');return;}
+  if(!a){showToast('Atleta nao encontrado');return;}
   var b=!userAssinante;
+
   function rFree(label,val){
     return '<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">'
       +'<span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray)">'+label+'</span>'
       +'<span style="font-weight:600;color:var(--text)">'+(val||'—')+'</span></div>';
   }
-function rLock(label,val){
+
+  function rLock(label,val){
     if(b){
       var fake=val&&val!=='-'&&val!=='—'?val+val+val.slice(0,3):'●●●●●●●●';
       return '<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">'
@@ -818,87 +866,100 @@ function rLock(label,val){
         +'<span style="background:var(--black);color:#fff;font-size:9px;font-weight:700;padding:4px 10px;border-radius:100px;cursor:pointer" onclick="document.getElementById(\'profileModal\').classList.remove(\'open\');showPage(\'assinatura\')">ASSINE</span>'
         +'</span></div>';
     }
-    if(!val||val==='-'||val==='—'){
+    if(!val||val===\'-\'||val===\'—\'){
       return '<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">'
         +'<span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray)">'+label+'</span>'
-        +'<span style="font-size:12px;color:var(--gray);font-style:italic">Dado não disponível</span></div>';
+        +'<span style="font-size:12px;color:var(--gray);font-style:italic">Dado nao disponivel</span></div>';
     }
     return '<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">'
       +'<span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray)">'+label+'</span>'
       +'<span style="font-weight:600;color:var(--text)">'+val+'</span></div>';
   }
+
   function sStat(val,label){
-    var v=val||'—';
-    var numStyle='font-family:\'Barlow Condensed\',sans-serif;font-size:28px;font-weight:900;color:var(--blue);display:block;line-height:1;'+(b?'filter:blur(6px)':'');
+    var v=val&&val!=='-'&&val!=='—'?val:'●●';
+    if(b){
+      return '<div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center">'
+        +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:28px;font-weight:900;color:var(--blue);display:block;line-height:1;filter:blur(6px);user-select:none">'+v+'</span>'
+        +'<span style="font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;margin-top:4px;display:block">'+label+'</span>'
+        +'<span style="display:inline-block;margin-top:6px;background:var(--black);color:#fff;font-size:9px;font-weight:700;padding:3px 9px;border-radius:100px;cursor:pointer" onclick="document.getElementById(\'profileModal\').classList.remove(\'open\');showPage(\'assinatura\')">ASSINE</span>'
+        +'</div>';
+    }
+    var real=val&&val!=='-'&&val!=='—'?val:'—';
     return '<div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center">'
-      +'<span style="'+numStyle+'">'+v+'</span>'
+      +'<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:28px;font-weight:900;color:var(--blue);display:block;line-height:1">'+real+'</span>'
       +'<span style="font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;margin-top:4px;display:block">'+label+'</span>'
-      +(b?'<span style="display:inline-block;margin-top:6px;background:var(--black);color:#fff;font-size:9px;font-weight:700;padding:3px 9px;border-radius:100px;cursor:pointer" onclick="document.getElementById(\'profileModal\').classList.remove(\'open\');showPage(\'assinatura\')">ASSINE</span>':'')
       +'</div>';
   }
-  var fotoHtml=a.foto?'<img src="'+a.foto+'" style="width:100%;height:100%;object-fit:cover">':(a.emoji||'⭐');
-  var forte=a.forte||a.caracteristica||'';
-  var fraco=a.fraco||'';
-function forteBox(val,bgCol,borderCol,titulo){
+
+  function forteBox(val,bgCol,borderCol,titulo){
+    var display=val&&val!=='-'&&val!=='—'?val:'Velocidade Finalizacao';
     if(b){
-      var display=val&&val!=='-'&&val!=='—'?val:'Velocidade Finalizacao';
       return '<div style="background:'+bgCol+';border:2px solid '+borderCol+';border-radius:12px;padding:16px;text-align:center">'
         +'<div style="font-size:10px;font-weight:700;color:'+borderCol+';letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">'+titulo+'</div>'
         +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;line-height:1.1;margin-bottom:10px;filter:blur(7px);user-select:none">'+display+'</div>'
         +'<span style="display:inline-block;background:var(--black);color:#fff;font-size:10px;font-weight:700;padding:5px 14px;border-radius:100px;cursor:pointer" onclick="document.getElementById(\'profileModal\').classList.remove(\'open\');showPage(\'assinatura\')">ASSINE</span>'
         +'</div>';
     }
-    if(!val||val==='-'||val==='—'){
+    if(!val||val===\'-\'||val===\'—\'){
       return '<div style="background:'+bgCol+';border:2px solid '+borderCol+';border-radius:12px;padding:16px;text-align:center">'
         +'<div style="font-size:10px;font-weight:700;color:'+borderCol+';letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">'+titulo+'</div>'
-        +'<span style="font-size:12px;color:var(--gray);font-style:italic">Dado não disponível</span></div>';
+        +'<span style="font-size:12px;color:var(--gray);font-style:italic">Dado nao disponivel</span></div>';
     }
     return '<div style="background:'+bgCol+';border:2px solid '+borderCol+';border-radius:12px;padding:16px;text-align:center">'
       +'<div style="font-size:10px;font-weight:700;color:'+borderCol+';letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">'+titulo+'</div>'
       +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;line-height:1.1">'+val+'</div>'
       +'</div>';
   }
-  var html='<div class="modal-hero">'
+
+  var fotoHtml=a.foto?'<img src="'+a.foto+'" style="width:100%;height:100%;object-fit:cover">':(a.emoji||'⭐');
+  var forte=a.forte||a.caracteristica||'';
+  var fraco=a.fraco||'';
+
+  var html2='<div class="modal-hero">'
     +'<div class="modal-photo" style="'+(a.foto?'background:none;overflow:hidden':'')+'">'+fotoHtml+'</div>'
     +'<div class="modal-meta">'
     +'<span class="modal-pos-badge">'+a.posicao+' · '+(a.modalidade||'Futsal')+'</span>'
     +'<div class="modal-name">'+a.nome+'</div>'
     +'<div class="modal-club">🏟 '+(a.clube&&a.clube!=='-'?a.clube:'Sem clube')+'</div>'
-    +'<div class="modal-avail-badge"><span style="width:8px;height:8px;background:'+(a.disponivel?'#00c878':'#ff5050')+';border-radius:50%;display:inline-block"></span> '+(a.disponivel?'Disponível no Mercado':'Contratado')+'</div>'
+    +'<div class="modal-avail-badge"><span style="width:8px;height:8px;background:'+(a.disponivel?'#00c878':'#ff5050')+';border-radius:50%;display:inline-block"></span> '+(a.disponivel?'Disponivel no Mercado':'Contratado')+'</div>'
     +'</div></div>'
     +'<div class="modal-stats-bar">'
     +'<div class="mstat"><span class="mstat-val">'+(a.idade||'—')+'</span><span class="mstat-label">Idade</span></div>'
     +'<div class="mstat"><span class="mstat-val">'+(a.altura?a.altura+'cm':'—')+'</span><span class="mstat-label">Altura</span></div>'
     +'<div class="mstat"><span class="mstat-val">'+(a.peso?a.peso+'kg':'—')+'</span><span class="mstat-label">Peso</span></div>'
-    +'<div class="mstat"><span class="mstat-val">'+(a.pe?a.pe.charAt(0):'—')+'</span><span class="mstat-label">Pé Dom.</span></div>'
+    +'<div class="mstat"><span class="mstat-val">'+(a.pe?a.pe.charAt(0):'—')+'</span><span class="mstat-label">Pe Dom.</span></div>'
     +'</div>'
     +'<div class="modal-body">'
-    +'<div class="modal-sec"><div class="modal-sec-title">Dados Básicos</div>'
-    +rFree('Posição',a.posicao)+rFree('Modalidade',a.modalidade||'Futsal')+rFree('Pé Dominante',a.pe)+rFree('Disponibilidade',a.disponivel?'✅ Disponível':'❌ Contratado')
+    +'<div class="modal-sec"><div class="modal-sec-title">Dados Basicos</div>'
+    +rFree('Posicao',a.posicao)+rFree('Modalidade',a.modalidade||'Futsal')+rFree('Pe Dominante',a.pe)+rFree('Disponibilidade',a.disponivel?'Disponivel':'Contratado')
     +'</div>'
-    +'<div class="modal-sec"><div class="modal-sec-title">Análise Técnica</div>'
+    +'<div class="modal-sec"><div class="modal-sec-title">Analise Tecnica</div>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">'
     +forteBox(forte,'#f0fdf4','#15803d','Ponto Forte')
     +forteBox(fraco,'#fff1f2','#b91c1c','Pontos Fracos')
     +'</div>'
-    +rLock('Link de Highlights / Vídeos',a.video)
+    +rLock('Link de Highlights / Videos',a.video)
     +'</div>'
-    +'<div class="modal-sec"><div class="modal-sec-title">Contato & Agência</div>'
-    +rLock('Instagram',a.instagram)+rLock('WhatsApp',a.whatsapp)+rLock('Agência',a.agencia)+rLock('Tempo de Contrato',a.contrato)
+    +'<div class="modal-sec"><div class="modal-sec-title">Contato e Agencia</div>'
+    +rLock('Instagram',a.instagram)+rLock('WhatsApp',a.whatsapp)+rLock('Agencia',a.agencia)+rLock('Tempo de Contrato',a.contrato)
     +'</div>'
-    +'<div class="modal-sec"><div class="modal-sec-title">Estatísticas da Temporada</div>'
+    +'<div class="modal-sec"><div class="modal-sec-title">Estatisticas da Temporada</div>'
     +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">'
     +sStat(a.stats_gols||a.gols,'Gols')+sStat(a.stats_assists||a.assists,'Assist.')+sStat(a.stats_passes||a.passes,'Passes')
-    +sStat(a.stats_dribles||a.dribles,'Dribles/jogo')+sStat(a.stats_nota||a.nota,'Nota média')+sStat(a.stats_jogos||a.jogos,'Jogos')
+    +sStat(a.stats_dribles||a.dribles,'Dribles/jogo')+sStat(a.stats_nota||a.nota,'Nota media')+sStat(a.stats_jogos||a.jogos,'Jogos')
     +'</div></div>'
-    +'<div style="margin-top:16px;text-align:center"><button onclick="'+(userAssinante?'abrirCorrecao(atletasCache.find(function(x){return x.id==='+JSON.stringify(a.id)+';}))':'document.getElementById(\'profileModal\').classList.remove(\'open\');showPage(\'assinatura\')')+'" style="background:transparent;border:1.5px solid var(--border);color:var(--gray);padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">✏️ Solicitar Correção de Dados</button></div>'
+    +'<div style="margin-top:16px;text-align:center">'
+    +(userAssinante&&!b?'<button onclick="abrirCorrecao(a)" style="background:transparent;border:1.5px solid var(--border);color:var(--gray);padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--blue)';this.style.color='var(--blue)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--gray)'">✏️ Solicitar Correção de Dados</button>':'')
+    +'</div>'
     +(b?'<div style="background:var(--black);border-radius:14px;padding:24px;text-align:center;margin-top:8px">'
-      +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;font-weight:900;color:#fff;text-transform:uppercase;margin-bottom:6px">Desbloqueie tudo por R$40/mês</div>'
-      +'<p style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:18px">Veja contatos, análise técnica e estatísticas reais.</p>'
-      +'<button style="background:var(--blue);border:none;color:#fff;padding:14px 36px;border-radius:9px;font-family:\'Barlow Condensed\',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;cursor:pointer" onclick="document.getElementById(\'profileModal\').classList.remove(\'open\');showPage(\'assinatura\')">⚡ ASSINAR R$40/MÊS →</button>'
+      +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;font-weight:900;color:#fff;text-transform:uppercase;margin-bottom:6px">Desbloqueie tudo por R$40/mes</div>'
+      +'<p style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:18px">Veja contatos, analise tecnica e estatisticas reais.</p>'
+      +'<button style="background:var(--blue);border:none;color:#fff;padding:14px 36px;border-radius:9px;font-family:\'Barlow Condensed\',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;cursor:pointer" onclick="document.getElementById(\'profileModal\').classList.remove(\'open\');showPage(\'assinatura\')">ASSINAR R$40/MES</button>'
       +'</div>':'')
     +'</div>';
-  document.getElementById('modalBody').innerHTML=html;
+
+  document.getElementById('modalBody').innerHTML=html2;
   document.getElementById('profileModal').classList.add('open');
 }
 
@@ -968,11 +1029,11 @@ function updateCadastroView(){
 // ADMIN
 async function carregarPainelAdmin(){
   atletasCache=await carregarAtletas();
-  renderAdminAtletas();renderAdminClubes();preencherSelectDestaque();
+  renderAdminAtletas();renderAdminClubes();preencherSelectDestaque();carregarCorrecoes();
 }
 
 function adminPanelTab(tab){
-  ['atletas','clubes','add','destaque','csv'].forEach(function(t){
+  ['atletas','clubes','add','destaque','csv','correcoes'].forEach(function(t){
     var c=document.getElementById('atab-content-'+t),b=document.getElementById('atab-'+t);
     if(c)c.style.display=t===tab?'block':'none';
     if(b)b.classList.toggle('active',t===tab);
@@ -1172,6 +1233,56 @@ function preencherSelectDestaque(){
     var ax=atletasCache.find(function(x){return String(x.id)===String(atletaDestaqueId);});
     if(ax){da.style.display='block';dn.textContent=ax.nome+' — '+ax.posicao;}
   }
+  // Preencher lista de talentos
+  var lista=document.getElementById('talentos-lista');
+  if(!lista)return;
+  lista.innerHTML=aprov.map(function(a){
+    var checked=atletasDestaqueIds.indexOf(String(a.id))>=0;
+    var emoji=a.foto?'':'(EMOJIS[a.posicao]||"⭐")';
+    return '<label style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;cursor:pointer;background:'+(checked?'var(--blue-light)':'var(--white)')+';border:1.5px solid '+(checked?'var(--blue-mid)':'transparent')+';transition:all .2s" onclick="toggleTalento(this,''+a.id+'')">'
+      +'<input type="checkbox" '+(checked?'checked':'')+' style="width:16px;height:16px;accent-color:var(--blue);pointer-events:none">'
+      +(a.foto?'<img src="'+a.foto+'" style="width:36px;height:36px;border-radius:6px;object-fit:cover;flex-shrink:0">':'<span style="font-size:24px;flex-shrink:0">'+(a.posicao==='Goleiro'?'🧤':a.posicao==='Fixo'?'🛡️':a.posicao==='Ala'?'⚡':a.posicao==='Pivô'?'💪':'⭐')+'</span>')
+      +'<div style="flex:1;min-width:0"><div style="font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+a.nome+'</div>'
+      +'<div style="font-size:11px;color:var(--gray)">'+a.posicao+(a.clube?' · '+a.clube:'')+'</div></div>'
+      +(checked?'<span style="font-size:10px;font-weight:700;color:var(--blue);background:var(--blue-mid);padding:3px 8px;border-radius:100px">#'+(atletasDestaqueIds.indexOf(String(a.id))+1)+'</span>':'')
+      +'</label>';
+  }).join('');
+  atualizarInfoTalentos();
+}
+
+function toggleTalento(el,id){
+  var idx=atletasDestaqueIds.indexOf(String(id));
+  if(idx>=0){
+    atletasDestaqueIds.splice(idx,1);
+    el.style.background='var(--white)';
+    el.style.borderColor='transparent';
+    el.querySelector('input').checked=false;
+  } else {
+    if(atletasDestaqueIds.length>=8){showToast('⚠️ Máximo 8 talentos');return;}
+    atletasDestaqueIds.push(String(id));
+    el.style.background='var(--blue-light)';
+    el.style.borderColor='var(--blue-mid)';
+    el.querySelector('input').checked=true;
+  }
+  atualizarInfoTalentos();
+  // Rerender numbers
+  preencherSelectDestaque();
+}
+
+function atualizarInfoTalentos(){
+  var info=document.getElementById('talentos-selecionados-info');
+  if(info)info.textContent=atletasDestaqueIds.length+' de 8 selecionados';
+}
+
+function salvarTalentos(){
+  if(!atletasDestaqueIds.length){showToast('⚠️ Selecione pelo menos 1 atleta');return;}
+  // Refresh home grid
+  var aprov=atletasCache.filter(function(a){return a.status==='aprovado';});
+  var destaqueList=atletasDestaqueIds.map(function(id){return atletasCache.find(function(x){return String(x.id)===String(id);});}).filter(Boolean);
+  var dg=document.getElementById('destaque-grid');
+  if(dg)dg.innerHTML=destaqueList.map(function(a){return renderCard(a,atletasCache.indexOf(a));}).join('');
+  showToast('🌟 Talentos do Momento atualizados!');
+  adminPanelTab('atletas');
 }
 
 function salvarDestaque(){
@@ -1411,34 +1522,102 @@ async function importarCSV(){
   adminPanelTab('atletas');
 }
 
-// CORREÇÃO
-var atletaCorrecaoAtual=null;
+// CORREÇÃO DE DADOS
+var atletaCorrecaoAtual = null;
+
 function abrirCorrecao(a){
-  atletaCorrecaoAtual=a;
-  document.getElementById('corr-atleta-id').value=a.id||'';
-  document.getElementById('corr-atleta-nome').value=a.nome||'';
-  document.getElementById('corr-campo').value='';
-  document.getElementById('corr-detalhe').value='';
-  document.getElementById('corr-contato').value='';
+  if(!userAssinante){showToast('⚠️ Apenas assinantes podem solicitar correções');return;}
+  atletaCorrecaoAtual = a;
+  document.getElementById('corr-atleta-id').value = a.id||'';
+  document.getElementById('corr-atleta-nome').value = a.nome||'';
+  document.getElementById('corr-campo').value = '';
+  document.getElementById('corr-detalhe').value = '';
+  document.getElementById('corr-contato').value = '';
   document.getElementById('profileModal').classList.remove('open');
   document.getElementById('correctionModal').classList.add('open');
 }
+
 async function enviarCorrecao(){
-  var campo=document.getElementById('corr-campo').value;
-  var detalhe=document.getElementById('corr-detalhe').value.trim();
-  var contato=document.getElementById('corr-contato').value.trim();
-  var atletaId=document.getElementById('corr-atleta-id').value;
-  var atletaNome=document.getElementById('corr-atleta-nome').value;
+  var campo = document.getElementById('corr-campo').value;
+  var detalhe = document.getElementById('corr-detalhe').value.trim();
+  var contato = document.getElementById('corr-contato').value.trim();
+  var atletaId = document.getElementById('corr-atleta-id').value;
+  var atletaNome = document.getElementById('corr-atleta-nome').value;
   if(!campo){showToast('⚠️ Selecione o campo a corrigir');return;}
-  if(!detalhe){showToast('⚠️ Descreva a correção');return;}
-  var btn=document.getElementById('btn-enviar-corr');
-  btn.innerHTML='<span class="spin"></span> Enviando...';btn.disabled=true;
-  var d=await api('/api/solicitar_correcao',{method:'POST',body:JSON.stringify({atleta_id:atletaId,atleta_nome:atletaNome,campo:campo,detalhe:detalhe,contato:contato})});
-  btn.innerHTML='ENVIAR SOLICITAÇÃO →';btn.disabled=false;
-  if(d&&!d.erro){document.getElementById('correctionModal').classList.remove('open');showToast('✅ Solicitação enviada! Analisamos em até 48h.');}
-  else{showToast('⚠️ Erro ao enviar. Tente novamente.');}
+  if(!detalhe){showToast('⚠️ Descreva a correção necessária');return;}
+  var btn = document.getElementById('btn-enviar-corr');
+  btn.innerHTML = '<span class="spin"></span> Enviando...';
+  btn.disabled = true;
+  var d = await api('/api/solicitar_correcao', {method:'POST', body:JSON.stringify({
+    atleta_id: atletaId,
+    atleta_nome: atletaNome,
+    campo: campo,
+    detalhe: detalhe,
+    contato: contato
+  })});
+  btn.innerHTML = 'ENVIAR SOLICITAÇÃO →';
+  btn.disabled = false;
+  if(d && !d.erro){
+    document.getElementById('correctionModal').classList.remove('open');
+    showToast('✅ Solicitação enviada! Analisamos em até 48h.');
+  } else {
+    showToast('⚠️ Erro ao enviar. Tente novamente.');
+  }
 }
-  
+
+
+// ADMIN CORREÇÕES
+async function carregarCorrecoes(){
+  var d = await api('/api/admin/correcoes');
+  var el = document.getElementById('correcoes-lista');
+  if(!el) return;
+  if(!d || !d.length){
+    el.innerHTML = '<p style="color:var(--gray);padding:24px 0">Nenhuma solicitação ainda.</p>';
+    return;
+  }
+  el.innerHTML = d.map(function(c){
+    return '<div style="background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:18px 20px">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
+      +'<div>'
+      +'<div style="font-weight:700;font-size:15px">'+c.atleta_nome+'</div>'
+      +'<div style="font-size:12px;color:var(--gray);margin-top:2px">Campo: <strong>'+c.campo+'</strong> · '+c.criado_em+'</div>'
+      +'</div>'
+      +'<span class="status-badge '+(c.status==='pendente'?'s-pend':'s-aprov')+'">'+c.status+'</span>'
+      +'</div>'
+      +'<div style="background:var(--gray-light);border-radius:8px;padding:12px;font-size:13px;color:var(--text);line-height:1.6;margin-bottom:10px">'+c.detalhe+'</div>'
+      +(c.contato?'<div style="font-size:12px;color:var(--gray)">Contato: <strong>'+c.contato+'</strong></div>':'')
+      +'</div>';
+  }).join('');
+}
+
+
+// TALENTOS DO MOMENTO
+function salvarTalentos(){
+  var sel=document.getElementById('select-talentos');
+  if(!sel)return;
+  var selecionados=[];
+  for(var i=0;i<sel.options.length;i++){
+    if(sel.options[i].selected)selecionados.push(String(sel.options[i].value));
+  }
+  if(selecionados.length>6){showToast('⚠️ Máximo 6 atletas');return;}
+  atletasTalentos=selecionados;
+  renderTalentos();
+  showToast('✅ Talentos do momento atualizados!');
+}
+
+function renderTalentos(){
+  var dg=document.getElementById('destaque-grid');
+  if(!dg)return;
+  var aprov=atletasCache.filter(function(a){return a.status==='aprovado';});
+  var lista=atletasTalentos.length
+    ?aprov.filter(function(a){return atletasTalentos.indexOf(String(a.id))>=0;})
+    :aprov.slice(0,6);
+  dg.innerHTML=lista.length
+    ?lista.map(function(a){return renderCard(a,atletasCache.indexOf(a));}).join('')
+    :'<p style="color:var(--gray);padding:40px">Nenhum atleta selecionado.</p>';
+}
+
+
 // PAGES
 function showPage(p){
   ['home','atletas','cadastro-atleta','assinatura','clubes','admin-panel','sou-jogador','pagar-atleta'].forEach(function(pg){
