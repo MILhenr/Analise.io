@@ -1,6 +1,8 @@
 import os
 import uuid
+import json
 import hashlib
+import urllib.request
 from datetime import datetime, timedelta
 from flask import Flask, request, jsonify, session, send_from_directory
 import psycopg2
@@ -16,6 +18,10 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 ADMIN_USER = "admin"
 ADMIN_SENHA = hashlib.sha256("admin123".encode()).hexdigest()
 OWNER_EMAIL = "henymc1128@gmail.com"
+
+MP_ACCESS_TOKEN = os.environ.get("MP_ACCESS_TOKEN", "APP_USR-6719425973860470-051719-0dba2eadcd461aa80a64231ff92c09ba-2112056378")
+MP_PUBLIC_KEY = os.environ.get("MP_PUBLIC_KEY", "APP_USR-90e13660-4204-4f29-9435-55399dfaa19f")
+BASE_URL = os.environ.get("BASE_URL", "https://www.analiselo.com.br")
 
 # ================= CLOUDINARY =================
 cloudinary.config(
@@ -340,6 +346,19 @@ def admin_deletar_atleta(aid):
         print("❌ ERRO DELETAR ATLETA:", e)
         return jsonify({"erro": str(e)}), 500
 
+# ================= USUARIOS ADMIN =================
+@app.route("/api/admin/usuarios", methods=["GET"])
+def admin_listar_usuarios():
+    if not session.get("admin"):
+        return jsonify({"erro": "Nao autorizado"}), 401
+    try:
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute("SELECT nome,email,plano,criado_em FROM usuarios ORDER BY criado_em DESC")
+                return jsonify([dict(r) for r in c.fetchall()])
+    except Exception as e:
+        return jsonify([])
+
 # ================= CLUBES =================
 @app.route("/api/clubes", methods=["GET"])
 def listar_clubes():
@@ -418,10 +437,96 @@ def admin_correcoes():
     except Exception as e:
         return jsonify([])
 
-# ================= PAGAMENTO =================
+# ================= PAGAMENTO MERCADO PAGO =================
 @app.route("/api/criar_pagamento", methods=["POST"])
 def criar_pagamento():
-    return jsonify({"erro": "Pagamento não configurado"}), 400
+    if "user" not in session or session.get("admin"):
+        return jsonify({"erro": "Não autorizado"}), 401
+    try:
+        data = request.json
+        plano = data.get("plano", "assinatura")
+        email = session["user"]
+
+        # Busca nome do usuario
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute("SELECT nome FROM usuarios WHERE email=%s", (email,))
+                u = c.fetchone()
+                nome = u["nome"] if u else "Usuario"
+
+        valor = 40.00
+        titulo = "Assinatura Mensal ANALISE.IO"
+
+        payload = {
+            "items": [{
+                "title": titulo,
+                "quantity": 1,
+                "currency_id": "BRL",
+                "unit_price": valor
+            }],
+            "payer": {
+                "email": email,
+                "name": nome
+            },
+            "back_urls": {
+                "success": BASE_URL + "/pagamento/sucesso",
+                "failure": BASE_URL + "/pagamento/falha",
+                "pending": BASE_URL + "/pagamento/pendente"
+            },
+            "auto_return": "approved",
+            "external_reference": email + "|" + plano,
+            "notification_url": BASE_URL + "/api/webhook_mp"
+        }
+
+        req = urllib.request.Request(
+            "https://api.mercadopago.com/checkout/preferences",
+            data=json.dumps(payload).encode(),
+            headers={
+                "Authorization": f"Bearer {MP_ACCESS_TOKEN}",
+                "Content-Type": "application/json"
+            }
+        )
+
+        with urllib.request.urlopen(req, timeout=15) as r:
+            resp = json.loads(r.read())
+
+        link = resp.get("init_point", "")
+        print(f"✅ PAGAMENTO CRIADO: {link}")
+        return jsonify({"link": link})
+
+    except Exception as e:
+        print("❌ ERRO PAGAMENTO:", e)
+        return jsonify({"erro": str(e)}), 500
+
+@app.route("/api/webhook_mp", methods=["POST"])
+def webhook_mp():
+    try:
+        data = request.json or {}
+        topic = data.get("type") or request.args.get("topic", "")
+        payment_id = data.get("data", {}).get("id") or request.args.get("id")
+
+        if topic == "payment" and payment_id:
+            req = urllib.request.Request(
+                f"https://api.mercadopago.com/v1/payments/{payment_id}",
+                headers={"Authorization": f"Bearer {MP_ACCESS_TOKEN}"}
+            )
+            with urllib.request.urlopen(req, timeout=15) as r:
+                payment = json.loads(r.read())
+
+            if payment.get("status") == "approved":
+                ref = payment.get("external_reference", "")
+                if "|" in ref:
+                    email, plano = ref.split("|", 1)
+                    with get_db() as conn:
+                        with conn.cursor() as c:
+                            c.execute("UPDATE usuarios SET plano=%s WHERE email=%s", (plano, email))
+                        conn.commit()
+                    print(f"✅ ASSINATURA ATIVADA: {email} plano={plano}")
+
+        return jsonify({"ok": True})
+    except Exception as e:
+        print("ERRO WEBHOOK:", e)
+        return jsonify({"ok": True})
 
 # ================= START =================
 if __name__ == "__main__":
