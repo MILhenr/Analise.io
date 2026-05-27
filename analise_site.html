@@ -265,7 +265,7 @@ footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align
     </div>
     <div id="nav-user" style="display:none;gap:8px;align-items:center">
       <span id="nav-nome" style="font-size:13px;color:var(--gray)"></span>
-      <button class="btn-nav-outline" onclick="showPage('assinatura')" id="nav-btn-assinar">Assinar R$40</button>
+      <button class="btn-nav-outline" onclick="showPage('assinatura')" id="nav-btn-assinar">Assinar R$19,90</button>
       <button class="btn-nav-outline" onclick="doLogout()">Sair</button>
     </div>
     <div id="nav-admin" style="display:none;gap:8px;align-items:center">
@@ -378,9 +378,9 @@ footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align
       <div style="background:var(--black);border-radius:20px;padding:48px;text-align:center">
         <div style="font-size:40px;margin-bottom:16px">⚡</div>
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;text-transform:uppercase;color:#fff;margin-bottom:12px">Assine para Enviar sua Solicitação</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:56px;font-weight:900;color:var(--blue);line-height:1">R$40<span style="font-size:20px;color:rgba(255,255,255,.3)">/mês</span></div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:56px;font-weight:900;color:var(--blue);line-height:1">R$19,90<span style="font-size:20px;color:rgba(255,255,255,.3)">/mês</span></div>
         <div style="font-size:13px;color:rgba(255,255,255,.3);margin-bottom:24px">Cancele quando quiser</div>
-        <button onclick="assinar()" style="background:var(--blue);border:none;color:#fff;padding:18px 48px;border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;cursor:pointer"> ASSINAR AGORA — R$40/MÊS</button>
+        <button onclick="assinar()" style="background:var(--blue);border:none;color:#fff;padding:18px 48px;border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;cursor:pointer"> ASSINAR AGORA — R$19,90/MÊS</button>
       </div>
     </div>
     <div id="cad-form-atleta" style="display:none">
@@ -411,7 +411,7 @@ footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align
           <div class="form-group"><label class="form-label">Ponto Forte</label><input class="form-input" id="c-forte" placeholder="Ex: Velocidade..."></div>
           <div class="form-group"><label class="form-label">Link de Highlights</label><input class="form-input" id="c-video" placeholder="YouTube / Drive..."></div>
           <button class="btn-submit" onclick="enviarCadastroAtleta()">ENVIAR E ATIVAR PERFIL →</button>
-          <p class="form-note">Após enviar, você será direcionado para ativar seu perfil por R$40/mês.</p>
+          <p class="form-note">Após enviar, você será direcionado para ativar seu perfil por R$19,90/mês.</p>
         </div>
       </div>
     </div>
@@ -573,13 +573,13 @@ footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align
         <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(52px,6vw,76px);font-weight:900;line-height:.88;text-transform:uppercase;color:#fff;margin-bottom:24px">QUER APARECER<br>NA MELHOR<br><span style="color:var(--blue)">VITRINE DO</span><br><span style="color:var(--blue);font-style:italic">FUTSAL?</span></h1>
         <p style="font-size:17px;color:rgba(255,255,255,.55);line-height:1.7;max-width:420px;margin-bottom:40px">Clubes, agentes e olheiros de todo o Brasil usam a <strong style="color:#fff">ANALISE.IO</strong> para encontrar os próximos craques.</p>
         <button onclick="showPage('cadastro-atleta');updateCadastroView()" style="background:var(--blue);border:none;color:#fff;padding:18px 40px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;cursor:pointer">⚡ QUERO APARECER AGORA →</button>
-        <div style="margin-top:20px;font-size:13px;color:rgba(255,255,255,.3)">🔒 R$40/mês · Cancele quando quiser</div>
+        <div style="margin-top:20px;font-size:13px;color:rgba(255,255,255,.3)">🔒 R19,90/mês · Cancele quando quiser</div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
         <div style="background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);border-radius:16px;padding:24px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;color:var(--blue)">500+</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:6px">Clubes e agentes ativos</div></div>
         <div style="background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);border-radius:16px;padding:24px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;color:var(--blue)">24h</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:6px">Perfil publicado em até 24h</div></div>
         <div style="background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);border-radius:16px;padding:24px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;color:var(--blue)">100%</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:6px">Focado em futsal brasileiro</div></div>
-        <div style="background:rgba(26,86,255,.15);border:1.5px solid rgba(26,86,255,.3);border-radius:16px;padding:24px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;color:#fff">R$40</div><div style="font-size:13px;color:rgba(255,255,255,.5);margin-top:6px">Por mês · Cancele quando quiser</div></div>
+        <div style="background:rgba(26,86,255,.15);border:1.5px solid rgba(26,86,255,.3);border-radius:16px;padding:24px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;color:#fff">R$19,90</div><div style="font-size:13px;color:rgba(255,255,255,.5);margin-top:6px">Por mês · Cancele quando quiser</div></div>
       </div>
     </div>
   </div>
@@ -589,9 +589,9 @@ footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align
 <div id="page-assinatura" style="display:none">
   <section class="section" style="padding-top:120px;text-align:center;max-width:700px">
     <div class="eyebrow">Plano Único</div>
-    <h2 class="sec-title" style="font-size:clamp(40px,6vw,72px)">TUDO POR <span style="color:var(--blue)">R$40/MÊS</span></h2>
+    <h2 class="sec-title" style="font-size:clamp(40px,6vw,72px)">TUDO POR <span style="color:var(--blue)">R$19,90/MÊS</span></h2>
     <div style="background:var(--black);border-radius:24px;padding:48px;margin-bottom:40px;text-align:left">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:56px;font-weight:900;color:var(--blue);line-height:1">R$40<span style="font-size:20px;color:rgba(255,255,255,.4)">/mês</span></div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:56px;font-weight:900;color:var(--blue);line-height:1">R$19,90<span style="font-size:20px;color:rgba(255,255,255,.4)">/mês</span></div>
       <div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:36px">Cancele quando quiser</div>
       <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:36px">
         <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,.8)"><span style="color:var(--blue);font-weight:700;font-size:18px">✓</span> Ver análise completa de todos os atletas</div>
@@ -612,13 +612,13 @@ footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align
     <div style="max-width:560px;width:100%;text-align:center">
       <div style="width:80px;height:80px;background:rgba(26,86,255,.15);border:2px solid rgba(26,86,255,.3);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 28px">⚡</div>
       <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(36px,5vw,56px);font-weight:900;text-transform:uppercase;color:#fff;line-height:.9;margin-bottom:16px">QUASE LÁ!<br><span style="color:var(--blue)">ATIVE SEU PERFIL</span></h2>
-      <p style="font-size:16px;color:rgba(255,255,255,.45);line-height:1.7;margin-bottom:40px">Seu perfil foi salvo! Para aparecer na vitrine ative sua assinatura por <strong style="color:#fff">R$40/mês</strong>.</p>
+      <p style="font-size:16px;color:rgba(255,255,255,.45);line-height:1.7;margin-bottom:40px">Seu perfil foi salvo! Para aparecer na vitrine ative sua assinatura por <strong style="color:#fff">R$19,90/mês</strong>.</p>
       <div style="background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:20px;padding:36px;margin-bottom:24px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
           <span style="font-size:14px;color:rgba(255,255,255,.4)">Assinatura mensal</span>
-          <span style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:#fff">R$40<span style="font-size:16px;color:rgba(255,255,255,.3)">/mês</span></span>
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:#fff">R$19,90<span style="font-size:16px;color:rgba(255,255,255,.3)">/mês</span></span>
         </div>
-        <button id="btn-pagar-atleta" onclick="pagarAtleta()" style="width:100%;background:var(--blue);border:none;color:#fff;padding:18px;border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;cursor:pointer">🔒 PAGAR R$40 E ATIVAR →</button>
+        <button id="btn-pagar-atleta" onclick="pagarAtleta()" style="width:100%;background:var(--blue);border:none;color:#fff;padding:18px;border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;cursor:pointer">🔒 PAGAR R$19,90 E ATIVAR →</button>
       </div>
       <button onclick="showPage('atletas')" style="background:transparent;border:none;color:rgba(255,255,255,.3);font-size:13px;cursor:pointer;text-decoration:underline">Agora não</button>
     </div>
@@ -892,9 +892,9 @@ function forteBox(val,bgCol,borderCol,titulo){
     +'</div></div>'
     +'<div style="margin-top:16px;text-align:center"><button onclick="'+(userAssinante?'abrirCorrecao(atletasCache.find(function(x){return x.id==='+JSON.stringify(a.id)+';}))':'document.getElementById(\'profileModal\').classList.remove(\'open\');showPage(\'assinatura\')')+'" style="background:transparent;border:1.5px solid var(--border);color:var(--gray);padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">✏️ Solicitar Correção de Dados</button></div>'
     +(b?'<div style="background:var(--black);border-radius:14px;padding:24px;text-align:center;margin-top:8px">'
-      +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;font-weight:900;color:#fff;text-transform:uppercase;margin-bottom:6px">Desbloqueie tudo por R$40/mês</div>'
+      +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;font-weight:900;color:#fff;text-transform:uppercase;margin-bottom:6px">Desbloqueie tudo por R$19,90/mês</div>'
       +'<p style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:18px">Veja contatos, análise técnica e estatísticas reais.</p>'
-      +'<button style="background:var(--blue);border:none;color:#fff;padding:14px 36px;border-radius:9px;font-family:\'Barlow Condensed\',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;cursor:pointer" onclick="document.getElementById(\'profileModal\').classList.remove(\'open\');showPage(\'assinatura\')">⚡ ASSINAR R$40/MÊS →</button>'
+      +'<button style="background:var(--blue);border:none;color:#fff;padding:14px 36px;border-radius:9px;font-family:\'Barlow Condensed\',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;cursor:pointer" onclick="document.getElementById(\'profileModal\').classList.remove(\'open\');showPage(\'assinatura\')"> ASSINAR R$19,90/MÊS →</button>'
       +'</div>':'')
     +'</div>';
   document.getElementById('modalBody').innerHTML=html;
@@ -1277,8 +1277,8 @@ async function pagarAtleta(){
     var r=await fetch('/api/criar_pagamento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plano:'assinatura'})});
     var d=await r.json();
     if(d.link)window.location.href=d.link;
-    else{showToast('⚠️ Erro no pagamento.');btn.innerHTML='🔒 PAGAR R$40 E ATIVAR →';btn.disabled=false;}
-  }catch(e){showToast('⚠️ Sem conexão.');btn.innerHTML='🔒 PAGAR R$40 E ATIVAR →';btn.disabled=false;}
+    else{showToast('⚠️ Erro no pagamento.');btn.innerHTML=' PAGAR R$19,90 E ATIVAR →';btn.disabled=false;}
+  }catch(e){showToast('⚠️ Sem conexão.');btn.innerHTML='🔒 PAGAR R$19,90 E ATIVAR →';btn.disabled=false;}
 }
 
 
