@@ -454,7 +454,7 @@ def criar_pagamento():
                 u = c.fetchone()
                 nome = u["nome"] if u else "Usuario"
 
-        valor = 40.00
+        valor = 19.90
         titulo = "Assinatura Mensal ANALISE.IO"
 
         payload = {
