@@ -278,6 +278,285 @@ footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align
 <!-- HOME -->
 <div id="page-home">
   <div class="hero">
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANALISE.IO — Marketplace de Atletas</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,800;0,900;1,900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--blue:#1a56ff;--blue2:#0d3fd4;--blue-light:#e8eeff;--blue-mid:#c7d4ff;--white:#ffffff;--black:#060a12;--gray:#6b7591;--gray-light:#f4f5f8;--border:#e4e7f0;--text:#1a1f35}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--white);color:var(--text);overflow-x:hidden}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;padding:0 48px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;letter-spacing:1px;color:var(--black)}
+.logo span{color:var(--blue)}
+.nav-links{display:flex;gap:32px;align-items:center}
+.nav-links a{font-size:14px;font-weight:500;color:var(--gray);text-decoration:none;cursor:pointer;transition:color .2s}
+.nav-links a:hover{color:var(--blue)}
+.nav-right{display:flex;gap:10px;align-items:center}
+.btn-nav-outline{background:transparent;border:1.5px solid var(--border);color:var(--text);padding:9px 20px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-nav-outline:hover{border-color:var(--blue);color:var(--blue)}
+.btn-nav-solid{background:var(--blue);border:none;color:#fff;padding:9px 22px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-nav-solid:hover{background:var(--blue2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,86,255,.3)}
+.hero{padding:120px 48px 80px;max-width:1300px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--blue-light);border:1.5px solid var(--blue-mid);color:var(--blue);padding:7px 16px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:28px}
+.badge-dot{width:7px;height:7px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
+.hero h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(52px,6vw,80px);font-weight:900;line-height:.9;letter-spacing:-1px;text-transform:uppercase;margin-bottom:24px;color:var(--black)}
+.hero h1 .blue{color:var(--blue)}
+.hero h1 .italic{font-style:italic}
+.hero-sub{font-size:16px;color:var(--gray);line-height:1.7;max-width:440px;margin-bottom:36px}
+.hero-sub strong{color:var(--text)}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:48px}
+.btn-hero-primary{background:var(--blue);border:none;color:#fff;padding:15px 32px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.btn-hero-primary:hover{background:var(--blue2);transform:translateY(-2px);box-shadow:0 12px 32px rgba(26,86,255,.35)}
+.btn-hero-secondary{background:transparent;border:1.5px solid var(--border);color:var(--text);padding:15px 32px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.btn-hero-secondary:hover{border-color:var(--blue);color:var(--blue)}
+.hero-stats{display:flex;gap:40px}
+.hstat-num{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:var(--blue);display:block;line-height:1}
+.hstat-label{font-size:12px;color:var(--gray);margin-top:4px}
+.hero-right{position:relative}
+.hero-card-stack{position:relative;height:420px}
+.hcard{position:absolute;background:var(--white);border:1.5px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(26,86,255,.08)}
+.hcard-main{width:280px;right:60px;top:20px;z-index:3;animation:float1 6s ease-in-out infinite}
+.hcard-back1{width:260px;right:20px;top:50px;z-index:2;opacity:.7;transform:rotate(4deg);animation:float2 6s ease-in-out infinite 1s}
+.hcard-back2{width:240px;right:100px;top:60px;z-index:1;opacity:.4;transform:rotate(-3deg);animation:float3 6s ease-in-out infinite 2s}
+@keyframes float1{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes float2{0%,100%{transform:rotate(4deg) translateY(0)}50%{transform:rotate(4deg) translateY(-8px)}}
+@keyframes float3{0%,100%{transform:rotate(-3deg) translateY(0)}50%{transform:rotate(-3deg) translateY(-6px)}}
+.hcard-photo{height:160px;background:linear-gradient(135deg,#1a56ff,#0d3fd4);display:flex;align-items:center;justify-content:center;font-size:56px;position:relative;overflow:hidden}
+.hcard-pos{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.2);backdrop-filter:blur(8px);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:100px;letter-spacing:.06em}
+.hcard-avail{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:100px;display:flex;align-items:center;gap:5px}
+.hcard-body{padding:16px 18px}
+.hcard-name{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;margin-bottom:4px}
+.hcard-club{font-size:12px;color:var(--gray);margin-bottom:12px}
+.hcard-tag{display:inline-block;background:var(--blue-light);color:var(--blue);font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;margin-right:6px;margin-bottom:4px}
+.hcard-btn{display:block;width:100%;background:var(--blue);border:none;color:#fff;padding:10px;border-radius:7px;margin-top:12px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;cursor:pointer}
+.search-section{background:var(--gray-light);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:28px 48px}
+.search-inner{max-width:1300px;margin:0 auto;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.search-bar{flex:1;min-width:280px;display:flex;align-items:center;background:var(--white);border:1.5px solid var(--border);border-radius:9px;padding:4px 4px 4px 16px;transition:border-color .2s,box-shadow .2s}
+.search-bar:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,255,.1)}
+.search-bar input{flex:1;background:transparent;border:none;outline:none;font-family:'Inter',sans-serif;font-size:14px;color:var(--text)}
+.search-bar input::placeholder{color:var(--gray)}
+.btn-search{background:var(--blue);border:none;color:#fff;padding:10px 22px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;cursor:pointer}
+.filter-pill{background:var(--white);border:1.5px solid var(--border);padding:10px 18px;border-radius:100px;font-size:13px;font-weight:600;color:var(--gray);cursor:pointer;transition:all .2s;white-space:nowrap}
+.filter-pill:hover,.filter-pill.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.section{padding:80px 48px;max-width:1300px;margin:0 auto}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--blue);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.eyebrow::before{content:'';width:24px;height:2px;background:var(--blue);display:inline-block}
+.sec-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(32px,4.5vw,52px);font-weight:900;text-transform:uppercase;letter-spacing:-.5px;color:var(--black);margin-bottom:12px}
+.sec-sub{font-size:15px;color:var(--gray);max-width:500px;line-height:1.7;margin-bottom:52px}
+.athletes-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.athlete-card{background:var(--white);border:1.5px solid var(--border);border-radius:16px;overflow:hidden;transition:all .25s;cursor:pointer;display:flex;flex-direction:row;min-height:180px}
+.athlete-card:hover{border-color:var(--blue);transform:translateY(-3px);box-shadow:0 12px 40px rgba(26,86,255,.12)}
+.ac-photo{width:50%;flex-shrink:0;position:relative;background:linear-gradient(135deg,var(--blue) 0%,var(--blue2) 100%);display:flex;align-items:center;justify-content:center;font-size:56px;overflow:hidden}
+.ac-pos-over{position:absolute;top:10px;left:10px;background:rgba(26,86,255,.9);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:900;letter-spacing:.06em;padding:4px 11px;border-radius:100px;text-transform:uppercase;z-index:1}
+.ac-avail-badge{position:absolute;bottom:10px;left:10px;right:10px;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:4px 10px;border-radius:100px;font-size:10px;font-weight:700;color:#fff;justify-content:center;z-index:1}
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0}
+.dot-sim{background:#00c878}
+.dot-nao{background:#ff5050}
+.ac-body{flex:1;padding:14px 16px;display:flex;flex-direction:column;gap:9px;min-width:0}
+.ac-name{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;letter-spacing:.2px;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ac-clube-row{display:flex;align-items:baseline;gap:5px;font-size:12px;line-height:1.3}
+.ac-clube-label{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gray);flex-shrink:0}
+.ac-clube-val{color:var(--text);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ac-dark{background:var(--black);padding:9px 10px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;border-radius:8px;margin-top:auto}
+.ac-data-item{text-align:center}
+.ac-data-val{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;color:#fff;display:block;line-height:1}
+.ac-data-label{font-size:8px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:2px;display:block}
+.ac-btn{display:block;width:calc(100% + 32px);margin:0 -16px -14px;background:var(--blue);border:none;color:#fff;padding:11px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;transition:all .2s;text-align:center;margin-top:auto}
+.ac-btn:hover{background:var(--blue2)}
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(6,10,18,.6);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--white);border-radius:20px;width:100%;max-width:860px;max-height:90vh;overflow-y:auto;transform:scale(.96);transition:transform .25s;border:1.5px solid var(--border);box-shadow:0 32px 80px rgba(26,86,255,.15)}
+.modal-overlay.open .modal{transform:scale(1)}
+.modal::-webkit-scrollbar{width:4px}
+.modal::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.modal-close{position:sticky;top:0;float:right;margin:16px;background:var(--gray-light);border:none;cursor:pointer;width:34px;height:34px;border-radius:50%;font-size:16px;display:flex;align-items:center;justify-content:center;z-index:10;color:var(--text)}
+.modal-close:hover{background:var(--border)}
+.modal-hero{background:linear-gradient(135deg,#1a56ff 0%,#0d3fd4 100%);padding:48px 40px 40px;display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center}
+.modal-photo{width:120px;height:120px;border-radius:16px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:52px;overflow:hidden}
+.modal-pos-badge{display:inline-block;background:rgba(255,255,255,.2);color:#fff;font-size:11px;font-weight:700;padding:5px 14px;border-radius:100px;letter-spacing:.08em;margin-bottom:12px}
+.modal-name{font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:900;text-transform:uppercase;letter-spacing:-.5px;color:#fff;margin-bottom:4px}
+.modal-club{font-size:14px;color:rgba(255,255,255,.7);margin-bottom:16px}
+.modal-avail-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.15);color:#fff;font-size:13px;font-weight:600;padding:8px 18px;border-radius:100px}
+.modal-stats-bar{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border)}
+.mstat{padding:24px 20px;text-align:center;border-right:1px solid var(--border)}
+.mstat:last-child{border-right:none}
+.mstat-val{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--black);display:block}
+.mstat-label{font-size:11px;color:var(--gray);letter-spacing:.05em;margin-top:2px}
+.modal-body{padding:32px 40px 40px}
+.modal-sec{margin-bottom:28px}
+.modal-sec-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:1.5px solid var(--border)}
+.admin-table{width:100%;border-collapse:collapse}
+.admin-table th{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);padding:10px 14px;text-align:left;border-bottom:1.5px solid var(--border)}
+.admin-table td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:13px}
+.admin-table tr:last-child td{border-bottom:none}
+.admin-table tr:hover td{background:var(--gray-light)}
+.status-badge{display:inline-block;padding:4px 12px;border-radius:100px;font-size:11px;font-weight:700}
+.s-pend{background:#fef9c3;color:#a16207}
+.s-aprov{background:#dcfce7;color:#15803d}
+.s-recus{background:#fee2e2;color:#b91c1c}
+.btn-act{padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .2s;font-family:'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase}
+.btn-aprov{background:#dcfce7;color:#15803d}
+.btn-recus{background:#fee2e2;color:#b91c1c}
+.btn-see{background:var(--blue-light);color:var(--blue)}
+.btn-edit{background:#fef9c3;color:#a16207}
+.admin-tab{padding:9px 22px;border-radius:6px;border:none;background:transparent;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;color:var(--gray);transition:all .2s}
+.admin-tab.active{background:var(--blue);color:#fff}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray)}
+.form-input,.form-select{background:var(--white);border:1.5px solid var(--border);color:var(--text);padding:11px 14px;border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:border-color .2s}
+.form-input:focus,.form-select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,255,.1)}
+.form-input::placeholder{color:var(--gray)}
+.btn-submit{width:100%;background:var(--blue);border:none;color:#fff;padding:16px;border-radius:10px;margin-top:8px;font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.btn-submit:hover{background:var(--blue2)}
+.form-note{font-size:12px;color:var(--gray);text-align:center;margin-top:10px}
+.toast{position:fixed;bottom:28px;right:28px;z-index:9000;background:var(--black);color:#fff;padding:14px 22px;border-radius:10px;font-size:14px;font-weight:500;transform:translateY(16px);opacity:0;transition:all .3s;pointer-events:none;border:1px solid rgba(255,255,255,.1)}
+.toast.show{transform:translateY(0);opacity:1}
+footer{border-top:1.5px solid var(--border);padding:40px 48px;display:flex;align-items:center;justify-content:space-between;max-width:1300px;margin:0 auto}
+.footer-copy{font-size:13px;color:var(--gray)}
+.spin{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-radius:50%;border-top-color:#fff;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.fade-up{animation:fu .5s ease both}
+@keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){nav{padding:0 16px}.nav-links{display:none}.hero{grid-template-columns:1fr;padding:100px 16px 60px}.hero-right{display:none}.search-section{padding:20px 16px}.section{padding:60px 16px}.modal-hero{grid-template-columns:1fr;text-align:center}.modal-stats-bar{grid-template-columns:repeat(2,1fr)}footer{flex-direction:column;gap:12px;text-align:center;padding:32px 16px}}
+@media(max-width:768px){.athletes-grid{grid-template-columns:1fr}.athlete-card{min-height:160px}.ac-photo{width:44%;font-size:44px}.ac-name{font-size:16px}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:440px;padding:40px;position:relative">
+    <button class="modal-close" onclick="document.getElementById('authModal').classList.remove('open')">✕</button>
+    <div style="display:flex;gap:4px;background:var(--gray-light);border-radius:8px;padding:4px;margin-bottom:28px">
+      <button id="auth-tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:10px;border:none;border-radius:6px;background:var(--blue);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;cursor:pointer">Entrar</button>
+      <button id="auth-tab-criar" onclick="switchAuthTab('criar')" style="flex:1;padding:10px;border:none;border-radius:6px;background:transparent;color:var(--gray);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;cursor:pointer">Criar Conta</button>
+    </div>
+    <div id="auth-panel-login">
+      <div class="form-group" style="margin-bottom:14px"><label class="form-label">Email</label><input class="form-input" id="loginEmail" type="email" placeholder="seu@email.com" onkeyup="if(event.key==='Enter')doLogin()"></div>
+      <div class="form-group" style="margin-bottom:20px"><label class="form-label">Senha</label><input class="form-input" id="loginPass" type="password" placeholder="••••••••" onkeyup="if(event.key==='Enter')doLogin()"></div>
+      <button class="btn-submit" id="btn-login" onclick="doLogin()">ENTRAR →</button>
+    </div>
+    <div id="auth-panel-criar" style="display:none">
+      <div class="form-group" style="margin-bottom:14px"><label class="form-label">Nome *</label><input class="form-input" id="criarNome" placeholder="Seu nome"></div>
+      <div class="form-group" style="margin-bottom:14px"><label class="form-label">Email *</label><input class="form-input" id="criarEmail" type="email" placeholder="seu@email.com"></div>
+      <div class="form-group" style="margin-bottom:20px"><label class="form-label">Senha *</label><input class="form-input" id="criarSenha" type="password" placeholder="Mínimo 6 caracteres"></div>
+      <button class="btn-submit" onclick="doCriarConta()">CRIAR CONTA →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="modal-overlay" id="profileModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('profileModal').classList.remove('open')">✕</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:780px">
+    <button class="modal-close" onclick="document.getElementById('editModal').classList.remove('open')">✕</button>
+    <div style="padding:32px 40px 40px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;text-transform:uppercase;margin-bottom:24px;color:var(--text)">✏️ Editar Atleta</div>
+      <input type="hidden" id="edit-id">
+      <div style="display:grid;gap:14px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="edit-nome" placeholder="Nome completo"></div>
+          <div class="form-group"><label class="form-label">Idade *</label><input class="form-input" id="edit-idade" type="number" placeholder="23"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-group"><label class="form-label">Posição *</label>
+            <select class="form-select" id="edit-posicao"><option value="">Selecionar</option><option>Goleiro</option><option>Fixo</option><option>Ala</option><option>Pivô</option><option>Universal</option></select>
+          </div>
+          <div class="form-group"><label class="form-label">Pé Dominante</label>
+            <select class="form-select" id="edit-pe"><option>Direito</option><option>Esquerdo</option><option>Ambidestro</option></select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+          <div class="form-group"><label class="form-label">Altura (cm)</label><input class="form-input" id="edit-altura" type="number"></div>
+          <div class="form-group"><label class="form-label">Peso (kg)</label><input class="form-input" id="edit-peso" type="number"></div>
+          <div class="form-group"><label class="form-label">Disponível?</label>
+            <select class="form-select" id="edit-disponivel">
+              <option value="true">Sim</option><option value="false">Não</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-group"><label class="form-label">Clube Atual</label><input class="form-input" id="edit-clube"></div>
+          <div class="form-group"><label class="form-label">Tempo de Contrato</label><input class="form-input" id="edit-contrato"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Agência</label><input class="form-input" id="edit-agencia"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="edit-instagram"></div>
+          <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="edit-whatsapp"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Ponto Forte</label><input class="form-input" id="edit-forte"></div>
+        <div class="form-group"><label class="form-label">Pontos Fracos</label><input class="form-input" id="edit-fraco"></div>
+        <div class="form-group"><label class="form-label">Link Highlights / Vídeo</label><input class="form-input" id="edit-video"></div>
+        <div class="form-group">
+          <label class="form-label">Foto (clique para trocar — deixe vazio para manter a atual)</label>
+          <div id="edit-foto-area" style="border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer;background:var(--white);transition:border-color .2s" onclick="document.getElementById('edit-foto-input').click()">
+            <div id="edit-foto-preview" style="display:none;margin-bottom:8px"><img id="edit-foto-img" style="width:70px;height:70px;border-radius:10px;object-fit:cover;border:2px solid var(--border)"></div>
+            <div id="edit-foto-txt" style="font-size:13px;color:var(--gray)">📸 Clique para trocar a foto</div>
+          </div>
+          <input type="file" id="edit-foto-input" accept="image/*" style="display:none" onchange="handleEditFoto(this)">
+        </div>
+        <div style="background:var(--gray-light);border-radius:12px;padding:16px;border:1.5px solid var(--border)">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;text-transform:uppercase;margin-bottom:14px;color:var(--gray)">Estatísticas</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+            <div class="form-group"><label class="form-label">Gols</label><input class="form-input" id="edit-gols" type="number"></div>
+            <div class="form-group"><label class="form-label">Assistências</label><input class="form-input" id="edit-assists" type="number"></div>
+            <div class="form-group"><label class="form-label">Passes %</label><input class="form-input" id="edit-passes"></div>
+            <div class="form-group"><label class="form-label">Dribles/jogo</label><input class="form-input" id="edit-dribles"></div>
+            <div class="form-group"><label class="form-label">Nota média</label><input class="form-input" id="edit-nota"></div>
+            <div class="form-group"><label class="form-label">Jogos</label><input class="form-input" id="edit-jogos" type="number"></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <button class="btn-submit" id="btn-salvar-edit" onclick="salvarEdicao()">SALVAR ALTERAÇÕES →</button>
+          <button onclick="document.getElementById('editModal').classList.remove('open')" style="background:var(--gray-light);border:1.5px solid var(--border);color:var(--text);padding:16px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;text-transform:uppercase;cursor:pointer;margin-top:8px">CANCELAR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">ANALISE<span>.IO</span></div>
+  <div class="nav-links">
+    <a onclick="showPage('home')">Home</a>
+    <a onclick="showPage('atletas')">Atletas</a>
+    <a onclick="showPage('clubes');renderClubes()">Clubes</a>
+    <a onclick="showPage('sou-jogador')">Sou um Jogador</a>
+  </div>
+  <div class="nav-right">
+    <div id="nav-guest" style="display:flex;gap:8px;align-items:center">
+      <button class="btn-nav-outline" onclick="openAuthModal('login')">Entrar</button>
+      <button class="btn-nav-solid" onclick="showPage('cadastro-atleta');updateCadastroView()">Adicione seu Atleta</button>
+    </div>
+    <div id="nav-user" style="display:none;gap:8px;align-items:center">
+      <span id="nav-nome" style="font-size:13px;color:var(--gray)"></span>
+      <button class="btn-nav-outline" onclick="showPage('assinatura')" id="nav-btn-assinar">Assinar R$19,90</button>
+      <button class="btn-nav-outline" onclick="doLogout()">Sair</button>
+    </div>
+    <div id="nav-admin" style="display:none;gap:8px;align-items:center">
+      <button class="btn-nav-solid" style="background:#111" onclick="showPage('admin-panel');carregarPainelAdmin()">⚙ Admin</button>
+      <button class="btn-nav-outline" onclick="doLogout()">Sair</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home">
+  <div class="hero">
     <div class="hero-left fade-up">
 <h1>A plataforma mais completa do Futsal — conectamos <strong>atletas, times e agentes</strong>.</h1>
 <p class="hero-sub">
