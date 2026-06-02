@@ -1287,9 +1287,10 @@ function openProfile(a){
     +rLock('Instagram',a.instagram)+rLock('WhatsApp',a.whatsapp)+rLock('Agência',a.agencia)+rLock('Tempo de Contrato',a.contrato)
     +'</div>'
     +'<div class="modal-sec"><div class="modal-sec-title">Estatísticas da Temporada</div>'
-    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">'
-    +sStat(a.stats_gols||a.gols,'Gols')+sStat(a.stats_assists||a.assists,'Assist.')+sStat(a.stats_passes||a.passes,'Passes')
-    +sStat(a.stats_dribles||a.dribles,'Dribles/jogo')+sStat(a.stats_nota||a.nota,'Nota média')+sStat(a.stats_jogos||a.jogos,'Jogos')
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:500px">'
+    +sStat(a.stats_gols||a.gols,'Gols')+sStat(a.stats_gols||a.gols,'Gols')
+    +sStat(a.stats_nota||a.nota,'Nota Analise.IO')
+    +sStat(a.stats_jogos||a.jogos,'Jogos')
     +'</div></div>'
     +'<div style="margin-top:16px;text-align:center">'
     +'<button onclick="abrirCorrecao(atletasCache.find(function(x){return x.id==='+JSON.stringify(a.id)+';}))" style="background:transparent;border:1.5px solid var(--border);color:var(--gray);padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">✏️ Solicitar Correção de Dados</button>'
