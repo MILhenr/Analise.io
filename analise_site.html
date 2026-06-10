@@ -58,6 +58,7 @@
             <select class="form-select" id="edit-posicao"><option value="">Selecionar</option><option>Goleiro</option><option>Fixo</option><option>Ala</option><option>Pivô</option><option>Universal</option></select></div>
           <div class="form-group"><label class="form-label">Pé Dominante</label>
             <select class="form-select" id="edit-pe"><option>Direito</option><option>Esquerdo</option><option>Ambidestro</option></select></div>
+          <div class="form-group"><label class="form-label">Nº Camisa</label><input class="form-input" id="aa-camisa" type="number" placeholder="10"></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
           <div class="form-group"><label class="form-label">Altura (cm)</label><input class="form-input" id="edit-altura" type="number"></div>
@@ -1090,12 +1091,12 @@ function renderCard(a, idx){
     +'<div class="ac-name">'+a.nome+'</div>'
     +'<div class="ac-clube-row"><span class="ac-clube-label">Clube</span><span class="ac-clube-val">'+(a.clube||'—')+'</span></div>'
     +'<div class="ac-clube-row" style="margin-top:2px"><span class="ac-clube-label">Agência</span><span class="ac-clube-val" style="color:var(--gray);font-weight:500">'+(a.agencia||'—')+'</span></div>'
-    +'<div class="ac-dark">'
+    +'<div class="ac-dark" style="grid-template-columns:repeat(3,1fr)">'
     +'<div class="ac-data-item"><span class="ac-data-val">'+(a.idade||'—')+'</span><span class="ac-data-label">Idade</span></div>'
-    +'<div class="ac-data-item"><span class="ac-data-val">'+(a.altura?a.altura+'cm':'—')+'</span><span class="ac-data-label">Alt</span></div>'
     +'<div class="ac-data-item"><span class="ac-data-val">'+(a.pe?a.pe.charAt(0):'—')+'</span><span class="ac-data-label">Pé</span></div>'
-    +'<div class="ac-data-item"><span class="ac-data-val">'+(a.peso?a.peso+'kg':'—')+'</span><span class="ac-data-label">Peso</span></div>'
+    +'<div class="ac-data-item"><span class="ac-data-val">'+(a.camisa||'—')+'</span><span class="ac-data-label">Camisa</span></div>'
     +'</div>'
+
     +'<button class="ac-btn">ANÁLISE COMPLETA →</button>'
     +'</div></div>';
 }
@@ -1268,30 +1269,35 @@ var html='<div class="modal-hero">'
     +'</div></div>'
     +'<div class="modal-stats-bar">'
     +'<div class="mstat"><span class="mstat-val">'+(a.idade||'—')+'</span><span class="mstat-label">Idade</span></div>'
-    +'<div class="mstat"><span class="mstat-val">'+(a.altura?a.altura+'cm':'—')+'</span><span class="mstat-label">Altura</span></div>'
-    +'<div class="mstat"><span class="mstat-val">'+(a.peso?a.peso+'kg':'—')+'</span><span class="mstat-label">Peso</span></div>'
     +'<div class="mstat"><span class="mstat-val">'+(a.pe?a.pe.charAt(0):'—')+'</span><span class="mstat-label">Pé Dom.</span></div>'
+    +'<div class="mstat"><span class="mstat-val">'+(a.camisa||'—')+'</span><span class="mstat-label">Camisa</span></div>'
+
     +'</div>'
     +'<div class="modal-body">'
+    +'<div class="modal-sec"><div class="modal-sec-title">Estatísticas da Temporada</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:500px">'
+    +sStat(a.stats_gols||'0','Gols')
+    +sStat(a.stats_assists||'0','Assistências')
+    +sStat(a.stats_jogos||'0','Jogos')
+    +'</div></div>'
     +'<div class="modal-sec"><div class="modal-sec-title">Dados Básicos</div>'
+
     +rFree('Posição',a.posicao)+rFree('Modalidade',a.modalidade||'Futsal')+rFree('Pé Dominante',a.pe)+rFree('Disponibilidade',a.disponivel?'✅ Disponível':'❌ Contratado')
     +'</div>'
-    +'<div class="modal-sec"><div class="modal-sec-title">Análise Técnica</div>'
-    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">'
-    +forteBox(forte,'#f0fdf4','#15803d','Ponto Forte')
-    +forteBox(fraco,'#fff1f2','#b91c1c','Pontos Fracos')
+    +'<div class="modal-sec"><div class="modal-sec-title">Links de Jogos</div>'
+    +[a.video,a.video2,a.video3,a.video4,a.video5].map(function(v,i){
+      if(!v||v==='-'||v==='—') return '';
+      if(b) return rLock('Link '+(i+1),v);
+      return '<div style="padding:10px 0;border-bottom:1px solid var(--border)"><a href="'+v+'" target="_blank" style="color:var(--blue);font-weight:600;font-size:14px;text-decoration:none">▶ Link '+(i+1)+': '+v.substring(0,40)+'...</a></div>';
+    }).join('')
     +'</div>'
+
     +rLock('Link de Highlights',a.video)
     +'</div>'
     +'<div class="modal-sec"><div class="modal-sec-title">Contato & Agência</div>'
-    +rLock('Instagram',a.instagram)+rLock('WhatsApp',a.whatsapp)+rLock('Agência',a.agencia)+rLock('Tempo de Contrato',a.contrato)
+    +rLock('Instagram',a.instagram)+rLock('Agência',a.agencia)
     +'</div>'
-    +'<div class="modal-sec"><div class="modal-sec-title">Estatísticas da Temporada</div>'
-    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:500px">'
-    +sStat(a.stats_gols||a.gols||'0','Gols')
-    +sStat(a.stats_nota||a.nota||'—','Nota Analise.IO')
-    +sStat(a.stats_jogos||a.jogos||'0','Jogos')
-    +'</div></div>'
+
     +'<div style="margin-top:16px;text-align:center">'
     +'<button onclick="abrirCorrecao(atletasCache.find(function(x){return x.id==='+JSON.stringify(a.id)+';}))" style="background:transparent;border:1.5px solid var(--border);color:var(--gray);padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">✏️ Solicitar Correção de Dados</button>'
     +'</div>'
@@ -1528,6 +1534,7 @@ async function adicionarAtletaAdmin(){
     whatsapp:document.getElementById('aa-whatsapp').value,
     forte:document.getElementById('aa-forte').value||'',
     fraco:document.getElementById('aa-fraco').value||'',
+    camisa: document.getElementById('aa-camisa').value || '',
     video:document.getElementById('aa-video').value,
     stats_gols:document.getElementById('aa-gols').value,
     stats_assists:document.getElementById('aa-assists').value,
@@ -1618,6 +1625,7 @@ async function salvarEdicao(){
     contrato:document.getElementById('edit-contrato').value,
     instagram:document.getElementById('edit-instagram').value,
     whatsapp:document.getElementById('edit-whatsapp').value,
+    camisa: document.getElementById('aa-camisa').value || '',
     forte:document.getElementById('edit-forte').value,
     fraco:document.getElementById('edit-fraco').value,
     video:document.getElementById('edit-video').value,
