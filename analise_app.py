@@ -528,6 +528,135 @@ def webhook_mp():
         print("ERRO WEBHOOK:", e)
         return jsonify({"ok": True})
 
+# ================= API BOT — adicionar no analise_app.py =================
+# Cole essas rotas no analise_app.py antes do bloco "START"
+
+BOT_SECRET = os.environ.get("BOT_SECRET", "scoutbot_secret_2024")
+
+def bot_auth():
+    """Verifica se a requisição vem do bot."""
+    return request.headers.get("X-Bot-Secret") == BOT_SECRET
+
+@app.route("/api/bot/atletas", methods=["GET"])
+def bot_buscar_atletas():
+    """Busca atletas por nome e/ou clube."""
+    if not bot_auth():
+        return jsonify({"erro": "Não autorizado"}), 401
+    nome = request.args.get("nome", "").strip()
+    clube = request.args.get("clube", "").strip()
+    try:
+        with get_db() as conn:
+            with conn.cursor() as c:
+                if nome and clube:
+                    c.execute(
+                        "SELECT id,nome,clube,posicao,stats_gols,stats_assists,stats_jogos FROM atletas "
+                        "WHERE status='aprovado' AND LOWER(nome) LIKE %s AND LOWER(clube) LIKE %s",
+                        (f"%{nome.lower()}%", f"%{clube.lower()}%")
+                    )
+                elif nome:
+                    c.execute(
+                        "SELECT id,nome,clube,posicao,stats_gols,stats_assists,stats_jogos FROM atletas "
+                        "WHERE status='aprovado' AND LOWER(nome) LIKE %s",
+                        (f"%{nome.lower()}%",)
+                    )
+                elif clube:
+                    c.execute(
+                        "SELECT id,nome,clube,posicao,stats_gols,stats_assists,stats_jogos FROM atletas "
+                        "WHERE status='aprovado' AND LOWER(clube) LIKE %s",
+                        (f"%{clube.lower()}%",)
+                    )
+                else:
+                    return jsonify([])
+                return jsonify([dict(r) for r in c.fetchall()])
+    except Exception as e:
+        print("ERRO BOT BUSCAR:", e)
+        return jsonify({"erro": str(e)}), 500
+
+@app.route("/api/bot/gol", methods=["POST"])
+def bot_registrar_gol():
+    """Registra +1 gol e +1 jogo para o atleta."""
+    if not bot_auth():
+        return jsonify({"erro": "Não autorizado"}), 401
+    data = request.json
+    atleta_id = data.get("atleta_id")
+    if not atleta_id:
+        return jsonify({"erro": "atleta_id obrigatório"}), 400
+    try:
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute("SELECT stats_gols, stats_jogos FROM atletas WHERE id=%s", (atleta_id,))
+                row = c.fetchone()
+                if not row:
+                    return jsonify({"erro": "Atleta não encontrado"}), 404
+                gols = int(row["stats_gols"] or 0) + 1
+                jogos = int(row["stats_jogos"] or 0) + 1
+                c.execute(
+                    "UPDATE atletas SET stats_gols=%s, stats_jogos=%s WHERE id=%s",
+                    (str(gols), str(jogos), atleta_id)
+                )
+            conn.commit()
+        print(f"✅ GOL: atleta={atleta_id} gols={gols} jogos={jogos}")
+        return jsonify({"ok": True, "gols": gols, "jogos": jogos})
+    except Exception as e:
+        print("ERRO BOT GOL:", e)
+        return jsonify({"erro": str(e)}), 500
+
+@app.route("/api/bot/assistencia", methods=["POST"])
+def bot_registrar_assistencia():
+    """Registra +1 assistência e +1 jogo para o atleta."""
+    if not bot_auth():
+        return jsonify({"erro": "Não autorizado"}), 401
+    data = request.json
+    atleta_id = data.get("atleta_id")
+    if not atleta_id:
+        return jsonify({"erro": "atleta_id obrigatório"}), 400
+    try:
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute("SELECT stats_assists, stats_jogos FROM atletas WHERE id=%s", (atleta_id,))
+                row = c.fetchone()
+                if not row:
+                    return jsonify({"erro": "Atleta não encontrado"}), 404
+                assists = int(row["stats_assists"] or 0) + 1
+                jogos = int(row["stats_jogos"] or 0) + 1
+                c.execute(
+                    "UPDATE atletas SET stats_assists=%s, stats_jogos=%s WHERE id=%s",
+                    (str(assists), str(jogos), atleta_id)
+                )
+            conn.commit()
+        print(f"✅ ASSIST: atleta={atleta_id} assists={assists} jogos={jogos}")
+        return jsonify({"ok": True, "assists": assists, "jogos": jogos})
+    except Exception as e:
+        print("ERRO BOT ASSIST:", e)
+        return jsonify({"erro": str(e)}), 500
+
+@app.route("/api/bot/jogo", methods=["POST"])
+def bot_registrar_jogo():
+    """Registra +1 jogo para todos os atletas de um clube."""
+    if not bot_auth():
+        return jsonify({"erro": "Não autorizado"}), 401
+    data = request.json
+    clube = data.get("clube", "").strip()
+    if not clube:
+        return jsonify({"erro": "clube obrigatório"}), 400
+    try:
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute(
+                    "SELECT id, stats_jogos FROM atletas WHERE status='aprovado' AND LOWER(clube) LIKE %s",
+                    (f"%{clube.lower()}%",)
+                )
+                atletas = c.fetchall()
+                for a in atletas:
+                    jogos = int(a["stats_jogos"] or 0) + 1
+                    c.execute("UPDATE atletas SET stats_jogos=%s WHERE id=%s", (str(jogos), a["id"]))
+            conn.commit()
+        print(f"✅ JOGO: clube={clube} atletas_atualizados={len(atletas)}")
+        return jsonify({"ok": True, "atletas_atualizados": len(atletas)})
+    except Exception as e:
+        print("ERRO BOT JOGO:", e)
+        return jsonify({"erro": str(e)}), 500
+
 # ================= START =================
 if __name__ == "__main__":
     try:
