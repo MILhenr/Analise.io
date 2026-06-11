@@ -53,31 +53,28 @@
           <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="edit-nome"></div>
           <div class="form-group"><label class="form-label">Idade *</label><input class="form-input" id="edit-idade" type="number"></div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
           <div class="form-group"><label class="form-label">Posição *</label>
             <select class="form-select" id="edit-posicao"><option value="">Selecionar</option><option>Goleiro</option><option>Fixo</option><option>Ala</option><option>Pivô</option><option>Universal</option></select></div>
           <div class="form-group"><label class="form-label">Pé Dominante</label>
             <select class="form-select" id="edit-pe"><option>Direito</option><option>Esquerdo</option><option>Ambidestro</option></select></div>
-          <div class="form-group"><label class="form-label">Nº Camisa</label><input class="form-input" id="aa-camisa" type="number" placeholder="10"></div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
-          <div class="form-group"><label class="form-label">Altura (cm)</label><input class="form-input" id="edit-altura" type="number"></div>
-          <div class="form-group"><label class="form-label">Peso (kg)</label><input class="form-input" id="edit-peso" type="number"></div>
-          <div class="form-group"><label class="form-label">Disponível?</label>
-            <select class="form-select" id="edit-disponivel"><option value="true">Sim</option><option value="false">Não</option></select></div>
+          <div class="form-group"><label class="form-label">Nº Camisa</label><input class="form-input" id="edit-camisa" type="number" placeholder="10"></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
           <div class="form-group"><label class="form-label">Clube Atual</label><input class="form-input" id="edit-clube"></div>
-          <div class="form-group"><label class="form-label">Tempo de Contrato</label><input class="form-input" id="edit-contrato"></div>
+          <div class="form-group"><label class="form-label">Disponível?</label>
+            <select class="form-select" id="edit-disponivel"><option value="true">Sim</option><option value="false">Não</option></select></div>
         </div>
         <div class="form-group"><label class="form-label">Agência</label><input class="form-input" id="edit-agencia"></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-          <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="edit-instagram"></div>
-          <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="edit-whatsapp"></div>
+        <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="edit-instagram"></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label class="form-label">Links de Jogos (até 5)</label>
+          <input class="form-input" id="edit-video" placeholder="Link 1 — YouTube / Drive...">
+          <input class="form-input" id="edit-video2" placeholder="Link 2">
+          <input class="form-input" id="edit-video3" placeholder="Link 3">
+          <input class="form-input" id="edit-video4" placeholder="Link 4">
+          <input class="form-input" id="edit-video5" placeholder="Link 5">
         </div>
-        <div class="form-group"><label class="form-label">Ponto Forte</label><input class="form-input" id="edit-forte"></div>
-        <div class="form-group"><label class="form-label">Pontos Fracos</label><input class="form-input" id="edit-fraco"></div>
-        <div class="form-group"><label class="form-label">Link Highlights</label><input class="form-input" id="edit-video"></div>
         <div class="form-group">
           <label class="form-label">Foto</label>
           <div id="edit-foto-area" style="border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer" onclick="document.getElementById('edit-foto-input').click()">
@@ -91,9 +88,6 @@
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
             <div class="form-group"><label class="form-label">Gols</label><input class="form-input" id="edit-gols" type="number"></div>
             <div class="form-group"><label class="form-label">Assistências</label><input class="form-input" id="edit-assists" type="number"></div>
-            <div class="form-group"><label class="form-label">Passes %</label><input class="form-input" id="edit-passes"></div>
-            <div class="form-group"><label class="form-label">Dribles/jogo</label><input class="form-input" id="edit-dribles"></div>
-            <div class="form-group"><label class="form-label">Nota média</label><input class="form-input" id="edit-nota"></div>
             <div class="form-group"><label class="form-label">Jogos</label><input class="form-input" id="edit-jogos" type="number"></div>
           </div>
         </div>
@@ -105,6 +99,29 @@
     </div>
   </div>
 </div>
+
+<!-- ===== MODAL: CORREÇÃO ===== -->
+<div class="modal-overlay" id="correctionModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:560px">
+    <button class="modal-close" onclick="document.getElementById('correctionModal').classList.remove('open')">✕</button>
+    <div style="padding:32px 40px 40px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:6px">✏️ Solicitar Correção</div>
+      <p style="font-size:13px;color:var(--gray);margin-bottom:24px">Informe o que precisa ser corrigido. Nossa equipe vai revisar em até 48h.</p>
+      <input type="hidden" id="corr-atleta-id"><input type="hidden" id="corr-atleta-nome">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="form-group"><label class="form-label">O que precisa corrigir? *</label>
+          <select class="form-select" id="corr-campo"><option value="">Selecionar campo</option><option>Nome</option><option>Idade</option><option>Clube</option><option>Posição</option><option>Agência</option><option>Instagram</option><option>Estatísticas</option><option>Links de Jogos</option><option>Foto</option><option>Outro</option></select></div>
+        <div class="form-group"><label class="form-label">Valor correto / Detalhes *</label>
+          <textarea class="form-input" id="corr-detalhe" rows="4" placeholder="Ex: Meu clube atual é Magnus Futsal, não ACBF."></textarea></div>
+        <div class="form-group"><label class="form-label">Seu contato</label>
+          <input class="form-input" id="corr-contato" placeholder="@seuinstagram ou WhatsApp"></div>
+        <button class="btn-submit" id="btn-enviar-corr" onclick="enviarCorrecao()">ENVIAR SOLICITAÇÃO →</button>
+        <p class="form-note">Analisamos todas as solicitações em até 48h.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <!-- ===== MODAL: CORREÇÃO ===== -->
 <div class="modal-overlay" id="correctionModal" onclick="if(event.target===this)this.classList.remove('open')">
