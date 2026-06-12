@@ -5,575 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ANALISE.IO — Marketplace de Atletas</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,800;0,900;1,900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<!-- COLE O CSS DA PARTE 2 AQUI DENTRO DE <style></style> -->
-</head>
-<body>
-
-<div class="toast" id="toast"></div>
-
-<!-- ===== MODAL: AUTH ===== -->
-<div class="modal-overlay" id="authModal" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="modal" style="max-width:440px;padding:40px;position:relative">
-    <button class="modal-close" onclick="document.getElementById('authModal').classList.remove('open')">✕</button>
-    <div style="display:flex;gap:4px;background:var(--gray-light);border-radius:8px;padding:4px;margin-bottom:28px">
-      <button id="auth-tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:10px;border:none;border-radius:6px;background:var(--blue);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;cursor:pointer">Entrar</button>
-      <button id="auth-tab-criar" onclick="switchAuthTab('criar')" style="flex:1;padding:10px;border:none;border-radius:6px;background:transparent;color:var(--gray);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;cursor:pointer">Criar Conta</button>
-    </div>
-    <div id="auth-panel-login">
-      <div class="form-group" style="margin-bottom:14px"><label class="form-label">Email</label><input class="form-input" id="loginEmail" type="email" placeholder="seu@email.com" onkeyup="if(event.key==='Enter')doLogin()"></div>
-      <div class="form-group" style="margin-bottom:20px"><label class="form-label">Senha</label><input class="form-input" id="loginPass" type="password" placeholder="••••••••" onkeyup="if(event.key==='Enter')doLogin()"></div>
-      <button class="btn-submit" id="btn-login" onclick="doLogin()">ENTRAR →</button>
-    </div>
-    <div id="auth-panel-criar" style="display:none">
-      <div class="form-group" style="margin-bottom:14px"><label class="form-label">Nome *</label><input class="form-input" id="criarNome" placeholder="Seu nome"></div>
-      <div class="form-group" style="margin-bottom:14px"><label class="form-label">Email *</label><input class="form-input" id="criarEmail" type="email" placeholder="seu@email.com"></div>
-      <div class="form-group" style="margin-bottom:20px"><label class="form-label">Senha *</label><input class="form-input" id="criarSenha" type="password" placeholder="Mínimo 6 caracteres"></div>
-      <button class="btn-submit" onclick="doCriarConta()">CRIAR CONTA →</button>
-    </div>
-  </div>
-</div>
-
-<!-- ===== MODAL: PERFIL ===== -->
-<div class="modal-overlay" id="profileModal" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="modal">
-    <button class="modal-close" onclick="document.getElementById('profileModal').classList.remove('open')">✕</button>
-    <div id="modalBody"></div>
-  </div>
-</div>
-
-<!-- ===== MODAL: EDITAR ATLETA ===== -->
-<div class="modal-overlay" id="editModal" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="modal" style="max-width:780px">
-    <button class="modal-close" onclick="document.getElementById('editModal').classList.remove('open')">✕</button>
-    <div style="padding:32px 40px 40px">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;text-transform:uppercase;margin-bottom:24px">✏️ Editar Atleta</div>
-      <input type="hidden" id="edit-id">
-      <div style="display:grid;gap:14px">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-          <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="edit-nome"></div>
-          <div class="form-group"><label class="form-label">Idade *</label><input class="form-input" id="edit-idade" type="number"></div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
-          <div class="form-group"><label class="form-label">Posição *</label>
-            <select class="form-select" id="edit-posicao"><option value="">Selecionar</option><option>Goleiro</option><option>Fixo</option><option>Ala</option><option>Pivô</option><option>Universal</option></select></div>
-          <div class="form-group"><label class="form-label">Pé Dominante</label>
-            <select class="form-select" id="edit-pe"><option>Direito</option><option>Esquerdo</option><option>Ambidestro</option></select></div>
-          <div class="form-group"><label class="form-label">Nº Camisa</label><input class="form-input" id="edit-camisa" type="number" placeholder="10"></div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-          <div class="form-group"><label class="form-label">Clube Atual</label><input class="form-input" id="edit-clube"></div>
-          <div class="form-group"><label class="form-label">Disponível?</label>
-            <select class="form-select" id="edit-disponivel"><option value="true">Sim</option><option value="false">Não</option></select></div>
-        </div>
-        <div class="form-group"><label class="form-label">Agência</label><input class="form-input" id="edit-agencia"></div>
-        <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="edit-instagram"></div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <label class="form-label">Links de Jogos (até 5)</label>
-          <input class="form-input" id="edit-video" placeholder="Link 1 — YouTube / Drive...">
-          <input class="form-input" id="edit-video2" placeholder="Link 2">
-          <input class="form-input" id="edit-video3" placeholder="Link 3">
-          <input class="form-input" id="edit-video4" placeholder="Link 4">
-          <input class="form-input" id="edit-video5" placeholder="Link 5">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Foto</label>
-          <div id="edit-foto-area" style="border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer" onclick="document.getElementById('edit-foto-input').click()">
-            <div id="edit-foto-preview" style="display:none;margin-bottom:8px"><img id="edit-foto-img" style="width:70px;height:70px;border-radius:10px;object-fit:cover"></div>
-            <div id="edit-foto-txt" style="font-size:13px;color:var(--gray)">📸 Clique para trocar a foto</div>
-          </div>
-          <input type="file" id="edit-foto-input" accept="image/*" style="display:none" onchange="handleEditFoto(this)">
-        </div>
-        <div style="background:var(--gray-light);border-radius:12px;padding:16px;border:1.5px solid var(--border)">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;text-transform:uppercase;margin-bottom:14px;color:var(--gray)">Estatísticas</div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-            <div class="form-group"><label class="form-label">Gols</label><input class="form-input" id="edit-gols" type="number"></div>
-            <div class="form-group"><label class="form-label">Assistências</label><input class="form-input" id="edit-assists" type="number"></div>
-            <div class="form-group"><label class="form-label">Jogos</label><input class="form-input" id="edit-jogos" type="number"></div>
-          </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <button class="btn-submit" id="btn-salvar-edit" onclick="salvarEdicao()">SALVAR ALTERAÇÕES →</button>
-          <button onclick="document.getElementById('editModal').classList.remove('open')" style="background:var(--gray-light);border:1.5px solid var(--border);color:var(--text);padding:16px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;text-transform:uppercase;cursor:pointer;margin-top:8px">CANCELAR</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== MODAL: CORREÇÃO ===== -->
-<div class="modal-overlay" id="correctionModal" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="modal" style="max-width:560px">
-    <button class="modal-close" onclick="document.getElementById('correctionModal').classList.remove('open')">✕</button>
-    <div style="padding:32px 40px 40px">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:6px">✏️ Solicitar Correção</div>
-      <p style="font-size:13px;color:var(--gray);margin-bottom:24px">Informe o que precisa ser corrigido. Nossa equipe vai revisar em até 48h.</p>
-      <input type="hidden" id="corr-atleta-id"><input type="hidden" id="corr-atleta-nome">
-      <div style="display:flex;flex-direction:column;gap:14px">
-        <div class="form-group"><label class="form-label">O que precisa corrigir? *</label>
-          <select class="form-select" id="corr-campo"><option value="">Selecionar campo</option><option>Nome</option><option>Idade</option><option>Clube</option><option>Posição</option><option>Agência</option><option>Instagram</option><option>Estatísticas</option><option>Links de Jogos</option><option>Foto</option><option>Outro</option></select></div>
-        <div class="form-group"><label class="form-label">Valor correto / Detalhes *</label>
-          <textarea class="form-input" id="corr-detalhe" rows="4" placeholder="Ex: Meu clube atual é Magnus Futsal, não ACBF."></textarea></div>
-        <div class="form-group"><label class="form-label">Seu contato</label>
-          <input class="form-input" id="corr-contato" placeholder="@seuinstagram ou WhatsApp"></div>
-        <button class="btn-submit" id="btn-enviar-corr" onclick="enviarCorrecao()">ENVIAR SOLICITAÇÃO →</button>
-        <p class="form-note">Analisamos todas as solicitações em até 48h.</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- ===== MODAL: CORREÇÃO ===== -->
-<div class="modal-overlay" id="correctionModal" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="modal" style="max-width:560px">
-    <button class="modal-close" onclick="document.getElementById('correctionModal').classList.remove('open')">✕</button>
-    <div style="padding:32px 40px 40px">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:6px">✏️ Solicitar Correção</div>
-      <p style="font-size:13px;color:var(--gray);margin-bottom:24px">Informe o que precisa ser corrigido. Nossa equipe vai revisar em até 48h.</p>
-      <input type="hidden" id="corr-atleta-id"><input type="hidden" id="corr-atleta-nome">
-      <div style="display:flex;flex-direction:column;gap:14px">
-        <div class="form-group"><label class="form-label">O que precisa corrigir? *</label>
-          <select class="form-select" id="corr-campo"><option value="">Selecionar campo</option><option>Nome</option><option>Idade</option><option>Clube</option><option>Posição</option><option>Altura / Peso</option><option>Agência</option><option>Instagram</option><option>WhatsApp</option><option>Ponto Forte</option><option>Pontos Fracos</option><option>Estatísticas</option><option>Foto</option><option>Outro</option></select></div>
-        <div class="form-group"><label class="form-label">Valor correto / Detalhes *</label>
-          <textarea class="form-input" id="corr-detalhe" rows="4" placeholder="Ex: Meu clube atual é Magnus Futsal, não ACBF."></textarea></div>
-        <div class="form-group"><label class="form-label">Seu contato</label>
-          <input class="form-input" id="corr-contato" placeholder="@seuinstagram ou WhatsApp"></div>
-        <button class="btn-submit" id="btn-enviar-corr" onclick="enviarCorrecao()">ENVIAR SOLICITAÇÃO →</button>
-        <p class="form-note">Analisamos todas as solicitações em até 48h.</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== NAV (ÚNICO) ===== -->
-<nav>
-  <div class="logo" onclick="showPage('home')">ANALISE<span>.IO</span></div>
-  <div class="nav-links">
-    <a onclick="showPage('home')">Home</a>
-    <a onclick="showPage('atletas')">Atletas</a>
-    <a onclick="showPage('clubes');renderClubes()">Clubes</a>
-    <a onclick="showPage('sou-jogador')">Sou um Jogador</a>
-  </div>
-  <div class="nav-right">
-    <div id="nav-guest" style="display:flex;gap:8px;align-items:center">
-      <button class="btn-nav-outline" onclick="openAuthModal('login')">Entrar</button>
-      <button class="btn-nav-solid" onclick="showPage('cadastro-atleta');updateCadastroView()">Adicione seu Atleta</button>
-    </div>
-    <div id="nav-user" style="display:none;gap:8px;align-items:center">
-      <span id="nav-nome" style="font-size:13px;color:var(--gray)"></span>
-      <button class="btn-nav-outline" onclick="showPage('assinatura')" id="nav-btn-assinar">Assinar R$19,90</button>
-      <button class="btn-nav-outline" onclick="doLogout()">Sair</button>
-    </div>
-    <div id="nav-admin" style="display:none;gap:8px;align-items:center">
-      <button class="btn-nav-solid" style="background:#111" onclick="showPage('admin-panel');carregarPainelAdmin()">⚙ Admin</button>
-      <button class="btn-nav-outline" onclick="doLogout()">Sair</button>
-    </div>
-  </div>
-</nav>
-
-<!-- ===== PAGE: HOME (ÚNICO) ===== -->
-<div id="page-home" class="page active">
-  <div class="hero">
-    <div class="hero-left">
-      <h1>A <span class="blue">PLATAFORMA</span> MAIS<br>COMPLETA DO <span class="blue">FUTSAL</span></h1>
-      <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,3.5vw,48px);font-weight:900;letter-spacing:-1px;text-transform:uppercase;margin-bottom:36px;color:var(--black)">ANALISE<span style="color:var(--blue)">.IO</span></h2>
-      <div class="hero-btns">
-        <button class="btn-hero-primary" onclick="showPage('atletas')">Ver Atletas →</button>
-        <button class="btn-hero-secondary" onclick="showPage('cadastro-atleta');updateCadastroView()">Cadastrar Atleta</button>
-      </div>
-      <div class="hero-stats">
-        <div class="hstat"><span class="hstat-num" id="sAtletas">0</span><span class="hstat-label">Atletas</span></div>
-        <div class="hstat"><span class="hstat-num" id="sClubes">0</span><span class="hstat-label">Clubes</span></div>
-        <div class="hstat"><span class="hstat-num" id="sAnalises">0</span><span class="hstat-label">Análises</span></div>
-      </div>
-    </div>
-    <div class="hero-right">
-      <div class="hero-card-stack">
-        <div class="hcard hcard-back2">
-          <div class="hcard-photo" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">🏃</div>
-          <div class="hcard-body"><div class="hcard-name">MARCOS SILVA</div><div class="hcard-club">Corinthians Futsal</div></div>
-        </div>
-        <div class="hcard hcard-back1">
-          <div class="hcard-photo" style="background:linear-gradient(135deg,#0891b2,#0e7490)">🧤</div>
-          <div class="hcard-body"><div class="hcard-name">LUCAS PORTO</div><div class="hcard-club">Joinville EC</div></div>
-        </div>
-        <div id="hero-card-destaque" class="hcard hcard-main">
-          <div class="hcard-photo">⚡
-            <div class="hcard-pos">ALA</div>
-            <div class="hcard-avail"><span style="width:6px;height:6px;background:#00c878;border-radius:50%"></span>Disponível</div>
-          </div>
-          <div class="hcard-body">
-            <div class="hcard-name" id="hero-destaque-nome">GUILHERME ALVES</div>
-            <div class="hcard-club" id="hero-destaque-clube">Magnus Futsal · 23 anos</div>
-            <span class="hcard-tag" id="hero-destaque-pos">Ala</span><span class="hcard-tag">Futsal</span>
-            <button class="hcard-btn" onclick="showPage('atletas')">VER PERFIL →</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <section class="section">
-    <div class="eyebrow">Atletas em Destaque</div>
-    <h2 class="sec-title">TALENTOS DO MOMENTO</h2>
-    <p class="sec-sub">Atletas verificados e disponíveis no mercado.</p>
-    <div class="athletes-grid" id="destaque-grid"><p style="color:var(--gray)">Carregando...</p></div>
-    <div style="text-align:center;margin-top:40px">
-      <button class="btn-hero-primary" onclick="showPage('atletas')">VER TODOS OS ATLETAS →</button>
-    </div>
-  </section>
-</div>
-
-<!-- ===== PAGE: ATLETAS ===== -->
-<div id="page-atletas" class="page">
-  <div style="padding:100px 48px 0;max-width:1300px;margin:0 auto">
-    <div class="eyebrow">Marketplace</div>
-    <h2 class="sec-title">TODOS OS ATLETAS</h2>
-  </div>
-  <div class="search-section">
-    <div class="search-inner">
-      <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Buscar por nome, posição, clube..." onkeyup="if(event.key==='Enter')doSearch()">
-        <button class="btn-search" onclick="doSearch()">BUSCAR</button>
-      </div>
-      <select id="f-idade" class="form-input" style="width:150px;padding:10px 14px">
-        <option value="">Idade</option><option value="18-">Até 18</option><option value="18-23">18–23</option><option value="23-28">23–28</option><option value="28-33">28–33</option><option value="33+">33+</option>
-      </select>
-      <select id="f-agencia" class="form-input" style="width:170px;padding:10px 14px"><option value="">Agência</option></select>
-      <select id="f-disponivel" class="form-input" style="width:150px;padding:10px 14px">
-        <option value="">Disponibilidade</option><option value="sim">Disponível</option><option value="nao">Contratado</option>
-      </select>
-      <button class="btn-search" onclick="aplicarFiltros()">FILTRAR</button>
-    </div>
-    <div style="max-width:1300px;margin:16px auto 0;display:flex;gap:8px;flex-wrap:wrap">
-      <div class="filter-pill active" onclick="setPill(this,'')">Todos</div>
-      <div class="filter-pill" onclick="setPill(this,'disp')">Disponível</div>
-      <div class="filter-pill" onclick="setPill(this,'Ala')">Ala</div>
-      <div class="filter-pill" onclick="setPill(this,'Fixo')">Fixo</div>
-      <div class="filter-pill" onclick="setPill(this,'Goleiro')">Goleiro</div>
-      <div class="filter-pill" onclick="setPill(this,'Pivô')">Pivô</div>
-    </div>
-  </div>
-  <section class="section" style="padding-top:40px">
-    <div class="athletes-grid" id="atletas-grid"><p style="color:var(--gray)">Carregando...</p></div>
-  </section>
-</div>
-
-<!-- ===== PAGE: CADASTRO ATLETA ===== -->
-<div id="page-cadastro-atleta" class="page">
-  <section class="section" style="padding-top:120px;max-width:900px">
-    <div class="eyebrow">Cadastro de Atleta</div>
-    <h2 class="sec-title">MOSTRE SEU <span style="color:var(--blue)">TALENTO.</span></h2>
-    <div id="cad-nao-logado" style="display:none;text-align:center;padding:60px 0">
-      <div style="font-size:48px;margin-bottom:16px">🔐</div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;text-transform:uppercase;margin-bottom:12px">Crie sua conta primeiro</div>
-      <div style="display:flex;gap:12px;justify-content:center;margin-top:24px">
-        <button class="btn-hero-primary" onclick="openAuthModal('criar')">Criar Conta Grátis →</button>
-        <button class="btn-hero-secondary" onclick="openAuthModal('login')">Já tenho conta</button>
-      </div>
-    </div>
-    <div id="cad-sem-assinatura" style="display:none">
-      <div style="background:var(--black);border-radius:20px;padding:48px;text-align:center">
-        <div style="font-size:40px;margin-bottom:16px">⚡</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;text-transform:uppercase;color:#fff;margin-bottom:12px">Assine para Enviar sua Solicitação</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:56px;font-weight:900;color:var(--blue);line-height:1">R$19,90<span style="font-size:20px;color:rgba(255,255,255,.3)">/mês</span></div>
-        <div style="font-size:13px;color:rgba(255,255,255,.3);margin-bottom:24px">Cancele quando quiser</div>
-        <button onclick="assinar()" style="background:var(--blue);border:none;color:#fff;padding:18px 48px;border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;cursor:pointer">ASSINAR AGORA</button>
-      </div>
-    </div>
-    <div id="cad-form-atleta" style="display:none">
-      <div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:20px;padding:36px">
-        <div style="display:grid;gap:14px">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-            <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="c-nome" placeholder="Seu nome"></div>
-            <div class="form-group"><label class="form-label">Idade *</label><input class="form-input" id="c-idade" type="number" placeholder="25"></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-            <div class="form-group"><label class="form-label">Posição *</label>
-              <select class="form-select" id="c-posicao"><option value="">Selecionar</option><option>Goleiro</option><option>Fixo</option><option>Ala</option><option>Pivô</option><option>Universal</option></select></div>
-            <div class="form-group"><label class="form-label">Pé Dominante</label>
-              <select class="form-select" id="c-pe"><option>Direito</option><option>Esquerdo</option><option>Ambidestro</option></select></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
-            <div class="form-group"><label class="form-label">Altura (cm)</label><input class="form-input" id="c-altura" type="number"></div>
-            <div class="form-group"><label class="form-label">Peso (kg)</label><input class="form-input" id="c-peso" type="number"></div>
-            <div class="form-group"><label class="form-label">Clube Atual</label><input class="form-input" id="c-clube" placeholder="Magnus Futsal"></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-            <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="c-instagram" placeholder="@seuuser"></div>
-            <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="c-whatsapp" placeholder="(11) 99999-9999"></div>
-          </div>
-          <div class="form-group"><label class="form-label">Agência</label><input class="form-input" id="c-agencia" placeholder="Nome da agência"></div>
-          <div class="form-group"><label class="form-label">Ponto Forte</label><input class="form-input" id="c-forte" placeholder="Ex: Velocidade..."></div>
-          <div class="form-group"><label class="form-label">Link de Highlights</label><input class="form-input" id="c-video" placeholder="YouTube / Drive..."></div>
-          <button class="btn-submit" onclick="enviarCadastroAtleta()">ENVIAR E ATIVAR PERFIL →</button>
-          <p class="form-note">Após enviar, você será direcionado para ativar seu perfil por R$19,90/mês.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
-
-<!-- ===== PAGE: CLUBES ===== -->
-<div id="page-clubes" class="page">
-  <section class="section" style="padding-top:120px">
-    <div class="eyebrow">Vagas Abertas</div>
-    <h2 class="sec-title">CLUBES CONTRATANDO</h2>
-    <p class="sec-sub" style="margin-bottom:32px">Clubes que estão buscando atletas.</p>
-    <div id="clubes-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px"></div>
-  </section>
-</div>
-
-<!-- ===== PAGE: ADMIN PANEL ===== -->
-<div id="page-admin-panel" class="page">
-  <section class="section" style="padding-top:100px">
-    <div class="eyebrow">Painel Administrativo</div>
-    <h2 class="sec-title" style="margin-bottom:32px">GESTÃO DA PLATAFORMA</h2>
-    <div style="display:flex;gap:4px;background:var(--gray-light);border-radius:10px;padding:4px;width:fit-content;margin-bottom:32px;border:1.5px solid var(--border);flex-wrap:wrap">
-      <button class="admin-tab active" id="atab-atletas" onclick="adminPanelTab('atletas')">Atletas</button>
-      <button class="admin-tab" id="atab-usuarios" onclick="adminPanelTab('usuarios')">👥 Usuários</button>
-      <button class="admin-tab" id="atab-clubes" onclick="adminPanelTab('clubes')">Clubes</button>
-      <button class="admin-tab" id="atab-add" onclick="adminPanelTab('add')">+ Adicionar Atleta</button>
-      <button class="admin-tab" id="atab-destaque" onclick="adminPanelTab('destaque')">⭐ Capa</button>
-      <button class="admin-tab" id="atab-csv" onclick="adminPanelTab('csv')">📊 CSV</button>
-    </div>
-
-    <!-- TAB ATLETAS -->
-    <div id="atab-content-atletas">
-      <div style="overflow-x:auto">
-        <table class="admin-table">
-          <thead><tr><th>Atleta</th><th>Posição</th><th>Clube</th><th>Status</th><th>Gols</th><th>Assist.</th><th>Nota</th><th>Ações</th></tr></thead>
-          <tbody id="admin-atletas-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- TAB USUÁRIOS (NOVO) -->
-    <div id="atab-content-usuarios" style="display:none">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
-        <div>
-          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase">Usuários Cadastrados</h3>
-          <p style="font-size:13px;color:var(--gray);margin-top:4px">Todos os usuários registrados na plataforma</p>
-        </div>
-        <div style="display:flex;gap:8px">
-          <input class="form-input" id="user-search" placeholder="🔍 Buscar por nome ou email..." style="width:240px;padding:9px 14px" oninput="filtrarUsuarios()">
-          <button class="btn-search" onclick="carregarUsuarios()">↻ Atualizar</button>
-        </div>
-      </div>
-      <!-- Cards de stats -->
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px">
-        <div style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:12px;padding:20px">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:var(--blue)" id="stat-total-users">—</div>
-          <div style="font-size:12px;color:var(--gray);margin-top:4px;font-weight:600">Total de Usuários</div>
-        </div>
-        <div style="background:#dcfce7;border:1.5px solid #86efac;border-radius:12px;padding:20px">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:#15803d" id="stat-assinantes">—</div>
-          <div style="font-size:12px;color:#15803d;margin-top:4px;font-weight:600">Assinantes Ativos</div>
-        </div>
-        <div style="background:#fef9c3;border:1.5px solid #fde047;border-radius:12px;padding:20px">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:#a16207" id="stat-gratuitos">—</div>
-          <div style="font-size:12px;color:#a16207;margin-top:4px;font-weight:600">Plano Gratuito</div>
-        </div>
-        <div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:12px;padding:20px">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:var(--text)" id="stat-admins">—</div>
-          <div style="font-size:12px;color:var(--gray);margin-top:4px;font-weight:600">Administradores</div>
-        </div>
-      </div>
-      <div style="overflow-x:auto">
-        <table class="admin-table">
-          <thead><tr><th>Usuário</th><th>Email</th><th>Plano</th><th>Cadastrado em</th><th>Tipo</th></tr></thead>
-          <tbody id="admin-usuarios-tbody"><tr><td colspan="5" style="text-align:center;color:var(--gray);padding:40px">Carregando...</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- TAB CLUBES -->
-    <div id="atab-content-clubes" style="display:none">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start">
-        <div>
-          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:20px">Adicionar Clube</h3>
-          <div style="display:flex;flex-direction:column;gap:14px">
-            <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="ac-nome" placeholder="Ex: Magnus Futsal"></div>
-            <div class="form-group"><label class="form-label">Cidade / Estado</label><input class="form-input" id="ac-cidade" placeholder="Ex: Sorocaba, SP"></div>
-            <div class="form-group"><label class="form-label">Posição *</label>
-              <select class="form-select" id="ac-posicao"><option value="">Selecionar</option><option>Goleiro</option><option>Fixo</option><option>Ala</option><option>Pivô</option><option>Universal</option></select></div>
-            <div class="form-group"><label class="form-label">Faixa de Idade</label><input class="form-input" id="ac-idade" placeholder="Ex: 20-28 anos"></div>
-            <div class="form-group"><label class="form-label">Detalhes</label><textarea class="form-input" id="ac-detalhes" rows="3" placeholder="Descreva o perfil..."></textarea></div>
-            <div class="form-group"><label class="form-label">Contato</label><input class="form-input" id="ac-contato" placeholder="(11) 99999-9999"></div>
-            <button class="btn-submit" onclick="adicionarClube()">ADICIONAR CLUBE →</button>
-          </div>
-        </div>
-        <div>
-          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:20px">Clubes Cadastrados</h3>
-          <div id="admin-clubes-lista" style="display:flex;flex-direction:column;gap:12px"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB ADD ATLETA -->
-    <div id="atab-content-add" style="display:none">
-      <div style="max-width:700px">
-        <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:24px">Adicionar Atleta</h3>
-        <div style="display:grid;gap:14px">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-            <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="aa-nome" placeholder="Nome completo"></div>
-            <div class="form-group"><label class="form-label">Idade *</label><input class="form-input" id="aa-idade" type="number" placeholder="23"></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-            <div class="form-group"><label class="form-label">Posição *</label>
-              <select class="form-select" id="aa-posicao"><option value="">Selecionar</option><option>Goleiro</option><option>Fixo</option><option>Ala</option><option>Pivô</option><option>Universal</option></select></div>
-            <div class="form-group"><label class="form-label">Pé Dominante</label>
-              <select class="form-select" id="aa-pe"><option>Direito</option><option>Esquerdo</option><option>Ambidestro</option></select></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
-            <div class="form-group"><label class="form-label">Altura (cm)</label><input class="form-input" id="aa-altura" type="number" placeholder="175"></div>
-            <div class="form-group"><label class="form-label">Peso (kg)</label><input class="form-input" id="aa-peso" type="number" placeholder="72"></div>
-            <div class="form-group"><label class="form-label">Disponível?</label>
-              <select class="form-select" id="aa-disponivel"><option value="true">Sim</option><option value="false">Não</option></select></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-            <div class="form-group"><label class="form-label">Clube Atual</label><input class="form-input" id="aa-clube" placeholder="Magnus Futsal"></div>
-            <div class="form-group"><label class="form-label">Tempo de Contrato</label><input class="form-input" id="aa-contrato" placeholder="1 ano, Livre..."></div>
-          </div>
-          <div class="form-group"><label class="form-label">Agência</label><input class="form-input" id="aa-agencia" placeholder="Elite Sports"></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-            <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="aa-instagram" placeholder="@jogador"></div>
-            <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="aa-whatsapp" placeholder="(11) 99999-9999"></div>
-          </div>
-          <div class="form-group"><label class="form-label">Ponto Forte</label><input class="form-input" id="aa-forte" placeholder="Velocidade e finalização"></div>
-          <div class="form-group"><label class="form-label">Pontos Fracos</label><input class="form-input" id="aa-fraco" placeholder="Marcação defensiva"></div>
-          <div class="form-group"><label class="form-label">Link Highlights</label><input class="form-input" id="aa-video" placeholder="YouTube / Drive..."></div>
-          <div class="form-group">
-            <label class="form-label">Foto do Atleta</label>
-            <div id="foto-upload-area" style="border:2px dashed var(--border);border-radius:10px;padding:24px;text-align:center;cursor:pointer;background:var(--white)" onclick="document.getElementById('aa-foto-input').click()" ondragover="event.preventDefault();this.style.borderColor='var(--blue)'" ondragleave="this.style.borderColor='var(--border)'" ondrop="handleFotoDrop(event)">
-              <div id="foto-preview" style="display:none;margin-bottom:12px"><img id="foto-img" style="width:80px;height:80px;border-radius:10px;object-fit:cover;border:2px solid var(--border)"></div>
-              <div id="foto-placeholder"><div style="font-size:32px;margin-bottom:8px">📸</div><div style="font-size:14px;font-weight:600;margin-bottom:4px">Clique ou arraste a foto</div><div style="font-size:12px;color:var(--gray)">JPG, PNG · Máx 5MB</div></div>
-            </div>
-            <input type="file" id="aa-foto-input" accept="image/*" style="display:none" onchange="handleFotoUpload(this)">
-          </div>
-          <div style="background:var(--gray-light);border-radius:12px;padding:20px;border:1.5px solid var(--border)">
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;text-transform:uppercase;margin-bottom:16px;color:var(--gray)">Estatísticas</div>
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
-              <div class="form-group"><label class="form-label">Gols</label><input class="form-input" id="aa-gols" type="number" placeholder="8"></div>
-              <div class="form-group"><label class="form-label">Assistências</label><input class="form-input" id="aa-assists" type="number" placeholder="14"></div>
-              <div class="form-group"><label class="form-label">Passes %</label><input class="form-input" id="aa-passes" placeholder="89%"></div>
-              <div class="form-group"><label class="form-label">Dribles/jogo</label><input class="form-input" id="aa-dribles" placeholder="4.2"></div>
-              <div class="form-group"><label class="form-label">Nota média</label><input class="form-input" id="aa-nota" placeholder="7.8"></div>
-              <div class="form-group"><label class="form-label">Jogos</label><input class="form-input" id="aa-jogos" type="number" placeholder="22"></div>
-            </div>
-          </div>
-          <button class="btn-submit" id="btn-publicar" onclick="adicionarAtletaAdmin()">PUBLICAR ATLETA →</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB DESTAQUE -->
-    <div id="atab-content-destaque" style="display:none">
-      <div style="max-width:600px">
-        <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:8px">Atleta da Capa</h3>
-        <p style="font-size:14px;color:var(--gray);margin-bottom:24px">Escolha qual atleta aparece no card principal da página inicial.</p>
-        <div id="destaque-atual" style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:12px;padding:16px;margin-bottom:24px;display:none">
-          <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Atleta atual na capa</div>
-          <div id="destaque-atual-nome" style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900"></div>
-        </div>
-        <div class="form-group" style="margin-bottom:16px">
-          <label class="form-label">Escolher Atleta</label>
-          <select class="form-select" id="select-destaque"><option value="">Selecionar atleta...</option></select>
-        </div>
-        <button class="btn-submit" onclick="salvarDestaque()">⭐ DEFINIR COMO CAPA →</button>
-      </div>
-    </div>
-
-    <!-- TAB CSV -->
-    <div id="atab-content-csv" style="display:none">
-      <div style="max-width:700px">
-        <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:8px">Importar via CSV</h3>
-        <p style="font-size:14px;color:var(--gray);margin-bottom:20px">Importe vários atletas de uma vez. Baixe o modelo, preencha e importe.</p>
-        <button onclick="downloadModeloCSV()" style="background:var(--gray-light);border:1.5px solid var(--border);color:var(--text);padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:20px">⬇ Baixar Modelo CSV</button>
-        <div id="csv-drop-area" style="border:2px dashed var(--border);border-radius:12px;padding:40px;text-align:center;cursor:pointer;background:var(--white);transition:border-color .2s" onclick="document.getElementById('csv-file-input').click()" ondragover="event.preventDefault();this.style.borderColor='var(--blue)'" ondragleave="this.style.borderColor='var(--border)'" ondrop="handleCsvDrop(event)">
-          <div style="font-size:36px;margin-bottom:12px">📊</div>
-          <div style="font-size:15px;font-weight:600;margin-bottom:6px">Arraste o CSV aqui ou clique</div>
-          <div style="font-size:12px;color:var(--gray)">Arquivo .csv</div>
-        </div>
-        <input type="file" id="csv-file-input" accept=".csv" style="display:none" onchange="handleCsvUpload(this)">
-        <div id="csv-preview-area" style="display:none;margin-top:20px">
-          <div id="csv-preview-title" style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;margin-bottom:12px"></div>
-          <div id="csv-preview-list" style="display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;margin-bottom:16px"></div>
-          <button class="btn-submit" onclick="importarCSV()">⬆ IMPORTAR TODOS →</button>
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
-
-<!-- ===== PAGE: SOU UM JOGADOR ===== -->
-<div id="page-sou-jogador" class="page">
-  <div style="background:var(--black);padding:120px 48px 80px">
-    <div style="max-width:1300px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center">
-      <div>
-        <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(52px,6vw,76px);font-weight:900;line-height:.88;text-transform:uppercase;color:#fff;margin-bottom:24px">QUER APARECER<br>NA MELHOR<br><span style="color:var(--blue)">VITRINE DO</span><br><span style="color:var(--blue);font-style:italic">FUTSAL?</span></h1>
-        <p style="font-size:17px;color:rgba(255,255,255,.55);line-height:1.7;max-width:420px;margin-bottom:40px">Clubes, agentes e olheiros de todo o Brasil usam a <strong style="color:#fff">ANALISE.IO</strong> para encontrar os próximos craques.</p>
-        <button onclick="showPage('cadastro-atleta');updateCadastroView()" style="background:var(--blue);border:none;color:#fff;padding:18px 40px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;cursor:pointer">⚡ QUERO APARECER AGORA →</button>
-        <div style="margin-top:20px;font-size:13px;color:rgba(255,255,255,.3)">🔒 R$19,90/mês · Cancele quando quiser</div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-        <div style="background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);border-radius:16px;padding:24px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;color:var(--blue)">500+</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:6px">Clubes e agentes ativos</div></div>
-        <div style="background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);border-radius:16px;padding:24px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;color:var(--blue)">24h</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:6px">Perfil publicado em até 24h</div></div>
-        <div style="background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);border-radius:16px;padding:24px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;color:var(--blue)">100%</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:6px">Focado em futsal brasileiro</div></div>
-        <div style="background:rgba(26,86,255,.15);border:1.5px solid rgba(26,86,255,.3);border-radius:16px;padding:24px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;color:#fff">R$19,90</div><div style="font-size:13px;color:rgba(255,255,255,.5);margin-top:6px">Por mês · Cancele quando quiser</div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== PAGE: ASSINATURA ===== -->
-<div id="page-assinatura" class="page">
-  <section class="section" style="padding-top:120px;text-align:center;max-width:700px">
-    <div class="eyebrow">Plano Único</div>
-    <h2 class="sec-title" style="font-size:clamp(40px,6vw,72px)">TUDO POR <span style="color:var(--blue)">R$19,90/MÊS</span></h2>
-    <div style="background:var(--black);border-radius:24px;padding:48px;margin-bottom:40px;text-align:left">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:56px;font-weight:900;color:var(--blue);line-height:1">R$19,90<span style="font-size:20px;color:rgba(255,255,255,.4)">/mês</span></div>
-      <div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:36px">Cancele quando quiser</div>
-      <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:36px">
-        <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,.8)"><span style="color:var(--blue);font-weight:700;font-size:18px">✓</span> Ver análise completa de todos os atletas</div>
-        <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,.8)"><span style="color:var(--blue);font-weight:700;font-size:18px">✓</span> Pontos fortes e fracos de cada jogador</div>
-        <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,.8)"><span style="color:var(--blue);font-weight:700;font-size:18px">✓</span> Contato direto — WhatsApp e Instagram</div>
-        <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,.8)"><span style="color:var(--blue);font-weight:700;font-size:18px">✓</span> Estatísticas e vídeos desbloqueados</div>
-        <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,.8)"><span style="color:var(--blue);font-weight:700;font-size:18px">✓</span> Cadastrar atleta na plataforma</div>
-      </div>
-      <button style="width:100%;background:var(--blue);border:none;color:#fff;padding:18px;border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;cursor:pointer" onclick="assinar()">ASSINAR AGORA →</button>
-    </div>
-    <button onclick="showPage('atletas')" style="background:transparent;border:none;color:var(--gray);font-size:14px;cursor:pointer;text-decoration:underline">Voltar para atletas</button>
-  </section>
-</div>
-
-<!-- ===== PAGE: PAGAR ATLETA ===== -->
-<div id="page-pagar-atleta" class="page">
-  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:100px 24px 60px;background:linear-gradient(180deg,var(--black) 0%,#0a0f1e 100%)">
-    <div style="max-width:560px;width:100%;text-align:center">
-      <div style="width:80px;height:80px;background:rgba(26,86,255,.15);border:2px solid rgba(26,86,255,.3);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 28px">⚡</div>
-      <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(36px,5vw,56px);font-weight:900;text-transform:uppercase;color:#fff;line-height:.9;margin-bottom:16px">QUASE LÁ!<br><span style="color:var(--blue)">ATIVE SEU PERFIL</span></h2>
-      <p style="font-size:16px;color:rgba(255,255,255,.45);line-height:1.7;margin-bottom:40px">Seu perfil foi salvo! Para aparecer na vitrine ative sua assinatura por <strong style="color:#fff">R$19,90/mês</strong>.</p>
-      <div style="background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:20px;padding:36px;margin-bottom:24px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
-          <span style="font-size:14px;color:rgba(255,255,255,.4)">Assinatura mensal</span>
-          <span style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:#fff">R$19,90<span style="font-size:16px;color:rgba(255,255,255,.3)">/mês</span></span>
-        </div>
-        <button id="btn-pagar-atleta" onclick="pagarAtleta()" style="width:100%;background:var(--blue);border:none;color:#fff;padding:18px;border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;cursor:pointer">🔒 PAGAR R$19,90 E ATIVAR →</button>
-      </div>
-      <button onclick="showPage('atletas')" style="background:transparent;border:none;color:rgba(255,255,255,.3);font-size:13px;cursor:pointer;text-decoration:underline">Agora não</button>
-    </div>
-  </div>
-</div>
-
-<footer>
-  <div class="logo" style="font-size:18px">ANALISE<span style="color:var(--blue)">.IO</span></div>
-  <div class="footer-copy">© 2025 Analise.IO — Todos os direitos reservados</div>
-  <div style="font-size:13px;color:var(--gray)">A Plataforma do Futsal Brasileiro</div>
-</footer>
-
-<!-- COLE O JS DA PARTE 3 AQUI DENTRO DE <script></script> -->
-</body>
-</html>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -586,12 +17,13 @@
   --gray:#6b7591;
   --gray-light:#f4f5f8;
   --border:#e4e7f0;
-  --text:#1a1f35
+  --text:#1a1f35;
+  --gold:#f59e0b;--silver:#94a3b8;--bronze:#cd7c4a;
 }
 html{scroll-behavior:smooth}
 body{font-family:'Inter',sans-serif;background:var(--white);color:var(--text);overflow-x:hidden}
 
-/* ===== PAGE SYSTEM — CORREÇÃO PRINCIPAL ===== */
+/* ===== PAGE SYSTEM ===== */
 .page{display:none}
 .page.active{display:block}
 
@@ -1014,6 +446,67 @@ footer{
 @keyframes sp{to{transform:rotate(360deg)}}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
 
+/* ===== RANKINGS (HOME) ===== */
+.cat-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.cat-tab{padding:10px 22px;border-radius:100px;border:1.5px solid var(--border);background:var(--white);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:var(--gray);cursor:pointer;transition:all .2s}
+.cat-tab:hover{border-color:var(--blue);color:var(--blue)}
+.cat-tab.active{background:var(--blue);border-color:var(--blue);color:#fff}
+
+.torneio-wrap{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:28px;padding:12px 16px;background:var(--gray-light);border-radius:12px;border:1.5px solid var(--border);min-height:52px;align-items:center}
+.torneio-tab{padding:7px 18px;border-radius:7px;background:var(--white);border:1.5px solid var(--border);font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:var(--gray);cursor:pointer;transition:all .2s}
+.torneio-tab:hover{border-color:var(--blue);color:var(--blue)}
+.torneio-tab.active{background:var(--blue);border-color:var(--blue);color:#fff}
+
+.rank-type-tabs{display:flex;gap:4px;background:var(--gray-light);border:1.5px solid var(--border);border-radius:10px;padding:4px;width:fit-content;margin-bottom:32px}
+.rank-type-tab{padding:10px 28px;border:none;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;transition:all .2s;background:transparent;color:var(--gray)}
+.rank-type-tab.active{background:var(--blue);color:#fff}
+
+.podium{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px}
+.podium-card{border-radius:16px;overflow:hidden;border:1.5px solid var(--border);background:var(--white);transition:transform .2s,box-shadow .2s;cursor:pointer;position:relative}
+.podium-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(26,86,255,.12)}
+.podium-card.rank-1{border-color:var(--gold)}
+.podium-card.rank-2{border-color:var(--silver)}
+.podium-card.rank-3{border-color:var(--bronze)}
+.podium-photo{height:140px;background:linear-gradient(135deg,#1a56ff,#0d3fd4);display:flex;align-items:center;justify-content:center;font-size:48px;position:relative;overflow:hidden}
+.podium-photo img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.rank-medal{position:absolute;top:10px;left:10px;width:32px;height:32px;border-radius:50%;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;z-index:1}
+.medal-1{background:var(--gold);color:#fff}
+.medal-2{background:var(--silver);color:#fff}
+.medal-3{background:var(--bronze);color:#fff}
+.podium-body{padding:14px 16px}
+.podium-stat{font-family:'Barlow Condensed',sans-serif;font-size:44px;font-weight:900;line-height:1;color:var(--blue);margin-bottom:2px}
+.podium-stat-label{font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.podium-name{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;margin-bottom:3px;line-height:1}
+.podium-club{font-size:12px;color:var(--gray)}
+.pos-badge{display:inline-block;background:var(--blue-light);color:var(--blue);font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;margin-top:6px;text-transform:uppercase;letter-spacing:.06em}
+.podium-mini-stats{margin-top:12px;display:flex;gap:6px}
+.mini-stat{background:var(--gray-light);border-radius:6px;padding:6px 8px;text-align:center;flex:1}
+.mini-stat-val{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;display:block;line-height:1}
+.mini-stat-label{font-size:9px;color:var(--gray);text-transform:uppercase;font-weight:700;letter-spacing:.06em;margin-top:2px}
+
+.ranking-grid{display:grid;gap:10px}
+.rank-row{display:flex;align-items:center;gap:16px;padding:14px 20px;background:var(--white);border:1.5px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s}
+.rank-row:hover{border-color:var(--blue);background:var(--blue-light)}
+.rank-num{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:var(--gray);width:28px;text-align:center;flex-shrink:0}
+.rank-photo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,#1a56ff,#0d3fd4);display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;flex-shrink:0;position:relative}
+.rank-photo img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.rank-info{flex:1;min-width:0}
+.rank-name{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:900;text-transform:uppercase;line-height:1;margin-bottom:3px}
+.rank-pos-badge{display:inline-block;background:var(--gray-light);color:var(--text);font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;margin-left:6px;text-transform:uppercase}
+.rank-meta{font-size:12px;color:var(--gray)}
+.rank-val{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--blue);flex-shrink:0;min-width:60px;text-align:right}
+.rank-val-label{font-size:10px;color:var(--gray);font-weight:600;text-align:right;text-transform:uppercase}
+.rank-secondary{display:flex;flex-direction:column;gap:2px;align-items:flex-end;flex-shrink:0;min-width:80px}
+
+.empty-state{text-align:center;padding:80px 24px;border:2px dashed var(--border);border-radius:16px}
+.empty-state h3{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;text-transform:uppercase;margin-bottom:8px;margin-top:16px}
+.empty-state p{font-size:14px;color:var(--gray)}
+
+/* ===== COMPETIÇÕES (ADMIN) ===== */
+.comp-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end}
+.comp-block{border:1.5px solid var(--border);border-radius:10px;padding:14px;background:var(--gray-light);margin-bottom:10px}
+.comp-block-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray);margin-bottom:8px}
+
 /* ===== RESPONSIVE ===== */
 @media(max-width:900px){
   nav{padding:0 16px}
@@ -1026,6 +519,10 @@ footer{
   .modal-stats-bar{grid-template-columns:repeat(2,1fr)}
   footer{flex-direction:column;gap:12px;text-align:center;padding:32px 16px}
   #page-sou-jogador > div > div{grid-template-columns:1fr}
+  .podium{grid-template-columns:1fr}
+  .rank-type-tabs{width:100%}
+  .rank-type-tab{flex:1;padding:10px 12px;font-size:13px}
+  .comp-row{grid-template-columns:1fr}
 }
 @media(max-width:768px){
   .athletes-grid{grid-template-columns:1fr}
@@ -1034,6 +531,615 @@ footer{
   .ac-name{font-size:16px}
 }
 </style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- ===== MODAL: AUTH ===== -->
+<div class="modal-overlay" id="authModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:440px;padding:40px;position:relative">
+    <button class="modal-close" onclick="document.getElementById('authModal').classList.remove('open')">✕</button>
+    <div style="display:flex;gap:4px;background:var(--gray-light);border-radius:8px;padding:4px;margin-bottom:28px">
+      <button id="auth-tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:10px;border:none;border-radius:6px;background:var(--blue);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;cursor:pointer">Entrar</button>
+      <button id="auth-tab-criar" onclick="switchAuthTab('criar')" style="flex:1;padding:10px;border:none;border-radius:6px;background:transparent;color:var(--gray);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;cursor:pointer">Criar Conta</button>
+    </div>
+    <div id="auth-panel-login">
+      <div class="form-group" style="margin-bottom:14px"><label class="form-label">Email</label><input class="form-input" id="loginEmail" type="email" placeholder="seu@email.com" onkeyup="if(event.key==='Enter')doLogin()"></div>
+      <div class="form-group" style="margin-bottom:20px"><label class="form-label">Senha</label><input class="form-input" id="loginPass" type="password" placeholder="••••••••" onkeyup="if(event.key==='Enter')doLogin()"></div>
+      <button class="btn-submit" id="btn-login" onclick="doLogin()">ENTRAR →</button>
+    </div>
+    <div id="auth-panel-criar" style="display:none">
+      <div class="form-group" style="margin-bottom:14px"><label class="form-label">Nome *</label><input class="form-input" id="criarNome" placeholder="Seu nome"></div>
+      <div class="form-group" style="margin-bottom:14px"><label class="form-label">Email *</label><input class="form-input" id="criarEmail" type="email" placeholder="seu@email.com"></div>
+      <div class="form-group" style="margin-bottom:20px"><label class="form-label">Senha *</label><input class="form-input" id="criarSenha" type="password" placeholder="Mínimo 6 caracteres"></div>
+      <button class="btn-submit" onclick="doCriarConta()">CRIAR CONTA →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: PERFIL ===== -->
+<div class="modal-overlay" id="profileModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('profileModal').classList.remove('open')">✕</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<!-- ===== MODAL: EDITAR ATLETA ===== -->
+<div class="modal-overlay" id="editModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:780px">
+    <button class="modal-close" onclick="document.getElementById('editModal').classList.remove('open')">✕</button>
+    <div style="padding:32px 40px 40px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;text-transform:uppercase;margin-bottom:24px">✏️ Editar Atleta</div>
+      <input type="hidden" id="edit-id">
+      <div style="display:grid;gap:14px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="edit-nome"></div>
+          <div class="form-group"><label class="form-label">Idade *</label><input class="form-input" id="edit-idade" type="number"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+          <div class="form-group"><label class="form-label">Posição *</label>
+            <select class="form-select" id="edit-posicao"><option value="">Selecionar</option><option>Goleiro</option><option>Fixo</option><option>Ala</option><option>Pivô</option><option>Universal</option></select></div>
+          <div class="form-group"><label class="form-label">Pé Dominante</label>
+            <select class="form-select" id="edit-pe"><option>Direito</option><option>Esquerdo</option><option>Ambidestro</option></select></div>
+          <div class="form-group"><label class="form-label">Nº Camisa</label><input class="form-input" id="edit-camisa" type="number" placeholder="10"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-group"><label class="form-label">Clube Atual</label><input class="form-input" id="edit-clube"></div>
+          <div class="form-group"><label class="form-label">Disponível?</label>
+            <select class="form-select" id="edit-disponivel"><option value="true">Sim</option><option value="false">Não</option></select></div>
+        </div>
+        <div class="form-group"><label class="form-label">Agência</label><input class="form-input" id="edit-agencia"></div>
+        <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="edit-instagram"></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label class="form-label">Links de Jogos (até 5)</label>
+          <input class="form-input" id="edit-video" placeholder="Link 1 — YouTube / Drive...">
+          <input class="form-input" id="edit-video2" placeholder="Link 2">
+          <input class="form-input" id="edit-video3" placeholder="Link 3">
+          <input class="form-input" id="edit-video4" placeholder="Link 4">
+          <input class="form-input" id="edit-video5" placeholder="Link 5">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Foto</label>
+          <div id="edit-foto-area" style="border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer" onclick="document.getElementById('edit-foto-input').click()">
+            <div id="edit-foto-preview" style="display:none;margin-bottom:8px"><img id="edit-foto-img" style="width:70px;height:70px;border-radius:10px;object-fit:cover"></div>
+            <div id="edit-foto-txt" style="font-size:13px;color:var(--gray)">📸 Clique para trocar a foto</div>
+          </div>
+          <input type="file" id="edit-foto-input" accept="image/*" style="display:none" onchange="handleEditFoto(this)">
+        </div>
+
+        <!-- ===== COMPETIÇÕES (EDITAR) ===== -->
+        <div style="background:var(--gray-light);border-radius:12px;padding:16px;border:1.5px solid var(--border)">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;text-transform:uppercase;margin-bottom:4px;color:var(--gray)">Competições (até 3)</div>
+          <p style="font-size:12px;color:var(--gray);margin-bottom:12px">Defina a categoria (ex: LNF, Estaduais, Base) e o nome da competição (ex: LNF, Paulista, Sub-20). Pode digitar nomes novos livremente.</p>
+          <div class="comp-block">
+            <div class="comp-block-title">Competição 1</div>
+            <div class="comp-row">
+              <div class="form-group"><label class="form-label">Categoria</label><input class="form-input" id="edit-cat1" placeholder="Ex: LNF, Estaduais, Base"></div>
+              <div class="form-group"><label class="form-label">Competição</label><input class="form-input" id="edit-comp1" placeholder="Ex: LNF, Paulista, Sub-20"></div>
+            </div>
+          </div>
+          <div class="comp-block">
+            <div class="comp-block-title">Competição 2</div>
+            <div class="comp-row">
+              <div class="form-group"><label class="form-label">Categoria</label><input class="form-input" id="edit-cat2" placeholder="Opcional"></div>
+              <div class="form-group"><label class="form-label">Competição</label><input class="form-input" id="edit-comp2" placeholder="Opcional"></div>
+            </div>
+          </div>
+          <div class="comp-block" style="margin-bottom:0">
+            <div class="comp-block-title">Competição 3</div>
+            <div class="comp-row">
+              <div class="form-group"><label class="form-label">Categoria</label><input class="form-input" id="edit-cat3" placeholder="Opcional"></div>
+              <div class="form-group"><label class="form-label">Competição</label><input class="form-input" id="edit-comp3" placeholder="Opcional"></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:var(--gray-light);border-radius:12px;padding:16px;border:1.5px solid var(--border)">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;text-transform:uppercase;margin-bottom:14px;color:var(--gray)">Estatísticas</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+            <div class="form-group"><label class="form-label">Gols</label><input class="form-input" id="edit-gols" type="number"></div>
+            <div class="form-group"><label class="form-label">Assistências</label><input class="form-input" id="edit-assists" type="number"></div>
+            <div class="form-group"><label class="form-label">Jogos</label><input class="form-input" id="edit-jogos" type="number"></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <button class="btn-submit" id="btn-salvar-edit" onclick="salvarEdicao()">SALVAR ALTERAÇÕES →</button>
+          <button onclick="document.getElementById('editModal').classList.remove('open')" style="background:var(--gray-light);border:1.5px solid var(--border);color:var(--text);padding:16px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;text-transform:uppercase;cursor:pointer;margin-top:8px">CANCELAR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: CORREÇÃO ===== -->
+<div class="modal-overlay" id="correctionModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:560px">
+    <button class="modal-close" onclick="document.getElementById('correctionModal').classList.remove('open')">✕</button>
+    <div style="padding:32px 40px 40px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:6px">✏️ Solicitar Correção</div>
+      <p style="font-size:13px;color:var(--gray);margin-bottom:24px">Informe o que precisa ser corrigido. Nossa equipe vai revisar em até 48h.</p>
+      <input type="hidden" id="corr-atleta-id"><input type="hidden" id="corr-atleta-nome">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="form-group"><label class="form-label">O que precisa corrigir? *</label>
+          <select class="form-select" id="corr-campo"><option value="">Selecionar campo</option><option>Nome</option><option>Idade</option><option>Clube</option><option>Posição</option><option>Altura / Peso</option><option>Agência</option><option>Instagram</option><option>WhatsApp</option><option>Ponto Forte</option><option>Pontos Fracos</option><option>Estatísticas</option><option>Foto</option><option>Outro</option></select></div>
+        <div class="form-group"><label class="form-label">Valor correto / Detalhes *</label>
+          <textarea class="form-input" id="corr-detalhe" rows="4" placeholder="Ex: Meu clube atual é Magnus Futsal, não ACBF."></textarea></div>
+        <div class="form-group"><label class="form-label">Seu contato</label>
+          <input class="form-input" id="corr-contato" placeholder="@seuinstagram ou WhatsApp"></div>
+        <button class="btn-submit" id="btn-enviar-corr" onclick="enviarCorrecao()">ENVIAR SOLICITAÇÃO →</button>
+        <p class="form-note">Analisamos todas as solicitações em até 48h.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== NAV (ÚNICO) ===== -->
+<nav>
+  <div class="logo" onclick="showPage('home')">ANALISE<span>.IO</span></div>
+  <div class="nav-links">
+    <a onclick="showPage('home')">Home</a>
+    <a onclick="showPage('atletas')">Atletas</a>
+    <a onclick="showPage('clubes');renderClubes()">Clubes</a>
+    <a onclick="showPage('sou-jogador')">Sou um Jogador</a>
+  </div>
+  <div class="nav-right">
+    <div id="nav-guest" style="display:flex;gap:8px;align-items:center">
+      <button class="btn-nav-outline" onclick="openAuthModal('login')">Entrar</button>
+      <button class="btn-nav-solid" onclick="showPage('cadastro-atleta');updateCadastroView()">Adicione seu Atleta</button>
+    </div>
+    <div id="nav-user" style="display:none;gap:8px;align-items:center">
+      <span id="nav-nome" style="font-size:13px;color:var(--gray)"></span>
+      <button class="btn-nav-outline" onclick="showPage('assinatura')" id="nav-btn-assinar">Assinar R$19,90</button>
+      <button class="btn-nav-outline" onclick="doLogout()">Sair</button>
+    </div>
+    <div id="nav-admin" style="display:none;gap:8px;align-items:center">
+      <button class="btn-nav-solid" style="background:#111" onclick="showPage('admin-panel');carregarPainelAdmin()">⚙ Admin</button>
+      <button class="btn-nav-outline" onclick="doLogout()">Sair</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== PAGE: HOME (ÚNICO) ===== -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-left">
+      <h1>A <span class="blue">PLATAFORMA</span> MAIS<br>COMPLETA DO <span class="blue">FUTSAL</span></h1>
+      <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,3.5vw,48px);font-weight:900;letter-spacing:-1px;text-transform:uppercase;margin-bottom:36px;color:var(--black)">ANALISE<span style="color:var(--blue)">.IO</span></h2>
+      <div class="hero-btns">
+        <button class="btn-hero-primary" onclick="showPage('atletas')">Ver Atletas →</button>
+        <button class="btn-hero-secondary" onclick="showPage('cadastro-atleta');updateCadastroView()">Cadastrar Atleta</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><span class="hstat-num" id="sAtletas">0</span><span class="hstat-label">Atletas</span></div>
+        <div class="hstat"><span class="hstat-num" id="sClubes">0</span><span class="hstat-label">Clubes</span></div>
+        <div class="hstat"><span class="hstat-num" id="sAnalises">0</span><span class="hstat-label">Análises</span></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-card-stack">
+        <div class="hcard hcard-back2">
+          <div class="hcard-photo" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">🏃</div>
+          <div class="hcard-body"><div class="hcard-name">MARCOS SILVA</div><div class="hcard-club">Corinthians Futsal</div></div>
+        </div>
+        <div class="hcard hcard-back1">
+          <div class="hcard-photo" style="background:linear-gradient(135deg,#0891b2,#0e7490)">🧤</div>
+          <div class="hcard-body"><div class="hcard-name">LUCAS PORTO</div><div class="hcard-club">Joinville EC</div></div>
+        </div>
+        <div id="hero-card-destaque" class="hcard hcard-main">
+          <div class="hcard-photo">⚡
+            <div class="hcard-pos">ALA</div>
+            <div class="hcard-avail"><span style="width:6px;height:6px;background:#00c878;border-radius:50%"></span>Disponível</div>
+          </div>
+          <div class="hcard-body">
+            <div class="hcard-name" id="hero-destaque-nome">GUILHERME ALVES</div>
+            <div class="hcard-club" id="hero-destaque-clube">Magnus Futsal · 23 anos</div>
+            <span class="hcard-tag" id="hero-destaque-pos">Ala</span><span class="hcard-tag">Futsal</span>
+            <button class="hcard-btn" onclick="showPage('atletas')">VER PERFIL →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RANKINGS DA TEMPORADA ===== -->
+  <section class="section">
+    <div class="eyebrow">Temporada 2025</div>
+    <h2 class="sec-title">RANKINGS DA TEMPORADA</h2>
+
+    <div class="cat-tabs" id="catTabs"></div>
+    <div class="torneio-wrap" id="torneioWrap"></div>
+
+    <div class="rank-type-tabs">
+      <button class="rank-type-tab active" id="tab-gols" onclick="setTipoRanking('gols')">⚽ Artilheiros</button>
+      <button class="rank-type-tab" id="tab-assists" onclick="setTipoRanking('assists')">🎯 Garçons</button>
+      <button class="rank-type-tab" id="tab-ga" onclick="setTipoRanking('ga')">🔥 G/A</button>
+    </div>
+
+    <div id="rankingContainer"></div>
+  </section>
+</div>
+
+<!-- ===== PAGE: ATLETAS ===== -->
+<div id="page-atletas" class="page">
+  <div style="padding:100px 48px 0;max-width:1300px;margin:0 auto">
+    <div class="eyebrow">Marketplace</div>
+    <h2 class="sec-title">TODOS OS ATLETAS</h2>
+  </div>
+  <div class="search-section">
+    <div class="search-inner">
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Buscar por nome, posição, clube..." onkeyup="if(event.key==='Enter')doSearch()">
+        <button class="btn-search" onclick="doSearch()">BUSCAR</button>
+      </div>
+      <select id="f-idade" class="form-input" style="width:150px;padding:10px 14px">
+        <option value="">Idade</option><option value="18-">Até 18</option><option value="18-23">18–23</option><option value="23-28">23–28</option><option value="28-33">28–33</option><option value="33+">33+</option>
+      </select>
+      <select id="f-agencia" class="form-input" style="width:170px;padding:10px 14px"><option value="">Agência</option></select>
+      <select id="f-disponivel" class="form-input" style="width:150px;padding:10px 14px">
+        <option value="">Disponibilidade</option><option value="sim">Disponível</option><option value="nao">Contratado</option>
+      </select>
+      <button class="btn-search" onclick="aplicarFiltros()">FILTRAR</button>
+    </div>
+    <div style="max-width:1300px;margin:16px auto 0;display:flex;gap:8px;flex-wrap:wrap">
+      <div class="filter-pill active" onclick="setPill(this,'')">Todos</div>
+      <div class="filter-pill" onclick="setPill(this,'disp')">Disponível</div>
+      <div class="filter-pill" onclick="setPill(this,'Ala')">Ala</div>
+      <div class="filter-pill" onclick="setPill(this,'Fixo')">Fixo</div>
+      <div class="filter-pill" onclick="setPill(this,'Goleiro')">Goleiro</div>
+      <div class="filter-pill" onclick="setPill(this,'Pivô')">Pivô</div>
+    </div>
+  </div>
+  <section class="section" style="padding-top:40px">
+    <div class="athletes-grid" id="atletas-grid"><p style="color:var(--gray)">Carregando...</p></div>
+  </section>
+</div>
+
+<!-- ===== PAGE: CADASTRO ATLETA ===== -->
+<div id="page-cadastro-atleta" class="page">
+  <section class="section" style="padding-top:120px;max-width:900px">
+    <div class="eyebrow">Cadastro de Atleta</div>
+    <h2 class="sec-title">MOSTRE SEU <span style="color:var(--blue)">TALENTO.</span></h2>
+    <div id="cad-nao-logado" style="display:none;text-align:center;padding:60px 0">
+      <div style="font-size:48px;margin-bottom:16px">🔐</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;text-transform:uppercase;margin-bottom:12px">Crie sua conta primeiro</div>
+      <div style="display:flex;gap:12px;justify-content:center;margin-top:24px">
+        <button class="btn-hero-primary" onclick="openAuthModal('criar')">Criar Conta Grátis →</button>
+        <button class="btn-hero-secondary" onclick="openAuthModal('login')">Já tenho conta</button>
+      </div>
+    </div>
+    <div id="cad-sem-assinatura" style="display:none">
+      <div style="background:var(--black);border-radius:20px;padding:48px;text-align:center">
+        <div style="font-size:40px;margin-bottom:16px">⚡</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;text-transform:uppercase;color:#fff;margin-bottom:12px">Assine para Enviar sua Solicitação</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:56px;font-weight:900;color:var(--blue);line-height:1">R$19,90<span style="font-size:20px;color:rgba(255,255,255,.3)">/mês</span></div>
+        <div style="font-size:13px;color:rgba(255,255,255,.3);margin-bottom:24px">Cancele quando quiser</div>
+        <button onclick="assinar()" style="background:var(--blue);border:none;color:#fff;padding:18px 48px;border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;cursor:pointer">ASSINAR AGORA</button>
+      </div>
+    </div>
+    <div id="cad-form-atleta" style="display:none">
+      <div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:20px;padding:36px">
+        <div style="display:grid;gap:14px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="c-nome" placeholder="Seu nome"></div>
+            <div class="form-group"><label class="form-label">Idade *</label><input class="form-input" id="c-idade" type="number" placeholder="25"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="form-group"><label class="form-label">Posição *</label>
+              <select class="form-select" id="c-posicao"><option value="">Selecionar</option><option>Goleiro</option><option>Fixo</option><option>Ala</option><option>Pivô</option><option>Universal</option></select></div>
+            <div class="form-group"><label class="form-label">Pé Dominante</label>
+              <select class="form-select" id="c-pe"><option>Direito</option><option>Esquerdo</option><option>Ambidestro</option></select></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+            <div class="form-group"><label class="form-label">Altura (cm)</label><input class="form-input" id="c-altura" type="number"></div>
+            <div class="form-group"><label class="form-label">Peso (kg)</label><input class="form-input" id="c-peso" type="number"></div>
+            <div class="form-group"><label class="form-label">Clube Atual</label><input class="form-input" id="c-clube" placeholder="Magnus Futsal"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="c-instagram" placeholder="@seuuser"></div>
+            <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="c-whatsapp" placeholder="(11) 99999-9999"></div>
+          </div>
+          <div class="form-group"><label class="form-label">Agência</label><input class="form-input" id="c-agencia" placeholder="Nome da agência"></div>
+          <div class="form-group"><label class="form-label">Ponto Forte</label><input class="form-input" id="c-forte" placeholder="Ex: Velocidade..."></div>
+          <div class="form-group"><label class="form-label">Link de Highlights</label><input class="form-input" id="c-video" placeholder="YouTube / Drive..."></div>
+          <button class="btn-submit" onclick="enviarCadastroAtleta()">ENVIAR E ATIVAR PERFIL →</button>
+          <p class="form-note">Após enviar, você será direcionado para ativar seu perfil por R$19,90/mês.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===== PAGE: CLUBES ===== -->
+<div id="page-clubes" class="page">
+  <section class="section" style="padding-top:120px">
+    <div class="eyebrow">Vagas Abertas</div>
+    <h2 class="sec-title">CLUBES CONTRATANDO</h2>
+    <p class="sec-sub" style="margin-bottom:32px">Clubes que estão buscando atletas.</p>
+    <div id="clubes-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px"></div>
+  </section>
+</div>
+
+<!-- ===== PAGE: ADMIN PANEL ===== -->
+<div id="page-admin-panel" class="page">
+  <section class="section" style="padding-top:100px">
+    <div class="eyebrow">Painel Administrativo</div>
+    <h2 class="sec-title" style="margin-bottom:32px">GESTÃO DA PLATAFORMA</h2>
+    <div style="display:flex;gap:4px;background:var(--gray-light);border-radius:10px;padding:4px;width:fit-content;margin-bottom:32px;border:1.5px solid var(--border);flex-wrap:wrap">
+      <button class="admin-tab active" id="atab-atletas" onclick="adminPanelTab('atletas')">Atletas</button>
+      <button class="admin-tab" id="atab-usuarios" onclick="adminPanelTab('usuarios')">👥 Usuários</button>
+      <button class="admin-tab" id="atab-clubes" onclick="adminPanelTab('clubes')">Clubes</button>
+      <button class="admin-tab" id="atab-add" onclick="adminPanelTab('add')">+ Adicionar Atleta</button>
+      <button class="admin-tab" id="atab-destaque" onclick="adminPanelTab('destaque')">⭐ Capa</button>
+      <button class="admin-tab" id="atab-csv" onclick="adminPanelTab('csv')">📊 CSV</button>
+    </div>
+
+    <!-- TAB ATLETAS -->
+    <div id="atab-content-atletas">
+      <div style="overflow-x:auto">
+        <table class="admin-table">
+          <thead><tr><th>Atleta</th><th>Posição</th><th>Clube</th><th>Status</th><th>Gols</th><th>Assist.</th><th>Nota</th><th>Ações</th></tr></thead>
+          <tbody id="admin-atletas-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB USUÁRIOS (NOVO) -->
+    <div id="atab-content-usuarios" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+        <div>
+          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase">Usuários Cadastrados</h3>
+          <p style="font-size:13px;color:var(--gray);margin-top:4px">Todos os usuários registrados na plataforma</p>
+        </div>
+        <div style="display:flex;gap:8px">
+          <input class="form-input" id="user-search" placeholder="🔍 Buscar por nome ou email..." style="width:240px;padding:9px 14px" oninput="filtrarUsuarios()">
+          <button class="btn-search" onclick="carregarUsuarios()">↻ Atualizar</button>
+        </div>
+      </div>
+      <!-- Cards de stats -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px">
+        <div style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:12px;padding:20px">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:var(--blue)" id="stat-total-users">—</div>
+          <div style="font-size:12px;color:var(--gray);margin-top:4px;font-weight:600">Total de Usuários</div>
+        </div>
+        <div style="background:#dcfce7;border:1.5px solid #86efac;border-radius:12px;padding:20px">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:#15803d" id="stat-assinantes">—</div>
+          <div style="font-size:12px;color:#15803d;margin-top:4px;font-weight:600">Assinantes Ativos</div>
+        </div>
+        <div style="background:#fef9c3;border:1.5px solid #fde047;border-radius:12px;padding:20px">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:#a16207" id="stat-gratuitos">—</div>
+          <div style="font-size:12px;color:#a16207;margin-top:4px;font-weight:600">Plano Gratuito</div>
+        </div>
+        <div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:12px;padding:20px">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:var(--text)" id="stat-admins">—</div>
+          <div style="font-size:12px;color:var(--gray);margin-top:4px;font-weight:600">Administradores</div>
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="admin-table">
+          <thead><tr><th>Usuário</th><th>Email</th><th>Plano</th><th>Cadastrado em</th><th>Tipo</th></tr></thead>
+          <tbody id="admin-usuarios-tbody"><tr><td colspan="5" style="text-align:center;color:var(--gray);padding:40px">Carregando...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB CLUBES -->
+    <div id="atab-content-clubes" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start">
+        <div>
+          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:20px">Adicionar Clube</h3>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="ac-nome" placeholder="Ex: Magnus Futsal"></div>
+            <div class="form-group"><label class="form-label">Cidade / Estado</label><input class="form-input" id="ac-cidade" placeholder="Ex: Sorocaba, SP"></div>
+            <div class="form-group"><label class="form-label">Posição *</label>
+              <select class="form-select" id="ac-posicao"><option value="">Selecionar</option><option>Goleiro</option><option>Fixo</option><option>Ala</option><option>Pivô</option><option>Universal</option></select></div>
+            <div class="form-group"><label class="form-label">Faixa de Idade</label><input class="form-input" id="ac-idade" placeholder="Ex: 20-28 anos"></div>
+            <div class="form-group"><label class="form-label">Detalhes</label><textarea class="form-input" id="ac-detalhes" rows="3" placeholder="Descreva o perfil..."></textarea></div>
+            <div class="form-group"><label class="form-label">Contato</label><input class="form-input" id="ac-contato" placeholder="(11) 99999-9999"></div>
+            <button class="btn-submit" onclick="adicionarClube()">ADICIONAR CLUBE →</button>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:20px">Clubes Cadastrados</h3>
+          <div id="admin-clubes-lista" style="display:flex;flex-direction:column;gap:12px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB ADD ATLETA -->
+    <div id="atab-content-add" style="display:none">
+      <div style="max-width:700px">
+        <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:24px">Adicionar Atleta</h3>
+        <div style="display:grid;gap:14px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="form-group"><label class="form-label">Nome *</label><input class="form-input" id="aa-nome" placeholder="Nome completo"></div>
+            <div class="form-group"><label class="form-label">Idade *</label><input class="form-input" id="aa-idade" type="number" placeholder="23"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="form-group"><label class="form-label">Posição *</label>
+              <select class="form-select" id="aa-posicao"><option value="">Selecionar</option><option>Goleiro</option><option>Fixo</option><option>Ala</option><option>Pivô</option><option>Universal</option></select></div>
+            <div class="form-group"><label class="form-label">Pé Dominante</label>
+              <select class="form-select" id="aa-pe"><option>Direito</option><option>Esquerdo</option><option>Ambidestro</option></select></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+            <div class="form-group"><label class="form-label">Altura (cm)</label><input class="form-input" id="aa-altura" type="number" placeholder="175"></div>
+            <div class="form-group"><label class="form-label">Peso (kg)</label><input class="form-input" id="aa-peso" type="number" placeholder="72"></div>
+            <div class="form-group"><label class="form-label">Disponível?</label>
+              <select class="form-select" id="aa-disponivel"><option value="true">Sim</option><option value="false">Não</option></select></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="form-group"><label class="form-label">Clube Atual</label><input class="form-input" id="aa-clube" placeholder="Magnus Futsal"></div>
+            <div class="form-group"><label class="form-label">Tempo de Contrato</label><input class="form-input" id="aa-contrato" placeholder="1 ano, Livre..."></div>
+          </div>
+          <div class="form-group"><label class="form-label">Agência</label><input class="form-input" id="aa-agencia" placeholder="Elite Sports"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="aa-instagram" placeholder="@jogador"></div>
+            <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="aa-whatsapp" placeholder="(11) 99999-9999"></div>
+          </div>
+          <div class="form-group"><label class="form-label">Ponto Forte</label><input class="form-input" id="aa-forte" placeholder="Velocidade e finalização"></div>
+          <div class="form-group"><label class="form-label">Pontos Fracos</label><input class="form-input" id="aa-fraco" placeholder="Marcação defensiva"></div>
+          <div class="form-group"><label class="form-label">Link Highlights</label><input class="form-input" id="aa-video" placeholder="YouTube / Drive..."></div>
+          <div class="form-group">
+            <label class="form-label">Foto do Atleta</label>
+            <div id="foto-upload-area" style="border:2px dashed var(--border);border-radius:10px;padding:24px;text-align:center;cursor:pointer;background:var(--white)" onclick="document.getElementById('aa-foto-input').click()" ondragover="event.preventDefault();this.style.borderColor='var(--blue)'" ondragleave="this.style.borderColor='var(--border)'" ondrop="handleFotoDrop(event)">
+              <div id="foto-preview" style="display:none;margin-bottom:12px"><img id="foto-img" style="width:80px;height:80px;border-radius:10px;object-fit:cover;border:2px solid var(--border)"></div>
+              <div id="foto-placeholder"><div style="font-size:32px;margin-bottom:8px">📸</div><div style="font-size:14px;font-weight:600;margin-bottom:4px">Clique ou arraste a foto</div><div style="font-size:12px;color:var(--gray)">JPG, PNG · Máx 5MB</div></div>
+            </div>
+            <input type="file" id="aa-foto-input" accept="image/*" style="display:none" onchange="handleFotoUpload(this)">
+          </div>
+
+          <!-- ===== COMPETIÇÕES (ADICIONAR) ===== -->
+          <div style="background:var(--gray-light);border-radius:12px;padding:16px;border:1.5px solid var(--border)">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;text-transform:uppercase;margin-bottom:4px;color:var(--gray)">Competições (até 3)</div>
+            <p style="font-size:12px;color:var(--gray);margin-bottom:12px">Defina a categoria (ex: LNF, Estaduais, Base) e o nome da competição (ex: LNF, Paulista, Sub-20, LNFES...). Os valores são livres — pode digitar nomes novos.</p>
+            <div class="comp-block">
+              <div class="comp-block-title">Competição 1</div>
+              <div class="comp-row">
+                <div class="form-group"><label class="form-label">Categoria</label><input class="form-input" id="aa-cat1" placeholder="Ex: LNF, Estaduais, Base"></div>
+                <div class="form-group"><label class="form-label">Competição</label><input class="form-input" id="aa-comp1" placeholder="Ex: LNF, Paulista, Sub-20"></div>
+              </div>
+            </div>
+            <div class="comp-block">
+              <div class="comp-block-title">Competição 2</div>
+              <div class="comp-row">
+                <div class="form-group"><label class="form-label">Categoria</label><input class="form-input" id="aa-cat2" placeholder="Opcional"></div>
+                <div class="form-group"><label class="form-label">Competição</label><input class="form-input" id="aa-comp2" placeholder="Opcional"></div>
+              </div>
+            </div>
+            <div class="comp-block" style="margin-bottom:0">
+              <div class="comp-block-title">Competição 3</div>
+              <div class="comp-row">
+                <div class="form-group"><label class="form-label">Categoria</label><input class="form-input" id="aa-cat3" placeholder="Opcional"></div>
+                <div class="form-group"><label class="form-label">Competição</label><input class="form-input" id="aa-comp3" placeholder="Opcional"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:var(--gray-light);border-radius:12px;padding:20px;border:1.5px solid var(--border)">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;text-transform:uppercase;margin-bottom:16px;color:var(--gray)">Estatísticas</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+              <div class="form-group"><label class="form-label">Gols</label><input class="form-input" id="aa-gols" type="number" placeholder="8"></div>
+              <div class="form-group"><label class="form-label">Assistências</label><input class="form-input" id="aa-assists" type="number" placeholder="14"></div>
+              <div class="form-group"><label class="form-label">Passes %</label><input class="form-input" id="aa-passes" placeholder="89%"></div>
+              <div class="form-group"><label class="form-label">Dribles/jogo</label><input class="form-input" id="aa-dribles" placeholder="4.2"></div>
+              <div class="form-group"><label class="form-label">Nota média</label><input class="form-input" id="aa-nota" placeholder="7.8"></div>
+              <div class="form-group"><label class="form-label">Jogos</label><input class="form-input" id="aa-jogos" type="number" placeholder="22"></div>
+            </div>
+          </div>
+          <button class="btn-submit" id="btn-publicar" onclick="adicionarAtletaAdmin()">PUBLICAR ATLETA →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB DESTAQUE -->
+    <div id="atab-content-destaque" style="display:none">
+      <div style="max-width:600px">
+        <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:8px">Atleta da Capa</h3>
+        <p style="font-size:14px;color:var(--gray);margin-bottom:24px">Escolha qual atleta aparece no card principal da página inicial.</p>
+        <div id="destaque-atual" style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:12px;padding:16px;margin-bottom:24px;display:none">
+          <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Atleta atual na capa</div>
+          <div id="destaque-atual-nome" style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900"></div>
+        </div>
+        <div class="form-group" style="margin-bottom:16px">
+          <label class="form-label">Escolher Atleta</label>
+          <select class="form-select" id="select-destaque"><option value="">Selecionar atleta...</option></select>
+        </div>
+        <button class="btn-submit" onclick="salvarDestaque()">⭐ DEFINIR COMO CAPA →</button>
+      </div>
+    </div>
+
+    <!-- TAB CSV -->
+    <div id="atab-content-csv" style="display:none">
+      <div style="max-width:700px">
+        <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:8px">Importar via CSV</h3>
+        <p style="font-size:14px;color:var(--gray);margin-bottom:20px">Importe vários atletas de uma vez. Baixe o modelo, preencha e importe.</p>
+        <p style="font-size:12px;color:var(--gray);margin-bottom:20px;background:var(--gray-light);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px">
+          💡 Para definir as competições no CSV, use as colunas <strong>cat1/comp1</strong>, <strong>cat2/comp2</strong> e <strong>cat3/comp3</strong> (até 3 competições por atleta). Ex: cat1=Estaduais, comp1=LNFES.
+        </p>
+        <button onclick="downloadModeloCSV()" style="background:var(--gray-light);border:1.5px solid var(--border);color:var(--text);padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:20px">⬇ Baixar Modelo CSV</button>
+        <div id="csv-drop-area" style="border:2px dashed var(--border);border-radius:12px;padding:40px;text-align:center;cursor:pointer;background:var(--white);transition:border-color .2s" onclick="document.getElementById('csv-file-input').click()" ondragover="event.preventDefault();this.style.borderColor='var(--blue)'" ondragleave="this.style.borderColor='var(--border)'" ondrop="handleCsvDrop(event)">
+          <div style="font-size:36px;margin-bottom:12px">📊</div>
+          <div style="font-size:15px;font-weight:600;margin-bottom:6px">Arraste o CSV aqui ou clique</div>
+          <div style="font-size:12px;color:var(--gray)">Arquivo .csv</div>
+        </div>
+        <input type="file" id="csv-file-input" accept=".csv" style="display:none" onchange="handleCsvUpload(this)">
+        <div id="csv-preview-area" style="display:none;margin-top:20px">
+          <div id="csv-preview-title" style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;margin-bottom:12px"></div>
+          <div id="csv-preview-list" style="display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;margin-bottom:16px"></div>
+          <button class="btn-submit" onclick="importarCSV()">⬆ IMPORTAR TODOS →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===== PAGE: SOU UM JOGADOR ===== -->
+<div id="page-sou-jogador" class="page">
+  <div style="background:var(--black);padding:120px 48px 80px">
+    <div style="max-width:1300px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center">
+      <div>
+        <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(52px,6vw,76px);font-weight:900;line-height:.88;text-transform:uppercase;color:#fff;margin-bottom:24px">QUER APARECER<br>NA MELHOR<br><span style="color:var(--blue)">VITRINE DO</span><br><span style="color:var(--blue);font-style:italic">FUTSAL?</span></h1>
+        <p style="font-size:17px;color:rgba(255,255,255,.55);line-height:1.7;max-width:420px;margin-bottom:40px">Clubes, agentes e olheiros de todo o Brasil usam a <strong style="color:#fff">ANALISE.IO</strong> para encontrar os próximos craques.</p>
+        <button onclick="showPage('cadastro-atleta');updateCadastroView()" style="background:var(--blue);border:none;color:#fff;padding:18px 40px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;cursor:pointer">⚡ QUERO APARECER AGORA →</button>
+        <div style="margin-top:20px;font-size:13px;color:rgba(255,255,255,.3)">🔒 R$19,90/mês · Cancele quando quiser</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div style="background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);border-radius:16px;padding:24px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;color:var(--blue)">500+</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:6px">Clubes e agentes ativos</div></div>
+        <div style="background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);border-radius:16px;padding:24px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;color:var(--blue)">24h</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:6px">Perfil publicado em até 24h</div></div>
+        <div style="background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);border-radius:16px;padding:24px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;color:var(--blue)">100%</div><div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:6px">Focado em futsal brasileiro</div></div>
+        <div style="background:rgba(26,86,255,.15);border:1.5px solid rgba(26,86,255,.3);border-radius:16px;padding:24px"><div style="font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;color:#fff">R$19,90</div><div style="font-size:13px;color:rgba(255,255,255,.5);margin-top:6px">Por mês · Cancele quando quiser</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: ASSINATURA ===== -->
+<div id="page-assinatura" class="page">
+  <section class="section" style="padding-top:120px;text-align:center;max-width:700px">
+    <div class="eyebrow">Plano Único</div>
+    <h2 class="sec-title" style="font-size:clamp(40px,6vw,72px)">TUDO POR <span style="color:var(--blue)">R$19,90/MÊS</span></h2>
+    <div style="background:var(--black);border-radius:24px;padding:48px;margin-bottom:40px;text-align:left">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:56px;font-weight:900;color:var(--blue);line-height:1">R$19,90<span style="font-size:20px;color:rgba(255,255,255,.4)">/mês</span></div>
+      <div style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:36px">Cancele quando quiser</div>
+      <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:36px">
+        <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,.8)"><span style="color:var(--blue);font-weight:700;font-size:18px">✓</span> Ver análise completa de todos os atletas</div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,.8)"><span style="color:var(--blue);font-weight:700;font-size:18px">✓</span> Pontos fortes e fracos de cada jogador</div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,.8)"><span style="color:var(--blue);font-weight:700;font-size:18px">✓</span> Contato direto — WhatsApp e Instagram</div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,.8)"><span style="color:var(--blue);font-weight:700;font-size:18px">✓</span> Estatísticas e vídeos desbloqueados</div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:rgba(255,255,255,.8)"><span style="color:var(--blue);font-weight:700;font-size:18px">✓</span> Cadastrar atleta na plataforma</div>
+      </div>
+      <button style="width:100%;background:var(--blue);border:none;color:#fff;padding:18px;border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;cursor:pointer" onclick="assinar()">ASSINAR AGORA →</button>
+    </div>
+    <button onclick="showPage('atletas')" style="background:transparent;border:none;color:var(--gray);font-size:14px;cursor:pointer;text-decoration:underline">Voltar para atletas</button>
+  </section>
+</div>
+
+<!-- ===== PAGE: PAGAR ATLETA ===== -->
+<div id="page-pagar-atleta" class="page">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:100px 24px 60px;background:linear-gradient(180deg,var(--black) 0%,#0a0f1e 100%)">
+    <div style="max-width:560px;width:100%;text-align:center">
+      <div style="width:80px;height:80px;background:rgba(26,86,255,.15);border:2px solid rgba(26,86,255,.3);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 28px">⚡</div>
+      <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(36px,5vw,56px);font-weight:900;text-transform:uppercase;color:#fff;line-height:.9;margin-bottom:16px">QUASE LÁ!<br><span style="color:var(--blue)">ATIVE SEU PERFIL</span></h2>
+      <p style="font-size:16px;color:rgba(255,255,255,.45);line-height:1.7;margin-bottom:40px">Seu perfil foi salvo! Para aparecer na vitrine ative sua assinatura por <strong style="color:#fff">R$19,90/mês</strong>.</p>
+      <div style="background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:20px;padding:36px;margin-bottom:24px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+          <span style="font-size:14px;color:rgba(255,255,255,.4)">Assinatura mensal</span>
+          <span style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:#fff">R$19,90<span style="font-size:16px;color:rgba(255,255,255,.3)">/mês</span></span>
+        </div>
+        <button id="btn-pagar-atleta" onclick="pagarAtleta()" style="width:100%;background:var(--blue);border:none;color:#fff;padding:18px;border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;cursor:pointer">🔒 PAGAR R$19,90 E ATIVAR →</button>
+      </div>
+      <button onclick="showPage('atletas')" style="background:transparent;border:none;color:rgba(255,255,255,.3);font-size:13px;cursor:pointer;text-decoration:underline">Agora não</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="logo" style="font-size:18px">ANALISE<span style="color:var(--blue)">.IO</span></div>
+  <div class="footer-copy">© 2025 Analise.IO — Todos os direitos reservados</div>
+  <div style="font-size:13px;color:var(--gray)">A Plataforma do Futsal Brasileiro</div>
+</footer>
+
 <script>
 var currentUser=null, userAssinante=false, atletasCache=[], atletaDestaqueId=null;
 var fotoAtualBase64=null, editFotoBase64=null, todosUsuarios=[], csvParsed=[];
@@ -1042,6 +1148,11 @@ var dbClubes=[
   {id:2,nome:"ACBF",cidade:"Carlos Barbosa, RS",posicao:"Fixo",idade:"22-30 anos",detalhes:"Buscamos fixo com liderança e boa saída de bola.",contato:"(54) 98888-8888",status:"aprovado"}
 ];
 var EMOJIS={Goleiro:'🧤',Fixo:'🛡️',Ala:'⚡','Pivô':'💪',Universal:'🌟'};
+
+/* =========================================
+   RANKING — ESTADO
+========================================= */
+var catAtivaRanking=null, torneioAtivoRanking=null, tipoRankingAtivo='gols';
 
 /* =========================================
    UTILS
@@ -1061,8 +1172,7 @@ function showToast(msg){
 }
 
 /* =========================================
-   NAVEGAÇÃO — CORREÇÃO PRINCIPAL
-   usa classe .active em vez de display inline
+   NAVEGAÇÃO
 ========================================= */
 function showPage(p){
   var pages=['home','atletas','cadastro-atleta','assinatura','clubes','admin-panel','sou-jogador','pagar-atleta'];
@@ -1076,6 +1186,7 @@ function showPage(p){
   if(p==='atletas'){ renderAtletas(atletasCache.filter(function(a){return a.status==='aprovado';})); popularFiltroAgencias(); }
   if(p==='clubes') renderClubes();
   if(p==='cadastro-atleta') updateCadastroView();
+  if(p==='home'){ renderRankingsHome(); }
 }
 
 /* =========================================
@@ -1089,9 +1200,26 @@ async function carregarAtletas(){
     return Object.assign({},a,{
       disponivel: a.disponivel===true||a.disponivel==='true'||a.disponivel===1,
       emoji: EMOJIS[a.posicao]||'⭐',
-      status: a.status||'aprovado'
+      status: a.status||'aprovado',
+      competicoes: normalizarCompeticoes(a)
     });
   });
+}
+
+/* Normaliza as competições do atleta para um array:
+   [{categoria:'LNF', competicao:'LNF'}, ...] (até 3) */
+function normalizarCompeticoes(a){
+  var out=[];
+  for(var i=1;i<=3;i++){
+    var cat=(a['cat'+i]||a['categoria'+i]||'').toString().trim();
+    var comp=(a['comp'+i]||a['competicao'+i]||'').toString().trim();
+    if(comp){ out.push({categoria: cat||'Outros', competicao: comp}); }
+  }
+  // fallback: campo legado "competicao" único
+  if(!out.length && a.competicao){
+    out.push({categoria: a.categoria||'Outros', competicao: String(a.competicao).trim()});
+  }
+  return out;
 }
 
 function renderCard(a, idx){
@@ -1134,17 +1262,14 @@ async function init(){
   atletasCache=await carregarAtletas();
   var aprov=atletasCache.filter(function(a){ return a.status==='aprovado'; });
 
-  var dg=document.getElementById('destaque-grid');
-  if(dg) dg.innerHTML=aprov.length
-    ? aprov.slice(0,6).map(function(a){ return renderCard(a, atletasCache.indexOf(a)); }).join('')
-    : '<p style="color:var(--gray);padding:40px 0">Nenhum atleta ainda.</p>';
-
   renderAtletas(aprov);
   popularFiltroAgencias();
   atualizarHeroDestaque();
   animCount('sAtletas', aprov.length);
   animCount('sClubes', [...new Set(aprov.filter(function(a){ return a.clube&&a.clube!=='Sem clube'; }).map(function(a){ return a.clube; }))].length);
   animCount('sAnalises', Math.max(aprov.length*3, 10));
+
+  renderRankingsHome();
 }
 
 function animCount(id, target){
@@ -1262,19 +1387,17 @@ function openProfile(a){
       +'</div>';
   }
 
-  function forteBox(val,bgCol,borderCol,titulo){
-    var display=val&&val!=='-'&&val!=='—'?val:'—';
-    var blur=b&&display!=='—'?'filter:blur(7px);user-select:none':'';
-    return '<div style="background:'+bgCol+';border:2px solid '+borderCol+';border-radius:12px;padding:16px;text-align:center">'
-      +'<div style="font-size:10px;font-weight:700;color:'+borderCol+';letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">'+titulo+'</div>'
-      +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;line-height:1.1;margin-bottom:10px;'+blur+'">'+display+'</div>'
-      +(b&&display!=='—'?'<span style="display:inline-block;background:var(--black);color:#fff;font-size:10px;font-weight:700;padding:5px 14px;border-radius:100px;cursor:pointer" onclick="document.getElementById(\'profileModal\').classList.remove(\'open\');showPage(\'assinatura\')">ASSINE</span>':'')
-      +'</div>';
-  }
-
   var fotoHtml=a.foto?'<img src="'+a.foto+'" style="width:100%;height:100%;object-fit:cover">':(a.emoji||'⭐');
-  var forte=a.forte||a.caracteristica||'';
-  var fraco=a.fraco||'';
+
+  var competicoesHtml='';
+  if(a.competicoes && a.competicoes.length){
+    competicoesHtml='<div class="modal-sec"><div class="modal-sec-title">Competições</div>'
+      +'<div style="display:flex;flex-wrap:wrap;gap:8px">'
+      +a.competicoes.map(function(c){
+        return '<span class="hcard-tag" style="margin:0">'+c.competicao+'</span>';
+      }).join('')
+      +'</div></div>';
+  }
 
 var html='<div class="modal-hero">'
     +'<div class="modal-photo" style="'+(a.foto?'background:none;overflow:hidden':'')+'">'+fotoHtml+'</div>'
@@ -1301,6 +1424,7 @@ var html='<div class="modal-hero">'
 
     +rFree('Posição',a.posicao)+rFree('Modalidade',a.modalidade||'Futsal')+rFree('Pé Dominante',a.pe)+rFree('Disponibilidade',a.disponivel?'✅ Disponível':'❌ Contratado')
     +'</div>'
+    +competicoesHtml
     +'<div class="modal-sec"><div class="modal-sec-title">Links de Jogos</div>'
     +[a.video,a.video2,a.video3,a.video4,a.video5].map(function(v,i){
       if(!v||v==='-'||v==='—') return '';
@@ -1460,7 +1584,7 @@ async function adminDel(idx){
 }
 
 /* =========================================
-   ADMIN — USUÁRIOS (NOVO)
+   ADMIN — USUÁRIOS
 ========================================= */
 async function carregarUsuarios(){
   var tbody=document.getElementById('admin-usuarios-tbody');
@@ -1481,7 +1605,6 @@ async function carregarUsuarios(){
 function renderTabelaUsuarios(lista){
   var tbody=document.getElementById('admin-usuarios-tbody'); if(!tbody) return;
 
-  // Atualiza cards de stats
   var total=lista.length;
   var assinantes=lista.filter(function(u){ return u.plano==='assinatura'; }).length;
   var gratuitos=lista.filter(function(u){ return !u.plano||u.plano==='gratuito'; }).length;
@@ -1551,8 +1674,14 @@ async function adicionarAtletaAdmin(){
     whatsapp:document.getElementById('aa-whatsapp').value,
     forte:document.getElementById('aa-forte').value||'',
     fraco:document.getElementById('aa-fraco').value||'',
-    camisa: document.getElementById('aa-camisa').value || '',
+    camisa: document.getElementById('aa-camisa') ? (document.getElementById('aa-camisa').value || '') : '',
     video:document.getElementById('aa-video').value,
+    cat1:(document.getElementById('aa-cat1').value||'').trim(),
+    comp1:(document.getElementById('aa-comp1').value||'').trim(),
+    cat2:(document.getElementById('aa-cat2').value||'').trim(),
+    comp2:(document.getElementById('aa-comp2').value||'').trim(),
+    cat3:(document.getElementById('aa-cat3').value||'').trim(),
+    comp3:(document.getElementById('aa-comp3').value||'').trim(),
     stats_gols:document.getElementById('aa-gols').value,
     stats_assists:document.getElementById('aa-assists').value,
     stats_passes:document.getElementById('aa-passes').value,
@@ -1579,6 +1708,7 @@ async function adicionarAtletaAdmin(){
 function abrirEdicao(idx){
   var a=atletasCache[idx]; if(!a) return;
   editFotoBase64=null;
+  var comp=a.competicoes||[];
   var campos={
     'edit-id':a.id,'edit-nome':a.nome||'','edit-idade':a.idade||'',
     'edit-posicao':a.posicao||'','edit-pe':a.pe||'Direito',
@@ -1588,6 +1718,9 @@ function abrirEdicao(idx){
     'edit-agencia':a.agencia||'','edit-instagram':a.instagram||'',
     'edit-whatsapp':a.whatsapp||'','edit-forte':a.forte||'',
     'edit-fraco':a.fraco||'','edit-video':a.video||'',
+    'edit-cat1': comp[0]?comp[0].categoria:'', 'edit-comp1': comp[0]?comp[0].competicao:'',
+    'edit-cat2': comp[1]?comp[1].categoria:'', 'edit-comp2': comp[1]?comp[1].competicao:'',
+    'edit-cat3': comp[2]?comp[2].categoria:'', 'edit-comp3': comp[2]?comp[2].competicao:'',
     'edit-gols':a.stats_gols||a.gols||'',
     'edit-assists':a.stats_assists||a.assists||'',
     'edit-passes':a.stats_passes||a.passes||'',
@@ -1644,6 +1777,12 @@ async function salvarEdicao(){
     video3:document.getElementById('edit-video3').value,
     video4:document.getElementById('edit-video4').value,
     video5:document.getElementById('edit-video5').value,
+    cat1:(document.getElementById('edit-cat1').value||'').trim(),
+    comp1:(document.getElementById('edit-comp1').value||'').trim(),
+    cat2:(document.getElementById('edit-cat2').value||'').trim(),
+    comp2:(document.getElementById('edit-comp2').value||'').trim(),
+    cat3:(document.getElementById('edit-cat3').value||'').trim(),
+    comp3:(document.getElementById('edit-comp3').value||'').trim(),
     foto:editFotoBase64||fotoAtual||null,
     stats_gols:document.getElementById('edit-gols').value,
     stats_assists:document.getElementById('edit-assists').value,
@@ -1807,8 +1946,8 @@ async function pagarAtleta(){
    CSV IMPORT
 ========================================= */
 function downloadModeloCSV(){
-  var header='nome,idade,posicao,pe,altura,peso,clube,agencia,contrato,instagram,whatsapp,forte,fraco,video,gols,assists,passes,dribles,nota,jogos,disponivel';
-  var ex='Joao Silva,23,Ala,Direito,174,70,Magnus Futsal,Elite Sports,1 ano,@joaosilva,11999999999,Velocidade,Marcacao,https://youtube.com,8,14,89%,4.2,7.8,22,true';
+  var header='nome,idade,posicao,pe,altura,peso,clube,agencia,contrato,instagram,whatsapp,forte,fraco,video,cat1,comp1,cat2,comp2,cat3,comp3,gols,assists,passes,dribles,nota,jogos,disponivel';
+  var ex='Joao Silva,23,Ala,Direito,174,70,Magnus Futsal,Elite Sports,1 ano,@joaosilva,11999999999,Velocidade,Marcacao,https://youtube.com,LNF,LNF,Estaduais,LNFES,,,8,14,89%,4.2,7.8,22,true';
   var blob=new Blob([header+'\n'+ex],{type:'text/csv'});
   var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='modelo_atletas_analiseio.csv'; a.click();
 }
@@ -1820,7 +1959,9 @@ function parseCSVLine(line){
   result.push(cur.trim()); return result;
 }
 function normHeader(h){
-  var map={nome:'nome',idade:'idade','posição':'posicao',posicao:'posicao','pé':'pe',pe:'pe',altura:'altura',peso:'peso','disponível':'disponivel',disponivel:'disponivel',clube:'clube',contrato:'contrato','agência':'agencia',agencia:'agencia',instagram:'instagram',whatsapp:'whatsapp',forte:'forte',fraco:'fraco',video:'video',gols:'gols',assists:'assists',passes:'passes',dribles:'dribles',nota:'nota',jogos:'jogos'};
+  var map={nome:'nome',idade:'idade','posição':'posicao',posicao:'posicao','pé':'pe',pe:'pe',altura:'altura',peso:'peso','disponível':'disponivel',disponivel:'disponivel',clube:'clube',contrato:'contrato','agência':'agencia',agencia:'agencia',instagram:'instagram',whatsapp:'whatsapp',forte:'forte',fraco:'fraco',video:'video',
+    cat1:'cat1',comp1:'comp1',cat2:'cat2',comp2:'comp2',cat3:'cat3',comp3:'comp3',
+    gols:'gols',assists:'assists',passes:'passes',dribles:'dribles',nota:'nota',jogos:'jogos'};
   var k=h.toLowerCase().trim().replace(/[áàãâ]/g,'a').replace(/[éê]/g,'e').replace(/[í]/g,'i').replace(/[óõô]/g,'o').replace(/[ú]/g,'u').replace(/[ç]/g,'c');
   return map[k]||k;
 }
@@ -1855,7 +1996,9 @@ async function importarCSV(){
   var count=0;
   for(var i=0;i<csvParsed.length;i++){
     var a=csvParsed[i]; if(!a.nome||!a.posicao) continue;
-    var payload={nome:a.nome,idade:parseInt(a.idade)||0,posicao:a.posicao,modalidade:'Futsal',clube:a.clube||'Sem clube',pe:a.pe||'Direito',altura:parseInt(a.altura)||0,peso:parseInt(a.peso)||0,disponivel:a.disponivel!=='false',agencia:a.agencia||'',contrato:a.contrato||'',instagram:a.instagram||'',whatsapp:a.whatsapp||'',forte:a.forte||'',fraco:a.fraco||'',video:a.video||'',stats_gols:a.gols||'',stats_assists:a.assists||'',stats_passes:a.passes||'',stats_dribles:a.dribles||'',stats_nota:a.nota||'',stats_jogos:a.jogos||'',status:'aprovado',foto:null};
+    var payload={nome:a.nome,idade:parseInt(a.idade)||0,posicao:a.posicao,modalidade:'Futsal',clube:a.clube||'Sem clube',pe:a.pe||'Direito',altura:parseInt(a.altura)||0,peso:parseInt(a.peso)||0,disponivel:a.disponivel!=='false',agencia:a.agencia||'',contrato:a.contrato||'',instagram:a.instagram||'',whatsapp:a.whatsapp||'',forte:a.forte||'',fraco:a.fraco||'',video:a.video||'',
+      cat1:a.cat1||'',comp1:a.comp1||'',cat2:a.cat2||'',comp2:a.comp2||'',cat3:a.cat3||'',comp3:a.comp3||'',
+      stats_gols:a.gols||'',stats_assists:a.assists||'',stats_passes:a.passes||'',stats_dribles:a.dribles||'',stats_nota:a.nota||'',stats_jogos:a.jogos||'',status:'aprovado',foto:null};
     var d=await api('/api/admin/atletas',{method:'POST',body:JSON.stringify(payload)});
     if(!d.erro) count++;
   }
@@ -1898,7 +2041,167 @@ async function enviarCorrecao(){
 }
 
 /* =========================================
+   RANKINGS — HOME (DINÂMICO A PARTIR DOS ATLETAS)
+========================================= */
+
+/* Retorna categorias únicas (na ordem em que aparecem) a partir dos atletas aprovados */
+function obterCategoriasRanking(){
+  var aprov=atletasCache.filter(function(a){ return a.status==='aprovado' && a.competicoes && a.competicoes.length; });
+  var cats=[];
+  aprov.forEach(function(a){
+    a.competicoes.forEach(function(c){
+      if(cats.indexOf(c.categoria)===-1) cats.push(c.categoria);
+    });
+  });
+  return cats;
+}
+
+/* Retorna torneios únicos (na ordem em que aparecem) para uma categoria */
+function obterTorneiosRanking(categoria){
+  var aprov=atletasCache.filter(function(a){ return a.status==='aprovado' && a.competicoes && a.competicoes.length; });
+  var torneios=[];
+  aprov.forEach(function(a){
+    a.competicoes.forEach(function(c){
+      if(c.categoria===categoria && torneios.indexOf(c.competicao)===-1) torneios.push(c.competicao);
+    });
+  });
+  return torneios;
+}
+
+function renderCatTabsRanking(){
+  var el=document.getElementById('catTabs'); if(!el) return;
+  var cats=obterCategoriasRanking();
+  if(!cats.length){ el.innerHTML=''; return; }
+  if(!catAtivaRanking || cats.indexOf(catAtivaRanking)===-1) catAtivaRanking=cats[0];
+  el.innerHTML=cats.map(function(c){
+    return '<button class="cat-tab'+(c===catAtivaRanking?' active':'')+'" onclick="setCategoriaRanking('+JSON.stringify(c)+')">'+c+'</button>';
+  }).join('');
+}
+
+function setCategoriaRanking(cat){
+  catAtivaRanking=cat;
+  var torneios=obterTorneiosRanking(cat);
+  torneioAtivoRanking=torneios[0]||null;
+  renderCatTabsRanking();
+  renderTorneioTabsRanking();
+  renderRankingLista();
+}
+
+function renderTorneioTabsRanking(){
+  var el=document.getElementById('torneioWrap'); if(!el) return;
+  if(!catAtivaRanking){ el.innerHTML=''; return; }
+  var torneios=obterTorneiosRanking(catAtivaRanking);
+  if(!torneios.length){ el.innerHTML=''; return; }
+  if(!torneioAtivoRanking || torneios.indexOf(torneioAtivoRanking)===-1) torneioAtivoRanking=torneios[0];
+  el.innerHTML=torneios.map(function(t){
+    return '<button class="torneio-tab'+(t===torneioAtivoRanking?' active':'')+'" onclick="setTorneioRanking('+JSON.stringify(t)+')">'+t+'</button>';
+  }).join('');
+}
+
+function setTorneioRanking(t){
+  torneioAtivoRanking=t;
+  renderTorneioTabsRanking();
+  renderRankingLista();
+}
+
+function setTipoRanking(tipo){
+  tipoRankingAtivo=tipo;
+  ['gols','assists','ga'].forEach(function(t){
+    var b=document.getElementById('tab-'+t);
+    if(b) b.classList.toggle('active', t===tipo);
+  });
+  renderRankingLista();
+}
+
+function getValRanking(a){
+  if(tipoRankingAtivo==='gols') return Number(a.stats_gols)||0;
+  if(tipoRankingAtivo==='assists') return Number(a.stats_assists)||0;
+  return (Number(a.stats_gols)||0)+(Number(a.stats_assists)||0);
+}
+function getLabelRanking(){
+  if(tipoRankingAtivo==='gols') return 'Gols';
+  if(tipoRankingAtivo==='assists') return 'Assistências';
+  return 'G/A';
+}
+
+function renderRankingsHome(){
+  renderCatTabsRanking();
+  renderTorneioTabsRanking();
+  renderRankingLista();
+}
+
+function renderRankingLista(){
+  var container=document.getElementById('rankingContainer'); if(!container) return;
+
+  if(!catAtivaRanking || !torneioAtivoRanking){
+    container.innerHTML='<div class="empty-state"><div style="font-size:48px">⚽</div><h3>Sem dados ainda</h3><p>Cadastre atletas com competições para ver os rankings aqui.</p></div>';
+    return;
+  }
+
+  var aprov=atletasCache.filter(function(a){ return a.status==='aprovado' && a.competicoes && a.competicoes.length; });
+  var lista=aprov.filter(function(a){
+    return a.competicoes.some(function(c){ return c.categoria===catAtivaRanking && c.competicao===torneioAtivoRanking; });
+  });
+
+  if(!lista.length){
+    container.innerHTML='<div class="empty-state"><div style="font-size:48px">⚽</div><h3>Sem dados ainda</h3><p>Em breve os atletas desta competição estarão no ranking.</p></div>';
+    return;
+  }
+
+  var sorted=lista.slice().sort(function(a,b){ return getValRanking(b)-getValRanking(a); });
+  var top3=sorted.slice(0,3), resto=sorted.slice(3);
+
+  var podiumHTML='<div class="podium">';
+  top3.forEach(function(a,i){
+    var idx=atletasCache.indexOf(a);
+    var fotoHTML=a.foto?'<img src="'+a.foto+'">':(a.emoji||'⭐');
+    podiumHTML+='<div class="podium-card rank-'+(i+1)+'" onclick="abrirPerfil('+idx+')">'
+      +'<div class="podium-photo">'+fotoHTML+'<div class="rank-medal medal-'+(i+1)+'">'+(i+1)+'</div></div>'
+      +'<div class="podium-body">'
+      +'<div class="podium-stat">'+getValRanking(a)+'</div>'
+      +'<div class="podium-stat-label">'+getLabelRanking()+'</div>'
+      +'<div class="podium-name">'+a.nome+'</div>'
+      +'<div class="podium-club">'+(a.clube||'—')+'</div>'
+      +'<span class="pos-badge">'+a.posicao+'</span>'
+      +'<div class="podium-mini-stats">'
+      +'<div class="mini-stat"><span class="mini-stat-val">'+(a.stats_gols||0)+'</span><span class="mini-stat-label">Gols</span></div>'
+      +'<div class="mini-stat"><span class="mini-stat-val">'+(a.stats_assists||0)+'</span><span class="mini-stat-label">Assist.</span></div>'
+      +'<div class="mini-stat"><span class="mini-stat-val">'+(a.stats_jogos||0)+'</span><span class="mini-stat-label">Jogos</span></div>'
+      +'</div>'
+      +'</div></div>';
+  });
+  podiumHTML+='</div>';
+
+  var listaHTML='<div class="ranking-grid">';
+  resto.forEach(function(a,i){
+    var idx=atletasCache.indexOf(a);
+    var fotoHTML=a.foto?'<img src="'+a.foto+'">':(a.emoji||'⭐');
+    listaHTML+='<div class="rank-row" onclick="abrirPerfil('+idx+')">'
+      +'<div class="rank-num">'+(i+4)+'</div>'
+      +'<div class="rank-photo">'+fotoHTML+'</div>'
+      +'<div class="rank-info">'
+      +'<div class="rank-name">'+a.nome+'<span class="rank-pos-badge">'+a.posicao+'</span></div>'
+      +'<div class="rank-meta">'+(a.clube||'—')
+      +' &nbsp;·&nbsp; <strong style="color:var(--text)">'+(a.stats_gols||0)+' G</strong>'
+      +' &nbsp;·&nbsp; <strong style="color:var(--text)">'+(a.stats_assists||0)+' A</strong>'
+      +' &nbsp;·&nbsp; '+(a.stats_jogos||0)+' jogos'
+      +'</div>'
+      +'</div>'
+      +'<div class="rank-secondary">'
+      +'<div class="rank-val">'+getValRanking(a)+'</div>'
+      +'<div class="rank-val-label">'+getLabelRanking()+'</div>'
+      +'</div>'
+      +'</div>';
+  });
+  listaHTML+='</div>';
+
+  container.innerHTML=podiumHTML+(resto.length?listaHTML:'');
+}
+
+/* =========================================
    START
 ========================================= */
 init();
 </script>
+</body>
+</html>
