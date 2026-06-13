@@ -913,9 +913,19 @@ footer{
     </div>
 
     <!-- TAB ATLETAS -->
-    <div id="atab-content-atletas">
-      <div style="overflow-x:auto">
-        <table class="admin-table">
+    <!-- TAB ATLETAS -->
+<div id="atab-content-atletas">
+  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+    <input class="form-input" id="admin-search-nome" placeholder="🔍 Buscar por nome..." style="flex:1;min-width:180px;padding:9px 14px" oninput="filtrarAdminAtletas()">
+    <select class="form-input" id="admin-search-time" style="width:180px;padding:9px 14px" onchange="filtrarAdminAtletas()">
+      <option value="">Todos os times</option>
+    </select>
+    <select class="form-input" id="admin-search-agencia" style="width:180px;padding:9px 14px" onchange="filtrarAdminAtletas()">
+      <option value="">Todas as agências</option>
+    </select>
+  </div>
+  <div style="overflow-x:auto">
+    <table class="admin-table">
           <thead><tr><th>Atleta</th><th>Posição</th><th>Clube</th><th>Status</th><th>Gols</th><th>Assist.</th><th>Nota</th><th>Ações</th></tr></thead>
           <tbody id="admin-atletas-tbody"></tbody>
         </table>
@@ -1613,7 +1623,19 @@ function renderAdminAtletas(){
       +'<button class="btn-act btn-edit" onclick="abrirEdicao('+idx+')">✏️ Editar</button>'
       +'<button class="btn-act" style="background:#fee2e2;color:#b91c1c" onclick="adminDel('+idx+')">🗑 Del</button>'
       +'</div></td></tr>';
-  }).join('') : '<tr><td colspan="8" style="color:var(--gray);padding:32px;text-align:center">Nenhum atleta.</td></tr>';
+    }).join('') : '<tr><td colspan="8" style="color:var(--gray);padding:32px;text-align:center">Nenhum atleta.</td></tr>';
+  var selTime=document.getElementById('admin-search-time');
+  var selAg=document.getElementById('admin-search-agencia');
+  if(selTime){
+    var times=[...new Set(atletasCache.filter(function(a){ return a.clube&&a.clube!=='-'; }).map(function(a){ return a.clube; }))].sort();
+    selTime.innerHTML='<option value="">Todos os times</option>';
+    times.forEach(function(t){ var o=document.createElement('option'); o.value=t; o.textContent=t; selTime.appendChild(o); });
+  }
+  if(selAg){
+    var ags=[...new Set(atletasCache.filter(function(a){ return a.agencia&&a.agencia!=='-'; }).map(function(a){ return a.agencia; }))].sort();
+    selAg.innerHTML='<option value="">Todas as agências</option>';
+    ags.forEach(function(ag){ var o=document.createElement('option'); o.value=ag; o.textContent=ag; selAg.appendChild(o); });
+  }
 }
 
 async function adminAcao(idx, status){
@@ -2271,11 +2293,43 @@ function renderRankingLista(){
 
   container.innerHTML=podiumHTML+(resto.length?listaHTML:'');
 }
+function filtrarAdminAtletas(){
+  var nome=(document.getElementById('admin-search-nome').value||'').toLowerCase().trim();
+  var time=(document.getElementById('admin-search-time').value||'').toLowerCase();
+  var agencia=(document.getElementById('admin-search-agencia').value||'').toLowerCase();
+  var lista=atletasCache.filter(function(a){
+    var okNome=!nome||(a.nome||'').toLowerCase().includes(nome);
+    var okTime=!time||(a.clube||'').toLowerCase()===time;
+    var okAgencia=!agencia||(a.agencia||'').toLowerCase()===agencia;
+    return okNome&&okTime&&okAgencia;
+  });
+  var tbody=document.getElementById('admin-atletas-tbody'); if(!tbody) return;
+  tbody.innerHTML=lista.length ? lista.map(function(a){
+    var idx=atletasCache.indexOf(a);
+    var foto=a.foto?'<img src="'+a.foto+'" style="width:32px;height:32px;border-radius:6px;object-fit:cover;margin-right:8px;vertical-align:middle">':'';
+    return '<tr>'
+      +'<td>'+foto+'<strong>'+a.nome+'</strong><br><small style="color:var(--gray)">'+a.idade+' anos</small></td>'
+      +'<td>'+a.posicao+'</td>'
+      +'<td>'+(a.clube||'—')+'</td>'
+      +'<td><span class="status-badge '+(a.status==='pendente'?'s-pend':a.status==='aprovado'?'s-aprov':'s-recus')+'">'+a.status+'</span></td>'
+      +'<td style="color:var(--blue);font-weight:700">'+(a.stats_gols||'—')+'</td>'
+      +'<td style="color:var(--blue);font-weight:700">'+(a.stats_assists||'—')+'</td>'
+      +'<td style="color:var(--blue);font-weight:700">'+(a.stats_nota||'—')+'</td>'
+      +'<td><div style="display:flex;gap:5px;flex-wrap:wrap">'
+      +(a.status!=='aprovado'?'<button class="btn-act btn-aprov" onclick="adminAcao('+idx+',\'aprovado\')">✓ Aprovar</button>':'')
+      +(a.status!=='recusado'?'<button class="btn-act btn-recus" onclick="adminAcao('+idx+',\'recusado\')">✗ Recusar</button>':'')
+      +'<button class="btn-act btn-see" onclick="openProfile(atletasCache['+idx+'])">👁 Ver</button>'
+      +'<button class="btn-act btn-edit" onclick="abrirEdicao('+idx+')">✏️ Editar</button>'
+      +'<button class="btn-act" style="background:#fee2e2;color:#b91c1c" onclick="adminDel('+idx+')">🗑 Del</button>'
+      +'</div></td></tr>';
+  }).join('') : '<tr><td colspan="8" style="color:var(--gray);padding:32px;text-align:center">Nenhum atleta encontrado.</td></tr>';
+}
 
 /* =========================================
    START
 ========================================= */
 init();
+
 </script>
 </body>
 </html>
