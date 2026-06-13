@@ -800,21 +800,34 @@ footer{
       <select id="f-idade" class="form-input" style="width:150px;padding:10px 14px">
         <option value="">Idade</option><option value="18-">Até 18</option><option value="18-23">18–23</option><option value="23-28">23–28</option><option value="28-33">28–33</option><option value="33+">33+</option>
       </select>
-      <select id="f-agencia" class="form-input" style="width:170px;padding:10px 14px"><option value="">Agência</option></select>
-      <select id="f-disponivel" class="form-input" style="width:150px;padding:10px 14px">
-        <option value="">Disponibilidade</option><option value="sim">Disponível</option><option value="nao">Contratado</option>
+      <select id="f-time" class="form-input" style="width:180px;padding:10px 14px"><option value="">Time</option></select>
+      <select id="f-competicao" class="form-input" style="width:170px;padding:10px 14px">
+        <option value="">Competição</option>
+        <option value="Nacional">Nacional</option>
+        <option value="Estadual">Estadual</option>
+        <option value="Base">Base</option>
+      </select>
+      <select id="f-ordenar" class="form-input" style="width:180px;padding:10px 14px">
+        <option value="">Ordenar por</option>
+        <option value="gols-desc">⚽ Mais Gols</option>
+        <option value="gols-asc">⚽ Menos Gols</option>
+        <option value="assists-desc">🎯 Mais Assistências</option>
+        <option value="assists-asc">🎯 Menos Assistências</option>
+        <option value="ga-desc">🔥 Maior G/A</option>
+        <option value="ga-asc">🔥 Menor G/A</option>
       </select>
       <button class="btn-search" onclick="aplicarFiltros()">FILTRAR</button>
     </div>
     <div style="max-width:1300px;margin:16px auto 0;display:flex;gap:8px;flex-wrap:wrap">
       <div class="filter-pill active" onclick="setPill(this,'')">Todos</div>
-      <div class="filter-pill" onclick="setPill(this,'disp')">Disponível</div>
       <div class="filter-pill" onclick="setPill(this,'Ala')">Ala</div>
       <div class="filter-pill" onclick="setPill(this,'Fixo')">Fixo</div>
       <div class="filter-pill" onclick="setPill(this,'Goleiro')">Goleiro</div>
       <div class="filter-pill" onclick="setPill(this,'Pivô')">Pivô</div>
+      <div class="filter-pill" onclick="setPill(this,'Universal')">Universal</div>
     </div>
   </div>
+
   <section class="section" style="padding-top:40px">
     <div class="athletes-grid" id="atletas-grid"><p style="color:var(--gray)">Carregando...</p></div>
   </section>
@@ -1346,28 +1359,40 @@ function doSearch(){
 
 function aplicarFiltros(){
   var idade=document.getElementById('f-idade').value;
-  var agencia=document.getElementById('f-agencia').value;
-  var disp=document.getElementById('f-disponivel').value;
+  var time=document.getElementById('f-time').value;
+  var comp=document.getElementById('f-competicao').value;
+  var ordenar=document.getElementById('f-ordenar').value;
   var lista=atletasCache.filter(function(a){ return a.status==='aprovado'; });
   if(idade){
     if(idade==='18-') lista=lista.filter(function(a){ return parseInt(a.idade)<=18; });
     else if(idade==='33+') lista=lista.filter(function(a){ return parseInt(a.idade)>=33; });
     else{ var p=idade.split('-').map(Number); lista=lista.filter(function(a){ return parseInt(a.idade)>=p[0]&&parseInt(a.idade)<p[1]; }); }
   }
-  if(agencia==='sem') lista=lista.filter(function(a){ return !a.agencia||a.agencia===''||a.agencia==='-'; });
-  else if(agencia) lista=lista.filter(function(a){ return (a.agencia||'').toLowerCase()===agencia.toLowerCase(); });
-  if(disp==='sim') lista=lista.filter(function(a){ return a.disponivel; });
-  if(disp==='nao') lista=lista.filter(function(a){ return !a.disponivel; });
+  if(time) lista=lista.filter(function(a){ return (a.clube||'').toLowerCase()===time.toLowerCase(); });
+  if(comp) lista=lista.filter(function(a){ return a.competicoes&&a.competicoes.some(function(c){ return c.categoria===comp; }); });
+  if(ordenar){
+    lista.sort(function(a,b){
+      var ga=Number(a.stats_gols)||0, gb=Number(b.stats_gols)||0;
+      var aa=Number(a.stats_assists)||0, ab=Number(b.stats_assists)||0;
+      if(ordenar==='gols-desc') return gb-ga;
+      if(ordenar==='gols-asc') return ga-gb;
+      if(ordenar==='assists-desc') return ab-aa;
+      if(ordenar==='assists-asc') return aa-ab;
+      if(ordenar==='ga-desc') return (gb+ab)-(ga+aa);
+      if(ordenar==='ga-asc') return (ga+aa)-(gb+ab);
+      return 0;
+    });
+  }
   renderAtletas(lista); showToast(lista.length+' atleta(s) encontrado(s)');
 }
 
 function popularFiltroAgencias(){
-  var sel=document.getElementById('f-agencia'); if(!sel) return;
-  var ags=[...new Set(atletasCache.filter(function(a){ return a.status==='aprovado'; }).map(function(a){ return (a.agencia||'').trim(); }).filter(function(ag){ return ag&&ag!=='-'&&ag!=='—'; }))].sort();
-  sel.innerHTML='<option value="">Agência</option>';
-  ags.forEach(function(ag){ var o=document.createElement('option'); o.value=ag; o.textContent=ag; sel.appendChild(o); });
-  var sem=document.createElement('option'); sem.value='sem'; sem.textContent='Sem agência'; sel.appendChild(sem);
+  var sel=document.getElementById('f-time'); if(!sel) return;
+  var times=[...new Set(atletasCache.filter(function(a){ return a.status==='aprovado'&&a.clube&&a.clube!=='Sem clube'&&a.clube!=='-'; }).map(function(a){ return a.clube.trim(); }))].sort();
+  sel.innerHTML='<option value="">Time</option>';
+  times.forEach(function(t){ var o=document.createElement('option'); o.value=t; o.textContent=t; sel.appendChild(o); });
 }
+
 
 /* =========================================
    PROFILE MODAL
