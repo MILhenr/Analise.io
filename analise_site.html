@@ -1641,7 +1641,7 @@ function renderAdminAtletas(){
 async function adminAcao(idx, status){
   var a=atletasCache[idx]; if(!a) return;
   await api('/api/admin/atletas/'+a.id,{method:'PUT',body:JSON.stringify({status})});
-  a.status=status; renderAdminAtletas(); await init();
+  a.status=status; renderAdminAtletas(); await init(); filtrarAdminAtletas();
   showToast(status==='aprovado'?'✅ '+a.nome+' aprovado!':'❌ '+a.nome+' recusado.');
 }
 
@@ -1649,7 +1649,7 @@ async function adminDel(idx){
   var a=atletasCache[idx]; if(!a) return;
   if(!confirm('Remover "'+a.nome+'"?')) return;
   await api('/api/admin/atletas/'+a.id,{method:'DELETE'});
-  atletasCache.splice(idx,1); renderAdminAtletas(); await init();
+  atletasCache.splice(idx,1); renderAdminAtletas(); await init(); filtrarAdminAtletas();
   showToast('✅ Atleta removido.');
 }
 
@@ -1869,6 +1869,7 @@ async function salvarEdicao(){
   if(d.erro){ showToast('⚠️ '+d.erro); return; }
   document.getElementById('editModal').classList.remove('open');
   atletasCache=await carregarAtletas(); renderAdminAtletas(); await init();
+  filtrarAdminAtletas();
   showToast('✅ Atleta atualizado!');
 }
 
