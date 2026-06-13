@@ -1268,7 +1268,6 @@ function renderCard(a, idx){
     +'<div class="ac-photo" style="'+(a.foto?'background:none;':'')+'position:relative">'
     +fotoHtml
     +'<div class="ac-pos-over">'+a.posicao+'</div>'
-    +'<div class="ac-avail-badge"><span class="dot '+(a.disponivel?'dot-sim':'dot-nao')+'"></span>'+(a.disponivel?'Disponível':'Contratado')+'</div>'
     +'</div>'
     +'<div class="ac-body">'
     +'<div class="ac-name">'+a.nome+'</div>'
@@ -1333,7 +1332,7 @@ function atualizarHeroDestaque(){
   var card=document.getElementById('hero-card-destaque'); if(!card) return;
   var photoDiv=card.querySelector('.hcard-photo');
   var avail='<div class="hcard-pos">'+a.posicao+'</div>'
-    +'<div class="hcard-avail"><span style="width:6px;height:6px;background:'+(a.disponivel?'#00c878':'#ff5050')+';border-radius:50%"></span>'+(a.disponivel?'Disponível':'Contratado')+'</div>';
+    +'<div class="hcard-avail"><span style="width:6px;height:6px;background:'+(a.disponivel?'#00c878':'#ff5050')+';border-radius:50%"></span>'+(a.disponivel?'Disponível':'')+'</div>';
   if(a.foto){ photoDiv.style.background='none'; photoDiv.innerHTML='<img src="'+a.foto+'" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">'+avail; }
   else { photoDiv.style.background=''; photoDiv.innerHTML=(a.emoji||'⭐')+avail; }
 }
@@ -1455,7 +1454,6 @@ var html='<div class="modal-hero">'
     +'<span class="modal-pos-badge">'+a.posicao+' · '+(a.modalidade||'Futsal')+'</span>'
     +'<div class="modal-name">'+a.nome+'</div>'
     +'<div class="modal-club">🏟 '+(a.clube&&a.clube!=='-'?a.clube:'Sem clube')+'</div>'
-    +'<div class="modal-avail-badge"><span style="width:8px;height:8px;background:'+(a.disponivel?'#00c878':'#ff5050')+';border-radius:50%;display:inline-block"></span> '+(a.disponivel?'Disponível no Mercado':'Contratado')+'</div>'
     +'</div></div>'
     +'<div class="modal-stats-bar">'
     +'<div class="mstat"><span class="mstat-val">'+(a.idade||'—')+'</span><span class="mstat-label">Idade</span></div>'
@@ -1472,7 +1470,7 @@ var html='<div class="modal-hero">'
     +'</div></div>'
     +'<div class="modal-sec"><div class="modal-sec-title">Dados Básicos</div>'
 
-    +rFree('Posição',a.posicao)+rFree('Modalidade',a.modalidade||'Futsal')+rFree('Pé Dominante',a.pe)+rFree('Disponibilidade',a.disponivel?'✅ Disponível':'❌ Contratado')
+    +rFree('Posição',a.posicao)+rFree('Modalidade',a.modalidade||'Futsal')+rFree('Pé Dominante',a.pe)
     +'</div>'
     +competicoesHtml
     +'<div class="modal-sec"><div class="modal-sec-title">Links de Jogos</div>'
