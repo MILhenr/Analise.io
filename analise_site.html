@@ -637,13 +637,37 @@ footer{
         </div>
 
         <div style="background:var(--gray-light);border-radius:12px;padding:16px;border:1.5px solid var(--border)">
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;text-transform:uppercase;margin-bottom:14px;color:var(--gray)">Estatísticas</div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-            <div class="form-group"><label class="form-label">Gols</label><input class="form-input" id="edit-gols" type="number"></div>
-            <div class="form-group"><label class="form-label">Assistências</label><input class="form-input" id="edit-assists" type="number"></div>
-            <div class="form-group"><label class="form-label">Jogos</label><input class="form-input" id="edit-jogos" type="number"></div>
-          </div>
-        </div>
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;text-transform:uppercase;margin-bottom:14px;color:var(--gray)">Estatísticas por Competição</div>
+  <p style="font-size:12px;color:var(--gray);margin-bottom:14px">As estatísticas são vinculadas à competição correspondente acima.</p>
+
+  <div class="comp-block">
+    <div class="comp-block-title">Stats — Competição 1</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      <div class="form-group"><label class="form-label">Gols</label><input class="form-input" id="edit-gols1" type="number"></div>
+      <div class="form-group"><label class="form-label">Assistências</label><input class="form-input" id="edit-assists1" type="number"></div>
+      <div class="form-group"><label class="form-label">Jogos</label><input class="form-input" id="edit-jogos1" type="number"></div>
+    </div>
+  </div>
+
+  <div class="comp-block">
+    <div class="comp-block-title">Stats — Competição 2</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      <div class="form-group"><label class="form-label">Gols</label><input class="form-input" id="edit-gols2" type="number"></div>
+      <div class="form-group"><label class="form-label">Assistências</label><input class="form-input" id="edit-assists2" type="number"></div>
+      <div class="form-group"><label class="form-label">Jogos</label><input class="form-input" id="edit-jogos2" type="number"></div>
+    </div>
+  </div>
+
+  <div class="comp-block" style="margin-bottom:0">
+    <div class="comp-block-title">Stats — Competição 3</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      <div class="form-group"><label class="form-label">Gols</label><input class="form-input" id="edit-gols3" type="number"></div>
+      <div class="form-group"><label class="form-label">Assistências</label><input class="form-input" id="edit-assists3" type="number"></div>
+      <div class="form-group"><label class="form-label">Jogos</label><input class="form-input" id="edit-jogos3" type="number"></div>
+    </div>
+  </div>
+</div>
+
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
           <button class="btn-submit" id="btn-salvar-edit" onclick="salvarEdicao()">SALVAR ALTERAÇÕES →</button>
           <button onclick="document.getElementById('editModal').classList.remove('open')" style="background:var(--gray-light);border:1.5px solid var(--border);color:var(--text);padding:16px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;text-transform:uppercase;cursor:pointer;margin-top:8px">CANCELAR</button>
@@ -1721,12 +1745,10 @@ function abrirEdicao(idx){
     'edit-cat1': comp[0]?comp[0].categoria:'', 'edit-comp1': comp[0]?comp[0].competicao:'',
     'edit-cat2': comp[1]?comp[1].categoria:'', 'edit-comp2': comp[1]?comp[1].competicao:'',
     'edit-cat3': comp[2]?comp[2].categoria:'', 'edit-comp3': comp[2]?comp[2].competicao:'',
-    'edit-gols':a.stats_gols||a.gols||'',
-    'edit-assists':a.stats_assists||a.assists||'',
-    'edit-passes':a.stats_passes||a.passes||'',
-    'edit-dribles':a.stats_dribles||a.dribles||'',
-    'edit-nota':a.stats_nota||a.nota||'',
-    'edit-jogos':a.stats_jogos||a.jogos||''
+    'edit-gols1':a.stats_gols1||'','edit-assists1':a.stats_assists1||'','edit-jogos1':a.stats_jogos1||'',
+    'edit-gols2':a.stats_gols2||'','edit-assists2':a.stats_assists2||'','edit-jogos2':a.stats_jogos2||'',
+    'edit-gols3':a.stats_gols3||'','edit-assists3':a.stats_assists3||'','edit-jogos3':a.stats_jogos3||''
+
   };
   Object.keys(campos).forEach(function(k){ var el=document.getElementById(k); if(el) el.value=campos[k]; });
   if(a.foto){
@@ -1784,9 +1806,16 @@ async function salvarEdicao(){
     cat3:(document.getElementById('edit-cat3').value||'').trim(),
     comp3:(document.getElementById('edit-comp3').value||'').trim(),
     foto:editFotoBase64||fotoAtual||null,
-    stats_gols:document.getElementById('edit-gols').value,
-    stats_assists:document.getElementById('edit-assists').value,
-    stats_jogos:document.getElementById('edit-jogos').value,
+    stats_gols1:document.getElementById('edit-gols1').value,
+    stats_assists1:document.getElementById('edit-assists1').value,
+    stats_jogos1:document.getElementById('edit-jogos1').value,
+    stats_gols2:document.getElementById('edit-gols2').value,
+    stats_assists2:document.getElementById('edit-assists2').value,
+    stats_jogos2:document.getElementById('edit-jogos2').value,
+    stats_gols3:document.getElementById('edit-gols3').value,
+    stats_assists3:document.getElementById('edit-assists3').value,
+    stats_jogos3:document.getElementById('edit-jogos3').value,
+
     status:atualIdx>=0?atletasCache[atualIdx].status:'aprovado'
   };
   var d=await api('/api/admin/atletas/'+id,{method:'PUT',body:JSON.stringify(payload)});
@@ -2113,11 +2142,23 @@ function setTipoRanking(tipo){
   renderRankingLista();
 }
 
-function getValRanking(a){
-  if(tipoRankingAtivo==='gols') return Number(a.stats_gols)||0;
-  if(tipoRankingAtivo==='assists') return Number(a.stats_assists)||0;
-  return (Number(a.stats_gols)||0)+(Number(a.stats_assists)||0);
+function getCompIdx(a){
+  if(!a.competicoes) return 0;
+  for(var i=0;i<a.competicoes.length;i++){
+    if(a.competicoes[i].competicao===torneioAtivoRanking) return i+1;
+  }
+  return 0;
 }
+
+function getValRanking(a){
+  var idx=getCompIdx(a);
+  var g=Number(a['stats_gols'+idx])||Number(a.stats_gols)||0;
+  var as=Number(a['stats_assists'+idx])||Number(a.stats_assists)||0;
+  if(tipoRankingAtivo==='gols') return g;
+  if(tipoRankingAtivo==='assists') return as;
+  return g+as;
+}
+
 function getLabelRanking(){
   if(tipoRankingAtivo==='gols') return 'Gols';
   if(tipoRankingAtivo==='assists') return 'Assistências';
@@ -2154,6 +2195,10 @@ function renderRankingLista(){
   var podiumHTML='<div class="podium">';
   top3.forEach(function(a,i){
     var idx=atletasCache.indexOf(a);
+    var ci=getCompIdx(a);
+    var cG=Number(a['stats_gols'+ci])||Number(a.stats_gols)||0;
+    var cA=Number(a['stats_assists'+ci])||Number(a.stats_assists)||0;
+    var cJ=Number(a['stats_jogos'+ci])||Number(a.stats_jogos)||0;
     var fotoHTML=a.foto?'<img src="'+a.foto+'">':(a.emoji||'⭐');
     podiumHTML+='<div class="podium-card rank-'+(i+1)+'" onclick="abrirPerfil('+idx+')">'
       +'<div class="podium-photo">'+fotoHTML+'<div class="rank-medal medal-'+(i+1)+'">'+(i+1)+'</div></div>'
@@ -2164,9 +2209,9 @@ function renderRankingLista(){
       +'<div class="podium-club">'+(a.clube||'—')+'</div>'
       +'<span class="pos-badge">'+a.posicao+'</span>'
       +'<div class="podium-mini-stats">'
-      +'<div class="mini-stat"><span class="mini-stat-val">'+(a.stats_gols||0)+'</span><span class="mini-stat-label">Gols</span></div>'
-      +'<div class="mini-stat"><span class="mini-stat-val">'+(a.stats_assists||0)+'</span><span class="mini-stat-label">Assist.</span></div>'
-      +'<div class="mini-stat"><span class="mini-stat-val">'+(a.stats_jogos||0)+'</span><span class="mini-stat-label">Jogos</span></div>'
+      +'<div class="mini-stat"><span class="mini-stat-val">'+cG+'</span><span class="mini-stat-label">Gols</span></div>'
+      +'<div class="mini-stat"><span class="mini-stat-val">'+cA+'</span><span class="mini-stat-label">Assist.</span></div>'
+      +'<div class="mini-stat"><span class="mini-stat-val">'+cJ+'</span><span class="mini-stat-label">Jogos</span></div>'
       +'</div>'
       +'</div></div>';
   });
@@ -2175,6 +2220,10 @@ function renderRankingLista(){
   var listaHTML='<div class="ranking-grid">';
   resto.forEach(function(a,i){
     var idx=atletasCache.indexOf(a);
+    var ci=getCompIdx(a);
+    var cG=Number(a['stats_gols'+ci])||Number(a.stats_gols)||0;
+    var cA=Number(a['stats_assists'+ci])||Number(a.stats_assists)||0;
+    var cJ=Number(a['stats_jogos'+ci])||Number(a.stats_jogos)||0;
     var fotoHTML=a.foto?'<img src="'+a.foto+'">':(a.emoji||'⭐');
     listaHTML+='<div class="rank-row" onclick="abrirPerfil('+idx+')">'
       +'<div class="rank-num">'+(i+4)+'</div>'
@@ -2182,9 +2231,9 @@ function renderRankingLista(){
       +'<div class="rank-info">'
       +'<div class="rank-name">'+a.nome+'<span class="rank-pos-badge">'+a.posicao+'</span></div>'
       +'<div class="rank-meta">'+(a.clube||'—')
-      +' &nbsp;·&nbsp; <strong style="color:var(--text)">'+(a.stats_gols||0)+' G</strong>'
-      +' &nbsp;·&nbsp; <strong style="color:var(--text)">'+(a.stats_assists||0)+' A</strong>'
-      +' &nbsp;·&nbsp; '+(a.stats_jogos||0)+' jogos'
+      +' &nbsp;·&nbsp; <strong style="color:var(--text)">'+cG+' G</strong>'
+      +' &nbsp;·&nbsp; <strong style="color:var(--text)">'+cA+' A</strong>'
+      +' &nbsp;·&nbsp; '+cJ+' jogos'
       +'</div>'
       +'</div>'
       +'<div class="rank-secondary">'
