@@ -23,7 +23,6 @@ MP_ACCESS_TOKEN = os.environ.get("MP_ACCESS_TOKEN", "APP_USR-6719425973860470-05
 MP_PUBLIC_KEY = os.environ.get("MP_PUBLIC_KEY", "APP_USR-90e13660-4204-4f29-9435-55399dfaa19f")
 BASE_URL = os.environ.get("BASE_URL", "https://www.analiselo.com.br")
 
-# ================= CLOUDINARY =================
 cloudinary.config(
     cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
     api_key=os.environ.get("CLOUDINARY_API_KEY"),
@@ -31,7 +30,6 @@ cloudinary.config(
     secure=True
 )
 
-# ================= DB =================
 def get_db():
     return psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor, sslmode="require")
 
@@ -60,6 +58,34 @@ def init_db():
                     id TEXT PRIMARY KEY, nome TEXT, cidade TEXT, posicao TEXT,
                     idade TEXT, detalhes TEXT, contato TEXT,
                     status TEXT DEFAULT 'pendente', criado_em TEXT)''')
+
+                novas_colunas = [
+                    ("cat1", "TEXT DEFAULT ''"),
+                    ("comp1", "TEXT DEFAULT ''"),
+                    ("cat2", "TEXT DEFAULT ''"),
+                    ("comp2", "TEXT DEFAULT ''"),
+                    ("cat3", "TEXT DEFAULT ''"),
+                    ("comp3", "TEXT DEFAULT ''"),
+                    ("stats_gols1", "TEXT DEFAULT ''"),
+                    ("stats_assists1", "TEXT DEFAULT ''"),
+                    ("stats_jogos1", "TEXT DEFAULT ''"),
+                    ("stats_gols2", "TEXT DEFAULT ''"),
+                    ("stats_assists2", "TEXT DEFAULT ''"),
+                    ("stats_jogos2", "TEXT DEFAULT ''"),
+                    ("stats_gols3", "TEXT DEFAULT ''"),
+                    ("stats_assists3", "TEXT DEFAULT ''"),
+                    ("stats_jogos3", "TEXT DEFAULT ''"),
+                    ("camisa", "TEXT DEFAULT ''"),
+                    ("video2", "TEXT DEFAULT ''"),
+                    ("video3", "TEXT DEFAULT ''"),
+                    ("video4", "TEXT DEFAULT ''"),
+                    ("video5", "TEXT DEFAULT ''"),
+                ]
+                for col, col_type in novas_colunas:
+                    try:
+                        c.execute(f"ALTER TABLE atletas ADD COLUMN {col} {col_type}")
+                    except Exception:
+                        pass
             conn.commit()
         print("✅ Tabelas verificadas/criadas")
     except Exception as e:
@@ -67,7 +93,6 @@ def init_db():
 
 init_db()
 
-# ================= HELPERS =================
 def hash_senha(s):
     return hashlib.sha256(s.encode()).hexdigest()
 
@@ -83,13 +108,11 @@ def upload_foto(base64_image):
         url = result.get("secure_url", "")
         if url:
             url = url.replace("/upload/", "/upload/f_auto,q_auto,w_400,h_400,c_fill/")
-        print(f"✅ FOTO UPLOAD OK: {url}")
         return url
     except Exception as e:
         print(f"❌ ERRO CLOUDINARY: {e}")
         return None
 
-# ================= STATIC =================
 @app.route("/")
 def index():
     return send_from_directory(".", "analise_site.html")
@@ -104,7 +127,6 @@ def pagamento():
 def static_files(filename):
     return send_from_directory(".", filename)
 
-# ================= AUTH =================
 @app.route("/api/cadastro", methods=["POST"])
 def cadastro():
     data = request.json
@@ -123,7 +145,6 @@ def cadastro():
             conn.commit()
         return jsonify({"ok": True})
     except Exception as e:
-        print("ERRO CADASTRO:", e)
         return jsonify({"erro": str(e)}), 500
 
 @app.route("/api/login", methods=["POST"])
@@ -156,7 +177,6 @@ def login():
                 session["admin"] = False
                 return jsonify({"ok": True, "admin": False, "nome": u["nome"], "plano": plano})
     except Exception as e:
-        print("ERRO LOGIN:", e)
         return jsonify({"erro": str(e)}), 500
 
 @app.route("/api/logout")
@@ -183,7 +203,6 @@ def me():
     except Exception as e:
         return jsonify({"logado": False})
 
-# ================= ATLETAS PÚBLICO =================
 @app.route("/api/atletas", methods=["GET"])
 def listar_atletas():
     try:
@@ -192,7 +211,6 @@ def listar_atletas():
                 c.execute("SELECT * FROM atletas WHERE status='aprovado' ORDER BY criado_em DESC")
                 return jsonify([dict(r) for r in c.fetchall()])
     except Exception as e:
-        print("ERRO LISTAR ATLETAS:", e)
         return jsonify([])
 
 @app.route("/api/atletas/solicitar", methods=["POST"])
@@ -216,10 +234,8 @@ def solicitar_atleta():
             conn.commit()
         return jsonify({"ok": True})
     except Exception as e:
-        print("ERRO SOLICITAR ATLETA:", e)
         return jsonify({"erro": str(e)}), 500
 
-# ================= ATLETAS ADMIN =================
 @app.route("/api/admin/atletas", methods=["GET"])
 def admin_listar_atletas():
     if not session.get("admin"):
@@ -230,7 +246,6 @@ def admin_listar_atletas():
                 c.execute("SELECT * FROM atletas ORDER BY criado_em DESC")
                 return jsonify([dict(r) for r in c.fetchall()])
     except Exception as e:
-        print("ERRO ADMIN LISTAR:", e)
         return jsonify([])
 
 @app.route("/api/admin/atletas", methods=["POST"])
@@ -247,8 +262,14 @@ def admin_criar_atleta():
                     id,nome,idade,posicao,modalidade,clube,agencia,contrato,
                     pe,altura,peso,disponivel,instagram,whatsapp,forte,fraco,
                     video,foto,stats_gols,stats_assists,stats_passes,stats_dribles,
-                    stats_nota,stats_jogos,status,criado_em)
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)''',
+                    stats_nota,stats_jogos,
+                    cat1,comp1,cat2,comp2,cat3,comp3,
+                    stats_gols1,stats_assists1,stats_jogos1,
+                    stats_gols2,stats_assists2,stats_jogos2,
+                    stats_gols3,stats_assists3,stats_jogos3,
+                    camisa,video2,video3,video4,video5,
+                    status,criado_em)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)''',
                     (aid, data.get("nome",""), int(data.get("idade") or 0),
                      data.get("posicao",""), data.get("modalidade","Futsal"),
                      data.get("clube",""), data.get("agencia",""),
@@ -261,9 +282,16 @@ def admin_criar_atleta():
                      data.get("stats_gols",""), data.get("stats_assists",""),
                      data.get("stats_passes",""), data.get("stats_dribles",""),
                      data.get("stats_nota",""), data.get("stats_jogos",""),
+                     data.get("cat1",""), data.get("comp1",""),
+                     data.get("cat2",""), data.get("comp2",""),
+                     data.get("cat3",""), data.get("comp3",""),
+                     data.get("stats_gols1",""), data.get("stats_assists1",""), data.get("stats_jogos1",""),
+                     data.get("stats_gols2",""), data.get("stats_assists2",""), data.get("stats_jogos2",""),
+                     data.get("stats_gols3",""), data.get("stats_assists3",""), data.get("stats_jogos3",""),
+                     data.get("camisa",""),
+                     data.get("video2",""), data.get("video3",""), data.get("video4",""), data.get("video5",""),
                      "aprovado", datetime.now().strftime("%d/%m/%Y %H:%M")))
             conn.commit()
-        print(f"✅ ATLETA CRIADO: id={aid} nome={data.get('nome')} foto={'SIM' if foto_url else 'NAO'}")
         return jsonify({"ok": True, "id": aid, "foto": foto_url})
     except Exception as e:
         print("❌ ERRO CRIAR ATLETA:", e)
@@ -281,6 +309,7 @@ def admin_editar_atleta(aid):
             nova_foto_url = upload_foto(nova_foto_base64)
         elif nova_foto_base64 and nova_foto_base64.startswith("http"):
             nova_foto_url = nova_foto_base64
+
         with get_db() as conn:
             with conn.cursor() as c:
                 if nova_foto_url:
@@ -288,9 +317,15 @@ def admin_editar_atleta(aid):
                         nome=%s,idade=%s,posicao=%s,modalidade=%s,clube=%s,
                         agencia=%s,contrato=%s,pe=%s,altura=%s,peso=%s,
                         disponivel=%s,instagram=%s,whatsapp=%s,forte=%s,fraco=%s,
-                        video=%s,foto=%s,stats_gols=%s,stats_assists=%s,stats_passes=%s,
-                        stats_dribles=%s,stats_nota=%s,stats_jogos=%s,status=%s
-                        WHERE id=%s""",
+                        video=%s,foto=%s,
+                        stats_gols=%s,stats_assists=%s,stats_passes=%s,
+                        stats_dribles=%s,stats_nota=%s,stats_jogos=%s,
+                        cat1=%s,comp1=%s,cat2=%s,comp2=%s,cat3=%s,comp3=%s,
+                        stats_gols1=%s,stats_assists1=%s,stats_jogos1=%s,
+                        stats_gols2=%s,stats_assists2=%s,stats_jogos2=%s,
+                        stats_gols3=%s,stats_assists3=%s,stats_jogos3=%s,
+                        camisa=%s,video2=%s,video3=%s,video4=%s,video5=%s,
+                        status=%s WHERE id=%s""",
                         (data.get("nome",""), int(data.get("idade") or 0),
                          data.get("posicao",""), data.get("modalidade","Futsal"),
                          data.get("clube",""), data.get("agencia",""),
@@ -303,15 +338,29 @@ def admin_editar_atleta(aid):
                          data.get("stats_gols",""), data.get("stats_assists",""),
                          data.get("stats_passes",""), data.get("stats_dribles",""),
                          data.get("stats_nota",""), data.get("stats_jogos",""),
+                         data.get("cat1",""), data.get("comp1",""),
+                         data.get("cat2",""), data.get("comp2",""),
+                         data.get("cat3",""), data.get("comp3",""),
+                         data.get("stats_gols1",""), data.get("stats_assists1",""), data.get("stats_jogos1",""),
+                         data.get("stats_gols2",""), data.get("stats_assists2",""), data.get("stats_jogos2",""),
+                         data.get("stats_gols3",""), data.get("stats_assists3",""), data.get("stats_jogos3",""),
+                         data.get("camisa",""),
+                         data.get("video2",""), data.get("video3",""), data.get("video4",""), data.get("video5",""),
                          data.get("status","aprovado"), aid))
                 else:
                     c.execute("""UPDATE atletas SET
                         nome=%s,idade=%s,posicao=%s,modalidade=%s,clube=%s,
                         agencia=%s,contrato=%s,pe=%s,altura=%s,peso=%s,
                         disponivel=%s,instagram=%s,whatsapp=%s,forte=%s,fraco=%s,
-                        video=%s,stats_gols=%s,stats_assists=%s,stats_passes=%s,
-                        stats_dribles=%s,stats_nota=%s,stats_jogos=%s,status=%s
-                        WHERE id=%s""",
+                        video=%s,
+                        stats_gols=%s,stats_assists=%s,stats_passes=%s,
+                        stats_dribles=%s,stats_nota=%s,stats_jogos=%s,
+                        cat1=%s,comp1=%s,cat2=%s,comp2=%s,cat3=%s,comp3=%s,
+                        stats_gols1=%s,stats_assists1=%s,stats_jogos1=%s,
+                        stats_gols2=%s,stats_assists2=%s,stats_jogos2=%s,
+                        stats_gols3=%s,stats_assists3=%s,stats_jogos3=%s,
+                        camisa=%s,video2=%s,video3=%s,video4=%s,video5=%s,
+                        status=%s WHERE id=%s""",
                         (data.get("nome",""), int(data.get("idade") or 0),
                          data.get("posicao",""), data.get("modalidade","Futsal"),
                          data.get("clube",""), data.get("agencia",""),
@@ -324,6 +373,14 @@ def admin_editar_atleta(aid):
                          data.get("stats_gols",""), data.get("stats_assists",""),
                          data.get("stats_passes",""), data.get("stats_dribles",""),
                          data.get("stats_nota",""), data.get("stats_jogos",""),
+                         data.get("cat1",""), data.get("comp1",""),
+                         data.get("cat2",""), data.get("comp2",""),
+                         data.get("cat3",""), data.get("comp3",""),
+                         data.get("stats_gols1",""), data.get("stats_assists1",""), data.get("stats_jogos1",""),
+                         data.get("stats_gols2",""), data.get("stats_assists2",""), data.get("stats_jogos2",""),
+                         data.get("stats_gols3",""), data.get("stats_assists3",""), data.get("stats_jogos3",""),
+                         data.get("camisa",""),
+                         data.get("video2",""), data.get("video3",""), data.get("video4",""), data.get("video5",""),
                          data.get("status","aprovado"), aid))
             conn.commit()
         print(f"✅ ATLETA EDITADO: id={aid}")
@@ -343,10 +400,8 @@ def admin_deletar_atleta(aid):
             conn.commit()
         return jsonify({"ok": True})
     except Exception as e:
-        print("❌ ERRO DELETAR ATLETA:", e)
         return jsonify({"erro": str(e)}), 500
 
-# ================= USUARIOS ADMIN =================
 @app.route("/api/admin/usuarios", methods=["GET"])
 def admin_listar_usuarios():
     if not session.get("admin"):
@@ -359,7 +414,6 @@ def admin_listar_usuarios():
     except Exception as e:
         return jsonify([])
 
-# ================= CLUBES =================
 @app.route("/api/clubes", methods=["GET"])
 def listar_clubes():
     try:
@@ -388,7 +442,6 @@ def admin_criar_clube():
             conn.commit()
         return jsonify({"ok": True, "id": cid})
     except Exception as e:
-        print("ERRO CRIAR CLUBE:", e)
         return jsonify({"erro": str(e)}), 500
 
 @app.route("/api/admin/clubes/<cid>", methods=["DELETE"])
@@ -404,7 +457,6 @@ def admin_deletar_clube(cid):
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
-# ================= CORREÇÕES =================
 @app.route("/api/solicitar_correcao", methods=["POST"])
 def solicitar_correcao():
     data = request.json
@@ -419,10 +471,8 @@ def solicitar_correcao():
                      data.get('contato',''), 'pendente',
                      datetime.now().strftime("%d/%m/%Y %H:%M")))
             conn.commit()
-        print(f"✅ CORRECAO RECEBIDA: atleta={data.get('atleta_nome')} campo={data.get('campo')}")
         return jsonify({"ok": True})
     except Exception as e:
-        print("ERRO CORRECAO:", e)
         return jsonify({"erro": str(e)}), 500
 
 @app.route("/api/admin/correcoes", methods=["GET"])
@@ -437,7 +487,6 @@ def admin_correcoes():
     except Exception as e:
         return jsonify([])
 
-# ================= PAGAMENTO MERCADO PAGO =================
 @app.route("/api/criar_pagamento", methods=["POST"])
 def criar_pagamento():
     if "user" not in session or session.get("admin"):
@@ -446,56 +495,26 @@ def criar_pagamento():
         data = request.json
         plano = data.get("plano", "assinatura")
         email = session["user"]
-
-        # Busca nome do usuario
         with get_db() as conn:
             with conn.cursor() as c:
                 c.execute("SELECT nome FROM usuarios WHERE email=%s", (email,))
                 u = c.fetchone()
                 nome = u["nome"] if u else "Usuario"
-
-        valor = 19.90
-        titulo = "Assinatura Mensal ANALISE.IO"
-
         payload = {
-            "items": [{
-                "title": titulo,
-                "quantity": 1,
-                "currency_id": "BRL",
-                "unit_price": valor
-            }],
-            "payer": {
-                "email": email,
-                "name": nome
-            },
-            "back_urls": {
-                "success": BASE_URL + "/pagamento/sucesso",
-                "failure": BASE_URL + "/pagamento/falha",
-                "pending": BASE_URL + "/pagamento/pendente"
-            },
+            "items": [{"title": "Assinatura Mensal ANALISE.IO", "quantity": 1, "currency_id": "BRL", "unit_price": 19.90}],
+            "payer": {"email": email, "name": nome},
+            "back_urls": {"success": BASE_URL+"/pagamento/sucesso", "failure": BASE_URL+"/pagamento/falha", "pending": BASE_URL+"/pagamento/pendente"},
             "auto_return": "approved",
-            "external_reference": email + "|" + plano,
-            "notification_url": BASE_URL + "/api/webhook_mp"
+            "external_reference": email+"|"+plano,
+            "notification_url": BASE_URL+"/api/webhook_mp"
         }
-
-        req = urllib.request.Request(
-            "https://api.mercadopago.com/checkout/preferences",
+        req = urllib.request.Request("https://api.mercadopago.com/checkout/preferences",
             data=json.dumps(payload).encode(),
-            headers={
-                "Authorization": f"Bearer {MP_ACCESS_TOKEN}",
-                "Content-Type": "application/json"
-            }
-        )
-
+            headers={"Authorization": f"Bearer {MP_ACCESS_TOKEN}", "Content-Type": "application/json"})
         with urllib.request.urlopen(req, timeout=15) as r:
             resp = json.loads(r.read())
-
-        link = resp.get("init_point", "")
-        print(f"✅ PAGAMENTO CRIADO: {link}")
-        return jsonify({"link": link})
-
+        return jsonify({"link": resp.get("init_point", "")})
     except Exception as e:
-        print("❌ ERRO PAGAMENTO:", e)
         return jsonify({"erro": str(e)}), 500
 
 @app.route("/api/webhook_mp", methods=["POST"])
@@ -504,15 +523,11 @@ def webhook_mp():
         data = request.json or {}
         topic = data.get("type") or request.args.get("topic", "")
         payment_id = data.get("data", {}).get("id") or request.args.get("id")
-
         if topic == "payment" and payment_id:
-            req = urllib.request.Request(
-                f"https://api.mercadopago.com/v1/payments/{payment_id}",
-                headers={"Authorization": f"Bearer {MP_ACCESS_TOKEN}"}
-            )
+            req = urllib.request.Request(f"https://api.mercadopago.com/v1/payments/{payment_id}",
+                headers={"Authorization": f"Bearer {MP_ACCESS_TOKEN}"})
             with urllib.request.urlopen(req, timeout=15) as r:
                 payment = json.loads(r.read())
-
             if payment.get("status") == "approved":
                 ref = payment.get("external_reference", "")
                 if "|" in ref:
@@ -521,25 +536,17 @@ def webhook_mp():
                         with conn.cursor() as c:
                             c.execute("UPDATE usuarios SET plano=%s WHERE email=%s", (plano, email))
                         conn.commit()
-                    print(f"✅ ASSINATURA ATIVADA: {email} plano={plano}")
-
         return jsonify({"ok": True})
     except Exception as e:
-        print("ERRO WEBHOOK:", e)
         return jsonify({"ok": True})
-
-# ================= API BOT — adicionar no analise_app.py =================
-# Cole essas rotas no analise_app.py antes do bloco "START"
 
 BOT_SECRET = os.environ.get("BOT_SECRET", "scoutbot_secret_2024")
 
 def bot_auth():
-    """Verifica se a requisição vem do bot."""
     return request.headers.get("X-Bot-Secret") == BOT_SECRET
 
 @app.route("/api/bot/atletas", methods=["GET"])
 def bot_buscar_atletas():
-    """Busca atletas por nome e/ou clube."""
     if not bot_auth():
         return jsonify({"erro": "Não autorizado"}), 401
     nome = request.args.get("nome", "").strip()
@@ -548,33 +555,19 @@ def bot_buscar_atletas():
         with get_db() as conn:
             with conn.cursor() as c:
                 if nome and clube:
-                    c.execute(
-                        "SELECT id,nome,clube,posicao,stats_gols,stats_assists,stats_jogos FROM atletas "
-                        "WHERE status='aprovado' AND LOWER(nome) LIKE %s AND LOWER(clube) LIKE %s",
-                        (f"%{nome.lower()}%", f"%{clube.lower()}%")
-                    )
+                    c.execute("SELECT id,nome,clube,posicao,stats_gols,stats_assists,stats_jogos FROM atletas WHERE status='aprovado' AND LOWER(nome) LIKE %s AND LOWER(clube) LIKE %s", (f"%{nome.lower()}%", f"%{clube.lower()}%"))
                 elif nome:
-                    c.execute(
-                        "SELECT id,nome,clube,posicao,stats_gols,stats_assists,stats_jogos FROM atletas "
-                        "WHERE status='aprovado' AND LOWER(nome) LIKE %s",
-                        (f"%{nome.lower()}%",)
-                    )
+                    c.execute("SELECT id,nome,clube,posicao,stats_gols,stats_assists,stats_jogos FROM atletas WHERE status='aprovado' AND LOWER(nome) LIKE %s", (f"%{nome.lower()}%",))
                 elif clube:
-                    c.execute(
-                        "SELECT id,nome,clube,posicao,stats_gols,stats_assists,stats_jogos FROM atletas "
-                        "WHERE status='aprovado' AND LOWER(clube) LIKE %s",
-                        (f"%{clube.lower()}%",)
-                    )
+                    c.execute("SELECT id,nome,clube,posicao,stats_gols,stats_assists,stats_jogos FROM atletas WHERE status='aprovado' AND LOWER(clube) LIKE %s", (f"%{clube.lower()}%",))
                 else:
                     return jsonify([])
                 return jsonify([dict(r) for r in c.fetchall()])
     except Exception as e:
-        print("ERRO BOT BUSCAR:", e)
         return jsonify({"erro": str(e)}), 500
 
 @app.route("/api/bot/gol", methods=["POST"])
 def bot_registrar_gol():
-    """Registra +1 gol e +1 jogo para o atleta."""
     if not bot_auth():
         return jsonify({"erro": "Não autorizado"}), 401
     data = request.json
@@ -590,20 +583,14 @@ def bot_registrar_gol():
                     return jsonify({"erro": "Atleta não encontrado"}), 404
                 gols = int(row["stats_gols"] or 0) + 1
                 jogos = int(row["stats_jogos"] or 0) + 1
-                c.execute(
-                    "UPDATE atletas SET stats_gols=%s, stats_jogos=%s WHERE id=%s",
-                    (str(gols), str(jogos), atleta_id)
-                )
+                c.execute("UPDATE atletas SET stats_gols=%s, stats_jogos=%s WHERE id=%s", (str(gols), str(jogos), atleta_id))
             conn.commit()
-        print(f"✅ GOL: atleta={atleta_id} gols={gols} jogos={jogos}")
         return jsonify({"ok": True, "gols": gols, "jogos": jogos})
     except Exception as e:
-        print("ERRO BOT GOL:", e)
         return jsonify({"erro": str(e)}), 500
 
 @app.route("/api/bot/assistencia", methods=["POST"])
 def bot_registrar_assistencia():
-    """Registra +1 assistência e +1 jogo para o atleta."""
     if not bot_auth():
         return jsonify({"erro": "Não autorizado"}), 401
     data = request.json
@@ -619,20 +606,14 @@ def bot_registrar_assistencia():
                     return jsonify({"erro": "Atleta não encontrado"}), 404
                 assists = int(row["stats_assists"] or 0) + 1
                 jogos = int(row["stats_jogos"] or 0) + 1
-                c.execute(
-                    "UPDATE atletas SET stats_assists=%s, stats_jogos=%s WHERE id=%s",
-                    (str(assists), str(jogos), atleta_id)
-                )
+                c.execute("UPDATE atletas SET stats_assists=%s, stats_jogos=%s WHERE id=%s", (str(assists), str(jogos), atleta_id))
             conn.commit()
-        print(f"✅ ASSIST: atleta={atleta_id} assists={assists} jogos={jogos}")
         return jsonify({"ok": True, "assists": assists, "jogos": jogos})
     except Exception as e:
-        print("ERRO BOT ASSIST:", e)
         return jsonify({"erro": str(e)}), 500
 
 @app.route("/api/bot/jogo", methods=["POST"])
 def bot_registrar_jogo():
-    """Registra +1 jogo para todos os atletas de um clube."""
     if not bot_auth():
         return jsonify({"erro": "Não autorizado"}), 401
     data = request.json
@@ -642,22 +623,16 @@ def bot_registrar_jogo():
     try:
         with get_db() as conn:
             with conn.cursor() as c:
-                c.execute(
-                    "SELECT id, stats_jogos FROM atletas WHERE status='aprovado' AND LOWER(clube) LIKE %s",
-                    (f"%{clube.lower()}%",)
-                )
+                c.execute("SELECT id, stats_jogos FROM atletas WHERE status='aprovado' AND LOWER(clube) LIKE %s", (f"%{clube.lower()}%",))
                 atletas = c.fetchall()
                 for a in atletas:
                     jogos = int(a["stats_jogos"] or 0) + 1
                     c.execute("UPDATE atletas SET stats_jogos=%s WHERE id=%s", (str(jogos), a["id"]))
             conn.commit()
-        print(f"✅ JOGO: clube={clube} atletas_atualizados={len(atletas)}")
         return jsonify({"ok": True, "atletas_atualizados": len(atletas)})
     except Exception as e:
-        print("ERRO BOT JOGO:", e)
         return jsonify({"erro": str(e)}), 500
 
-# ================= START =================
 if __name__ == "__main__":
     try:
         conn = get_db()
