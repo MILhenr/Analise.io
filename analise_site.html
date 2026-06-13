@@ -1287,6 +1287,7 @@ function renderCard(a, idx){
     +'<div class="ac-data-item"><span class="ac-data-val">'+(a.idade||'—')+'</span><span class="ac-data-label">Idade</span></div>'
     +'<div class="ac-data-item"><span class="ac-data-val">'+(a.pe?a.pe.charAt(0):'—')+'</span><span class="ac-data-label">Pé</span></div>'
     +'<div class="ac-data-item"><span class="ac-data-val">'+(a.camisa||'—')+'</span><span class="ac-data-label">Camisa</span></div>'
+
     +'</div>'
 
     +'<button class="ac-btn">ANÁLISE COMPLETA →</button>'
@@ -1631,11 +1632,14 @@ function renderAdminAtletas(){
     selTime.innerHTML='<option value="">Todos os times</option>';
     times.forEach(function(t){ var o=document.createElement('option'); o.value=t; o.textContent=t; selTime.appendChild(o); });
   }
-  if(selAg){
+    if(selAg){
     var ags=[...new Set(atletasCache.filter(function(a){ return a.agencia&&a.agencia!=='-'; }).map(function(a){ return a.agencia; }))].sort();
     selAg.innerHTML='<option value="">Todas as agências</option>';
     ags.forEach(function(ag){ var o=document.createElement('option'); o.value=ag; o.textContent=ag; selAg.appendChild(o); });
   }
+  if(window._adminFiltroNome) document.getElementById('admin-search-nome').value=window._adminFiltroNome;
+  if(window._adminFiltroTime) document.getElementById('admin-search-time').value=window._adminFiltroTime;
+  if(window._adminFiltroAgencia) document.getElementById('admin-search-agencia').value=window._adminFiltroAgencia;
 }
 
 async function adminAcao(idx, status){
@@ -2309,6 +2313,9 @@ function filtrarAdminAtletas(){
   var nome=(document.getElementById('admin-search-nome').value||'').toLowerCase().trim();
   var time=(document.getElementById('admin-search-time').value||'').toLowerCase();
   var agencia=(document.getElementById('admin-search-agencia').value||'').toLowerCase();
+  window._adminFiltroNome=document.getElementById('admin-search-nome').value;
+  window._adminFiltroTime=document.getElementById('admin-search-time').value;
+  window._adminFiltroAgencia=document.getElementById('admin-search-agencia').value;
   var lista=atletasCache.filter(function(a){
     var okNome=!nome||(a.nome||'').toLowerCase().includes(nome);
     var okTime=!time||(a.clube||'').toLowerCase()===time;
