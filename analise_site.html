@@ -467,7 +467,7 @@ footer{
 .podium-card.rank-1{border-color:var(--gold)}
 .podium-card.rank-2{border-color:var(--silver)}
 .podium-card.rank-3{border-color:var(--bronze)}
-.podium-photo{height:140px;background:linear-gradient(135deg,#1a56ff,#0d3fd4);display:flex;align-items:center;justify-content:center;font-size:48px;position:relative;overflow:hidden}
+.podium-photo{width:100%;aspect-ratio:1/1;background:linear-gradient(135deg,#1a56ff,#0d3fd4);display:flex;align-items:center;justify-content:center;font-size:48px;position:relative;overflow:hidden}
 .podium-photo img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
 .rank-medal{position:absolute;top:10px;left:10px;width:32px;height:32px;border-radius:50%;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;z-index:1}
 .medal-1{background:var(--gold);color:#fff}
@@ -2257,10 +2257,18 @@ function renderRankingLista(){
       +'<div class="podium-club">'+(a.clube||'—')+'</div>'
       +'<span class="pos-badge">'+a.posicao+'</span>'
       +'<div class="podium-mini-stats">'
-      +'<div class="mini-stat"><span class="mini-stat-val">'+cG+'</span><span class="mini-stat-label">Gols</span></div>'
-      +'<div class="mini-stat"><span class="mini-stat-val">'+cA+'</span><span class="mini-stat-label">Assist.</span></div>'
-      +'<div class="mini-stat"><span class="mini-stat-val">'+cJ+'</span><span class="mini-stat-label">Jogos</span></div>'
+      +(tipoRankingAtivo==='gols'
+        ? '<div class="mini-stat"><span class="mini-stat-val">'+cG+'</span><span class="mini-stat-label">Gols</span></div>'
+        +'<div class="mini-stat"><span class="mini-stat-val">'+cJ+'</span><span class="mini-stat-label">Jogos</span></div>'
+        : tipoRankingAtivo==='assists'
+        ? '<div class="mini-stat"><span class="mini-stat-val">'+cA+'</span><span class="mini-stat-label">Assist.</span></div>'
+        +'<div class="mini-stat"><span class="mini-stat-val">'+cJ+'</span><span class="mini-stat-label">Jogos</span></div>'
+        : '<div class="mini-stat"><span class="mini-stat-val">'+cJ+'</span><span class="mini-stat-label">Jogos</span></div>'
+        +'<div class="mini-stat"><span class="mini-stat-val">'+cA+'</span><span class="mini-stat-label">Assist.</span></div>'
+        +'<div class="mini-stat"><span class="mini-stat-val">'+cG+'</span><span class="mini-stat-label">Gols</span></div>'
+      )
       +'</div>'
+
       +'</div></div>';
   });
   podiumHTML+='</div>';
