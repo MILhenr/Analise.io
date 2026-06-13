@@ -616,21 +616,21 @@ footer{
           <div class="comp-block">
             <div class="comp-block-title">Competição 1</div>
             <div class="comp-row">
-              <div class="form-group"><label class="form-label">Categoria</label><input class="form-input" id="edit-cat1" placeholder="Ex: LNF, Estaduais, Base"></div>
+              <div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="edit-cat1"><option value="">Selecionar</option><option value="Nacional">Nacional</option><option value="Estadual">Estadual</option><option value="Base">Base</option></select></div>
               <div class="form-group"><label class="form-label">Competição</label><input class="form-input" id="edit-comp1" placeholder="Ex: LNF, Paulista, Sub-20"></div>
             </div>
           </div>
           <div class="comp-block">
             <div class="comp-block-title">Competição 2</div>
             <div class="comp-row">
-              <div class="form-group"><label class="form-label">Categoria</label><input class="form-input" id="edit-cat2" placeholder="Opcional"></div>
+              <div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="edit-cat2"><option value="">Selecionar</option><option value="Nacional">Nacional</option><option value="Estadual">Estadual</option><option value="Base">Base</option></select></div>
               <div class="form-group"><label class="form-label">Competição</label><input class="form-input" id="edit-comp2" placeholder="Opcional"></div>
             </div>
           </div>
           <div class="comp-block" style="margin-bottom:0">
             <div class="comp-block-title">Competição 3</div>
             <div class="comp-row">
-              <div class="form-group"><label class="form-label">Categoria</label><input class="form-input" id="edit-cat3" placeholder="Opcional"></div>
+           <div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="edit-cat3"><option value="">Selecionar</option><option value="Nacional">Nacional</option><option value="Estadual">Estadual</option><option value="Base">Base</option></select></div>
               <div class="form-group"><label class="form-label">Competição</label><input class="form-input" id="edit-comp3" placeholder="Opcional"></div>
             </div>
           </div>
@@ -769,7 +769,7 @@ footer{
 
   <!-- ===== RANKINGS DA TEMPORADA ===== -->
   <section class="section">
-    <div class="eyebrow">Temporada 2025</div>
+    <div class="eyebrow">Temporada 2026</div>
     <h2 class="sec-title">RANKINGS DA TEMPORADA</h2>
 
     <div class="cat-tabs" id="catTabs"></div>
@@ -1020,21 +1020,22 @@ footer{
             <div class="comp-block">
               <div class="comp-block-title">Competição 1</div>
               <div class="comp-row">
-                <div class="form-group"><label class="form-label">Categoria</label><input class="form-input" id="aa-cat1" placeholder="Ex: LNF, Estaduais, Base"></div>
+               <div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="aa-cat1"><option value="">Selecionar</option><option value="Nacional">Nacional</option><option value="Estadual">Estadual</option><option value="Base">Base</option></select></div>
                 <div class="form-group"><label class="form-label">Competição</label><input class="form-input" id="aa-comp1" placeholder="Ex: LNF, Paulista, Sub-20"></div>
               </div>
             </div>
             <div class="comp-block">
               <div class="comp-block-title">Competição 2</div>
               <div class="comp-row">
-                <div class="form-group"><label class="form-label">Categoria</label><input class="form-input" id="aa-cat2" placeholder="Opcional"></div>
+                <div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="aa-cat2"><option value="">Selecionar</option><option value="Nacional">Nacional</option><option value="Estadual">Estadual</option><option value="Base">Base</option></select></div>
                 <div class="form-group"><label class="form-label">Competição</label><input class="form-input" id="aa-comp2" placeholder="Opcional"></div>
               </div>
             </div>
             <div class="comp-block" style="margin-bottom:0">
               <div class="comp-block-title">Competição 3</div>
               <div class="comp-row">
-                <div class="form-group"><label class="form-label">Categoria</label><input class="form-input" id="aa-cat3" placeholder="Opcional"></div>
+               <div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="aa-cat3"><option value="">Selecionar</option><option value="Nacional">Nacional</option><option value="Estadual">Estadual</option><option value="Base">Base</option></select></div>
+
                 <div class="form-group"><label class="form-label">Competição</label><input class="form-input" id="aa-comp3" placeholder="Opcional"></div>
               </div>
             </div>
@@ -2097,15 +2098,16 @@ function obterTorneiosRanking(categoria){
   return torneios;
 }
 
+var CATS_FIXAS=['Nacional','Estadual','Base'];
+
 function renderCatTabsRanking(){
   var el=document.getElementById('catTabs'); if(!el) return;
-  var cats=obterCategoriasRanking();
-  if(!cats.length){ el.innerHTML=''; return; }
-  if(!catAtivaRanking || cats.indexOf(catAtivaRanking)===-1) catAtivaRanking=cats[0];
-  el.innerHTML=cats.map(function(c){
+  if(!catAtivaRanking) catAtivaRanking=CATS_FIXAS[0];
+  el.innerHTML=CATS_FIXAS.map(function(c){
     return '<button class="cat-tab'+(c===catAtivaRanking?' active':'')+'" onclick="setCategoriaRanking('+JSON.stringify(c)+')">'+c+'</button>';
   }).join('');
 }
+
 
 function setCategoriaRanking(cat){
   catAtivaRanking=cat;
