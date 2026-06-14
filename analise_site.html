@@ -2157,11 +2157,15 @@ var CATS_FIXAS=['Nacional','Estadual','Base'];
 function renderCatTabsRanking(){
   var el=document.getElementById('catTabs'); if(!el) return;
   if(!catAtivaRanking) catAtivaRanking=CATS_FIXAS[0];
-  el.innerHTML=CATS_FIXAS.map(function(c){
-    return '<button class="cat-tab'+(c===catAtivaRanking?' active':'')+'" onclick="setCategoriaRanking('+JSON.stringify(c)+')">'+c+'</button>';
-  }).join('');
+  el.innerHTML='';
+  CATS_FIXAS.forEach(function(c){
+    var btn=document.createElement('button');
+    btn.className='cat-tab'+(c===catAtivaRanking?' active':'');
+    btn.textContent=c;
+    btn.addEventListener('click',function(){ setCategoriaRanking(c); });
+    el.appendChild(btn);
+  });
 }
-
 
 function setCategoriaRanking(cat){
   catAtivaRanking=cat;
@@ -2179,9 +2183,14 @@ function renderTorneioTabsRanking(){
   var torneios=obterTorneiosRanking(catAtivaRanking);
   if(!torneios.length){ el.innerHTML=''; return; }
   if(!torneioAtivoRanking || torneios.indexOf(torneioAtivoRanking)===-1) torneioAtivoRanking=torneios[0];
-  el.innerHTML=torneios.map(function(t){
-    return '<button class="torneio-tab'+(t===torneioAtivoRanking?' active':'')+'" onclick="setTorneioRanking('+JSON.stringify(t)+')">'+t+'</button>';
-  }).join('');
+  el.innerHTML='';
+  torneios.forEach(function(t){
+    var btn=document.createElement('button');
+    btn.className='torneio-tab'+(t===torneioAtivoRanking?' active':'');
+    btn.textContent=t;
+    btn.addEventListener('click',function(){ setTorneioRanking(t); });
+    el.appendChild(btn);
+  });
 }
 
 function setTorneioRanking(t){
