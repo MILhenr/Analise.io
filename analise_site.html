@@ -206,74 +206,75 @@ nav{
 }
 .sec-sub{font-size:15px;color:var(--gray);max-width:500px;line-height:1.7;margin-bottom:52px}
 
-/* ===== ATHLETE CARDS ===== */
-.athletes-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+/* ===== ATHLETE CARDS — compactos, 3 por linha ===== */
+.athletes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+
 .athlete-card{
   background:var(--white);border:1.5px solid var(--border);
-  border-radius:16px;overflow:hidden;transition:all .25s;
-  cursor:pointer;display:flex;flex-direction:row;min-height:180px
+  border-radius:14px;overflow:hidden;transition:all .25s;
+  cursor:pointer;display:flex;flex-direction:row;min-height:120px
 }
 .athlete-card:hover{
-  border-color:var(--blue);transform:translateY(-3px);
-  box-shadow:0 12px 40px rgba(26,86,255,.12)
+  border-color:var(--blue);transform:translateY(-2px);
+  box-shadow:0 8px 28px rgba(26,86,255,.12)
 }
 .ac-photo{
-  width:48%;flex-shrink:0;position:relative;
+  width:40%;flex-shrink:0;position:relative;
   background:linear-gradient(135deg,var(--blue) 0%,var(--blue2) 100%);
   display:flex;align-items:center;justify-content:center;
-  font-size:52px;overflow:hidden
+  font-size:36px;overflow:hidden
 }
 .ac-pos-over{
-  position:absolute;top:10px;left:10px;
+  position:absolute;top:7px;left:7px;
   background:rgba(26,86,255,.9);color:#fff;
-  font-family:'Barlow Condensed',sans-serif;font-size:12px;
-  font-weight:900;letter-spacing:.06em;padding:4px 11px;
+  font-family:'Barlow Condensed',sans-serif;font-size:10px;
+  font-weight:900;letter-spacing:.04em;padding:3px 8px;
   border-radius:100px;text-transform:uppercase;z-index:1
 }
 .ac-avail-badge{
-  position:absolute;bottom:10px;left:10px;right:10px;
-  display:flex;align-items:center;gap:5px;
+  position:absolute;bottom:7px;left:7px;right:7px;
+  display:flex;align-items:center;gap:4px;
   background:rgba(0,0,0,.5);backdrop-filter:blur(6px);
-  padding:4px 10px;border-radius:100px;font-size:10px;
+  padding:3px 8px;border-radius:100px;font-size:9px;
   font-weight:700;color:#fff;justify-content:center;z-index:1
 }
-.dot{width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0}
+.dot{width:5px;height:5px;border-radius:50%;display:inline-block;flex-shrink:0}
 .dot-sim{background:#00c878}
 .dot-nao{background:#ff5050}
 .ac-body{
-  flex:1;padding:14px 16px;
-  display:flex;flex-direction:column;gap:8px;min-width:0
+  flex:1;padding:10px 12px;
+  display:flex;flex-direction:column;gap:5px;min-width:0
 }
 .ac-name{
-  font-family:'Barlow Condensed',sans-serif;font-size:18px;
+  font-family:'Barlow Condensed',sans-serif;font-size:14px;
   font-weight:900;text-transform:uppercase;letter-spacing:.2px;
   line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
 }
-.ac-clube-row{display:flex;align-items:baseline;gap:5px;font-size:12px;line-height:1.3}
+.ac-clube-row{display:flex;align-items:baseline;gap:4px;font-size:11px;line-height:1.2}
 .ac-clube-label{
   font-size:9px;font-weight:700;letter-spacing:.06em;
   text-transform:uppercase;color:var(--gray);flex-shrink:0
 }
 .ac-clube-val{color:var(--text);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ac-dark{
-  background:var(--black);padding:9px 10px;
+  background:var(--black);padding:6px 8px;
   display:grid;grid-template-columns:repeat(4,1fr);
-  gap:4px;border-radius:8px
+  gap:3px;border-radius:6px
 }
 .ac-data-item{text-align:center}
 .ac-data-val{
-  font-family:'Barlow Condensed',sans-serif;font-size:14px;
+  font-family:'Barlow Condensed',sans-serif;font-size:12px;
   font-weight:900;color:#fff;display:block;line-height:1
 }
 .ac-data-label{
-  font-size:8px;font-weight:600;letter-spacing:.06em;
+  font-size:7px;font-weight:600;letter-spacing:.04em;
   text-transform:uppercase;color:rgba(255,255,255,.35);
-  margin-top:2px;display:block
+  margin-top:1px;display:block
 }
 .ac-btn{
-  display:block;width:calc(100% + 32px);margin:auto -16px -14px;
-  background:var(--blue);border:none;color:#fff;padding:11px;
-  font-family:'Barlow Condensed',sans-serif;font-size:13px;
+  display:block;width:calc(100% + 24px);margin:auto -12px -10px;
+  background:var(--blue);border:none;color:#fff;padding:8px;
+  font-family:'Barlow Condensed',sans-serif;font-size:11px;
   font-weight:900;text-transform:uppercase;letter-spacing:.5px;
   cursor:pointer;transition:all .2s;text-align:center
 }
@@ -523,12 +524,13 @@ footer{
   .rank-type-tabs{width:100%}
   .rank-type-tab{flex:1;padding:10px 12px;font-size:13px}
   .comp-row{grid-template-columns:1fr}
+  .athletes-grid{grid-template-columns:repeat(2,1fr)}
 }
-@media(max-width:768px){
+@media(max-width:600px){
   .athletes-grid{grid-template-columns:1fr}
-  .athlete-card{min-height:160px}
-  .ac-photo{width:44%;font-size:44px}
-  .ac-name{font-size:16px}
+  .athlete-card{min-height:100px}
+  .ac-photo{width:40%;font-size:32px}
+  .ac-name{font-size:13px}
 }
 </style>
 </head>
@@ -609,10 +611,9 @@ footer{
           <input type="file" id="edit-foto-input" accept="image/*" style="display:none" onchange="handleEditFoto(this)">
         </div>
 
-        <!-- ===== COMPETIÇÕES (EDITAR) ===== -->
         <div style="background:var(--gray-light);border-radius:12px;padding:16px;border:1.5px solid var(--border)">
           <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;text-transform:uppercase;margin-bottom:4px;color:var(--gray)">Competições (até 3)</div>
-          <p style="font-size:12px;color:var(--gray);margin-bottom:12px">Defina a categoria (ex: LNF, Estaduais, Base) e o nome da competição (ex: LNF, Paulista, Sub-20). Pode digitar nomes novos livremente.</p>
+          <p style="font-size:12px;color:var(--gray);margin-bottom:12px">Defina a categoria e o nome da competição. Pode digitar nomes novos livremente.</p>
           <div class="comp-block">
             <div class="comp-block-title">Competição 1</div>
             <div class="comp-row">
@@ -630,43 +631,40 @@ footer{
           <div class="comp-block" style="margin-bottom:0">
             <div class="comp-block-title">Competição 3</div>
             <div class="comp-row">
-           <div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="edit-cat3"><option value="">Selecionar</option><option value="Nacional">Nacional</option><option value="Estadual">Estadual</option><option value="Base">Base</option></select></div>
+              <div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="edit-cat3"><option value="">Selecionar</option><option value="Nacional">Nacional</option><option value="Estadual">Estadual</option><option value="Base">Base</option></select></div>
               <div class="form-group"><label class="form-label">Competição</label><input class="form-input" id="edit-comp3" placeholder="Opcional"></div>
             </div>
           </div>
         </div>
 
         <div style="background:var(--gray-light);border-radius:12px;padding:16px;border:1.5px solid var(--border)">
-  <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;text-transform:uppercase;margin-bottom:14px;color:var(--gray)">Estatísticas por Competição</div>
-  <p style="font-size:12px;color:var(--gray);margin-bottom:14px">As estatísticas são vinculadas à competição correspondente acima.</p>
-
-  <div class="comp-block">
-    <div class="comp-block-title">Stats — Competição 1</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-      <div class="form-group"><label class="form-label">Gols</label><input class="form-input" id="edit-gols1" type="number"></div>
-      <div class="form-group"><label class="form-label">Assistências</label><input class="form-input" id="edit-assists1" type="number"></div>
-      <div class="form-group"><label class="form-label">Jogos</label><input class="form-input" id="edit-jogos1" type="number"></div>
-    </div>
-  </div>
-
-  <div class="comp-block">
-    <div class="comp-block-title">Stats — Competição 2</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-      <div class="form-group"><label class="form-label">Gols</label><input class="form-input" id="edit-gols2" type="number"></div>
-      <div class="form-group"><label class="form-label">Assistências</label><input class="form-input" id="edit-assists2" type="number"></div>
-      <div class="form-group"><label class="form-label">Jogos</label><input class="form-input" id="edit-jogos2" type="number"></div>
-    </div>
-  </div>
-
-  <div class="comp-block" style="margin-bottom:0">
-    <div class="comp-block-title">Stats — Competição 3</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-      <div class="form-group"><label class="form-label">Gols</label><input class="form-input" id="edit-gols3" type="number"></div>
-      <div class="form-group"><label class="form-label">Assistências</label><input class="form-input" id="edit-assists3" type="number"></div>
-      <div class="form-group"><label class="form-label">Jogos</label><input class="form-input" id="edit-jogos3" type="number"></div>
-    </div>
-  </div>
-</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;text-transform:uppercase;margin-bottom:14px;color:var(--gray)">Estatísticas por Competição</div>
+          <p style="font-size:12px;color:var(--gray);margin-bottom:14px">As estatísticas são vinculadas à competição correspondente acima.</p>
+          <div class="comp-block">
+            <div class="comp-block-title">Stats — Competição 1</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+              <div class="form-group"><label class="form-label">Gols</label><input class="form-input" id="edit-gols1" type="number"></div>
+              <div class="form-group"><label class="form-label">Assistências</label><input class="form-input" id="edit-assists1" type="number"></div>
+              <div class="form-group"><label class="form-label">Jogos</label><input class="form-input" id="edit-jogos1" type="number"></div>
+            </div>
+          </div>
+          <div class="comp-block">
+            <div class="comp-block-title">Stats — Competição 2</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+              <div class="form-group"><label class="form-label">Gols</label><input class="form-input" id="edit-gols2" type="number"></div>
+              <div class="form-group"><label class="form-label">Assistências</label><input class="form-input" id="edit-assists2" type="number"></div>
+              <div class="form-group"><label class="form-label">Jogos</label><input class="form-input" id="edit-jogos2" type="number"></div>
+            </div>
+          </div>
+          <div class="comp-block" style="margin-bottom:0">
+            <div class="comp-block-title">Stats — Competição 3</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+              <div class="form-group"><label class="form-label">Gols</label><input class="form-input" id="edit-gols3" type="number"></div>
+              <div class="form-group"><label class="form-label">Assistências</label><input class="form-input" id="edit-assists3" type="number"></div>
+              <div class="form-group"><label class="form-label">Jogos</label><input class="form-input" id="edit-jogos3" type="number"></div>
+            </div>
+          </div>
+        </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
           <button class="btn-submit" id="btn-salvar-edit" onclick="salvarEdicao()">SALVAR ALTERAÇÕES →</button>
@@ -699,7 +697,7 @@ footer{
   </div>
 </div>
 
-<!-- ===== NAV (ÚNICO) ===== -->
+<!-- ===== NAV ===== -->
 <nav>
   <div class="logo" onclick="showPage('home')">ANALISE<span>.IO</span></div>
   <div class="nav-links">
@@ -725,7 +723,7 @@ footer{
   </div>
 </nav>
 
-<!-- ===== PAGE: HOME (ÚNICO) ===== -->
+<!-- ===== PAGE: HOME ===== -->
 <div id="page-home" class="page active">
   <div class="hero">
     <div class="hero-left">
@@ -767,7 +765,6 @@ footer{
     </div>
   </div>
 
-  <!-- ===== RANKINGS DA TEMPORADA ===== -->
   <section class="section">
     <div class="eyebrow">Temporada 2026</div>
     <h2 class="sec-title">RANKINGS DA TEMPORADA</h2>
@@ -828,7 +825,7 @@ footer{
     </div>
   </div>
 
-  <section class="section" style="padding-top:40px">
+  <section class="section" style="padding-top:32px">
     <div class="athletes-grid" id="atletas-grid"><p style="color:var(--gray)">Carregando...</p></div>
   </section>
 </div>
@@ -912,27 +909,20 @@ footer{
       <button class="admin-tab" id="atab-csv" onclick="adminPanelTab('csv')">📊 CSV</button>
     </div>
 
-    <!-- TAB ATLETAS -->
-    <!-- TAB ATLETAS -->
-<div id="atab-content-atletas">
-  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-    <input class="form-input" id="admin-search-nome" placeholder="🔍 Buscar por nome..." style="flex:1;min-width:180px;padding:9px 14px" oninput="filtrarAdminAtletas()">
-    <select class="form-input" id="admin-search-time" style="width:180px;padding:9px 14px" onchange="filtrarAdminAtletas()">
-      <option value="">Todos os times</option>
-    </select>
-    <select class="form-input" id="admin-search-agencia" style="width:180px;padding:9px 14px" onchange="filtrarAdminAtletas()">
-      <option value="">Todas as agências</option>
-    </select>
-  </div>
-  <div style="overflow-x:auto">
-    <table class="admin-table">
+    <div id="atab-content-atletas">
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+        <input class="form-input" id="admin-search-nome" placeholder="🔍 Buscar por nome..." style="flex:1;min-width:180px;padding:9px 14px" oninput="filtrarAdminAtletas()">
+        <select class="form-input" id="admin-search-time" style="width:180px;padding:9px 14px" onchange="filtrarAdminAtletas()"><option value="">Todos os times</option></select>
+        <select class="form-input" id="admin-search-agencia" style="width:180px;padding:9px 14px" onchange="filtrarAdminAtletas()"><option value="">Todas as agências</option></select>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="admin-table">
           <thead><tr><th>Atleta</th><th>Posição</th><th>Clube</th><th>Status</th><th>Gols</th><th>Assist.</th><th>Nota</th><th>Ações</th></tr></thead>
           <tbody id="admin-atletas-tbody"></tbody>
         </table>
       </div>
     </div>
 
-    <!-- TAB USUÁRIOS (NOVO) -->
     <div id="atab-content-usuarios" style="display:none">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
         <div>
@@ -944,7 +934,6 @@ footer{
           <button class="btn-search" onclick="carregarUsuarios()">↻ Atualizar</button>
         </div>
       </div>
-      <!-- Cards de stats -->
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px">
         <div style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:12px;padding:20px">
           <div style="font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:var(--blue)" id="stat-total-users">—</div>
@@ -971,7 +960,6 @@ footer{
       </div>
     </div>
 
-    <!-- TAB CLUBES -->
     <div id="atab-content-clubes" style="display:none">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start">
         <div>
@@ -994,7 +982,6 @@ footer{
       </div>
     </div>
 
-    <!-- TAB ADD ATLETA -->
     <div id="atab-content-add" style="display:none">
       <div style="max-width:700px">
         <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:24px">Adicionar Atleta</h3>
@@ -1036,14 +1023,13 @@ footer{
             <input type="file" id="aa-foto-input" accept="image/*" style="display:none" onchange="handleFotoUpload(this)">
           </div>
 
-          <!-- ===== COMPETIÇÕES (ADICIONAR) ===== -->
           <div style="background:var(--gray-light);border-radius:12px;padding:16px;border:1.5px solid var(--border)">
             <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;text-transform:uppercase;margin-bottom:4px;color:var(--gray)">Competições (até 3)</div>
-            <p style="font-size:12px;color:var(--gray);margin-bottom:12px">Defina a categoria (ex: LNF, Estaduais, Base) e o nome da competição (ex: LNF, Paulista, Sub-20, LNFES...). Os valores são livres — pode digitar nomes novos.</p>
+            <p style="font-size:12px;color:var(--gray);margin-bottom:12px">Defina a categoria e o nome da competição. Os valores são livres.</p>
             <div class="comp-block">
               <div class="comp-block-title">Competição 1</div>
               <div class="comp-row">
-               <div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="aa-cat1"><option value="">Selecionar</option><option value="Nacional">Nacional</option><option value="Estadual">Estadual</option><option value="Base">Base</option></select></div>
+                <div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="aa-cat1"><option value="">Selecionar</option><option value="Nacional">Nacional</option><option value="Estadual">Estadual</option><option value="Base">Base</option></select></div>
                 <div class="form-group"><label class="form-label">Competição</label><input class="form-input" id="aa-comp1" placeholder="Ex: LNF, Paulista, Sub-20"></div>
               </div>
             </div>
@@ -1057,8 +1043,7 @@ footer{
             <div class="comp-block" style="margin-bottom:0">
               <div class="comp-block-title">Competição 3</div>
               <div class="comp-row">
-               <div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="aa-cat3"><option value="">Selecionar</option><option value="Nacional">Nacional</option><option value="Estadual">Estadual</option><option value="Base">Base</option></select></div>
-
+                <div class="form-group"><label class="form-label">Categoria</label><select class="form-select" id="aa-cat3"><option value="">Selecionar</option><option value="Nacional">Nacional</option><option value="Estadual">Estadual</option><option value="Base">Base</option></select></div>
                 <div class="form-group"><label class="form-label">Competição</label><input class="form-input" id="aa-comp3" placeholder="Opcional"></div>
               </div>
             </div>
@@ -1080,7 +1065,6 @@ footer{
       </div>
     </div>
 
-    <!-- TAB DESTAQUE -->
     <div id="atab-content-destaque" style="display:none">
       <div style="max-width:600px">
         <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:8px">Atleta da Capa</h3>
@@ -1097,13 +1081,12 @@ footer{
       </div>
     </div>
 
-    <!-- TAB CSV -->
     <div id="atab-content-csv" style="display:none">
       <div style="max-width:700px">
         <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:8px">Importar via CSV</h3>
         <p style="font-size:14px;color:var(--gray);margin-bottom:20px">Importe vários atletas de uma vez. Baixe o modelo, preencha e importe.</p>
         <p style="font-size:12px;color:var(--gray);margin-bottom:20px;background:var(--gray-light);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px">
-          💡 Para definir as competições no CSV, use as colunas <strong>cat1/comp1</strong>, <strong>cat2/comp2</strong> e <strong>cat3/comp3</strong> (até 3 competições por atleta). Ex: cat1=Estaduais, comp1=LNFES.
+          💡 Para definir as competições no CSV, use as colunas <strong>cat1/comp1</strong>, <strong>cat2/comp2</strong> e <strong>cat3/comp3</strong>.
         </p>
         <button onclick="downloadModeloCSV()" style="background:var(--gray-light);border:1.5px solid var(--border);color:var(--text);padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:20px">⬇ Baixar Modelo CSV</button>
         <div id="csv-drop-area" style="border:2px dashed var(--border);border-radius:12px;padding:40px;text-align:center;cursor:pointer;background:var(--white);transition:border-color .2s" onclick="document.getElementById('csv-file-input').click()" ondragover="event.preventDefault();this.style.borderColor='var(--blue)'" ondragleave="this.style.borderColor='var(--border)'" ondrop="handleCsvDrop(event)">
@@ -1197,14 +1180,8 @@ var dbClubes=[
 ];
 var EMOJIS={Goleiro:'🧤',Fixo:'🛡️',Ala:'⚡','Pivô':'💪',Universal:'🌟'};
 
-/* =========================================
-   RANKING — ESTADO
-========================================= */
 var catAtivaRanking=null, torneioAtivoRanking=null, tipoRankingAtivo='gols';
 
-/* =========================================
-   UTILS
-========================================= */
 async function api(url, opts){
   try{
     var o=Object.assign({headers:{'Content-Type':'application/json'},credentials:'include'}, opts||{});
@@ -1219,9 +1196,6 @@ function showToast(msg){
   setTimeout(function(){ t.classList.remove('show'); }, 3200);
 }
 
-/* =========================================
-   NAVEGAÇÃO
-========================================= */
 function showPage(p){
   var pages=['home','atletas','cadastro-atleta','assinatura','clubes','admin-panel','sou-jogador','pagar-atleta'];
   pages.forEach(function(pg){
@@ -1237,9 +1211,6 @@ function showPage(p){
   if(p==='home'){ renderRankingsHome(); }
 }
 
-/* =========================================
-   ATLETAS — CARREGAR E RENDERIZAR
-========================================= */
 async function carregarAtletas(){
   var d=await api('/api/atletas');
   if(!d||d.erro) return [];
@@ -1254,8 +1225,6 @@ async function carregarAtletas(){
   });
 }
 
-/* Normaliza as competições do atleta para um array:
-   [{categoria:'LNF', competicao:'LNF'}, ...] (até 3) */
 function normalizarCompeticoes(a){
   var out=[];
   for(var i=1;i<=3;i++){
@@ -1281,14 +1250,12 @@ function renderCard(a, idx){
     +'<div class="ac-body">'
     +'<div class="ac-name">'+a.nome+'</div>'
     +'<div class="ac-clube-row"><span class="ac-clube-label">Clube</span><span class="ac-clube-val">'+(a.clube||'—')+'</span></div>'
-    +'<div class="ac-clube-row" style="margin-top:2px"><span class="ac-clube-label">Agência</span><span class="ac-clube-val" style="color:var(--gray);font-weight:500">'+(a.agencia||'—')+'</span></div>'
+    +'<div class="ac-clube-row" style="margin-top:1px"><span class="ac-clube-label">Agência</span><span class="ac-clube-val" style="color:var(--gray);font-weight:500">'+(a.agencia||'—')+'</span></div>'
     +'<div class="ac-dark" style="grid-template-columns:repeat(3,1fr)">'
     +'<div class="ac-data-item"><span class="ac-data-val">'+(a.idade||'—')+'</span><span class="ac-data-label">Idade</span></div>'
     +'<div class="ac-data-item"><span class="ac-data-val">'+(a.pe?a.pe.charAt(0):'—')+'</span><span class="ac-data-label">Pé</span></div>'
     +'<div class="ac-data-item"><span class="ac-data-val">'+(a.camisa||'—')+'</span><span class="ac-data-label">Camisa</span></div>'
-
     +'</div>'
-
     +'<button class="ac-btn">ANÁLISE COMPLETA →</button>'
     +'</div></div>';
 }
@@ -1302,9 +1269,6 @@ function renderAtletas(lista){
     : '<p style="color:var(--gray);padding:40px 0">Nenhum atleta encontrado.</p>';
 }
 
-/* =========================================
-   INIT
-========================================= */
 async function init(){
   atletasCache=await carregarAtletas();
   var aprov=atletasCache.filter(function(a){ return a.status==='aprovado'; });
@@ -1325,9 +1289,6 @@ function animCount(id, target){
   var t=setInterval(function(){ cur=Math.min(cur+step,target); el.textContent=cur; if(cur>=target) clearInterval(t); }, 50);
 }
 
-/* =========================================
-   HERO DESTAQUE
-========================================= */
 function atualizarHeroDestaque(){
   var a=atletaDestaqueId
     ? atletasCache.find(function(x){ return String(x.id)===String(atletaDestaqueId); })
@@ -1347,9 +1308,6 @@ function atualizarHeroDestaque(){
   else { photoDiv.style.background=''; photoDiv.innerHTML=(a.emoji||'⭐')+avail; }
 }
 
-/* =========================================
-   FILTROS
-========================================= */
 function setPill(el, val){
   document.querySelectorAll('.filter-pill').forEach(function(p){ p.classList.remove('active'); });
   el.classList.add('active');
@@ -1402,10 +1360,6 @@ function popularFiltroAgencias(){
   times.forEach(function(t){ var o=document.createElement('option'); o.value=t; o.textContent=t; sel.appendChild(o); });
 }
 
-
-/* =========================================
-   PROFILE MODAL
-========================================= */
 function openProfile(a){
   if(!a){ showToast('Atleta não encontrado'); return; }
   var b=!userAssinante;
@@ -1458,7 +1412,7 @@ function openProfile(a){
       +'</div></div>';
   }
 
-var html='<div class="modal-hero">'
+  var html='<div class="modal-hero">'
     +'<div class="modal-photo" style="'+(a.foto?'background:none;overflow:hidden':'')+'">'+fotoHtml+'</div>'
     +'<div>'
     +'<span class="modal-pos-badge">'+a.posicao+' · '+(a.modalidade||'Futsal')+'</span>'
@@ -1469,7 +1423,6 @@ var html='<div class="modal-hero">'
     +'<div class="mstat"><span class="mstat-val">'+(a.idade||'—')+'</span><span class="mstat-label">Idade</span></div>'
     +'<div class="mstat"><span class="mstat-val">'+(a.pe?a.pe.charAt(0):'—')+'</span><span class="mstat-label">Pé Dom.</span></div>'
     +'<div class="mstat"><span class="mstat-val">'+(a.camisa||'—')+'</span><span class="mstat-label">Camisa</span></div>'
-
     +'</div>'
     +'<div class="modal-body">'
     +'<div class="modal-sec"><div class="modal-sec-title">Estatísticas da Temporada</div>'
@@ -1479,7 +1432,6 @@ var html='<div class="modal-hero">'
     +sStat(a.stats_jogos||'0','Jogos')
     +'</div></div>'
     +'<div class="modal-sec"><div class="modal-sec-title">Dados Básicos</div>'
-
     +rFree('Posição',a.posicao)+rFree('Modalidade',a.modalidade||'Futsal')+rFree('Pé Dominante',a.pe)
     +'</div>'
     +competicoesHtml
@@ -1490,13 +1442,11 @@ var html='<div class="modal-hero">'
       return '<div style="padding:10px 0;border-bottom:1px solid var(--border)"><a href="'+v+'" target="_blank" style="color:var(--blue);font-weight:600;font-size:14px;text-decoration:none">▶ Link '+(i+1)+': '+v.substring(0,40)+'...</a></div>';
     }).join('')
     +'</div>'
-
     +rLock('Link de Highlights',a.video)
     +'</div>'
     +'<div class="modal-sec"><div class="modal-sec-title">Contato & Agência</div>'
     +rLock('Instagram',a.instagram)+rLock('Agência',a.agencia)
     +'</div>'
-
     +'<div style="margin-top:16px;text-align:center">'
     +'<button onclick="abrirCorrecao(atletasCache.find(function(x){return x.id==='+JSON.stringify(a.id)+';}))" style="background:transparent;border:1.5px solid var(--border);color:var(--gray);padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">✏️ Solicitar Correção de Dados</button>'
     +'</div>'
@@ -1511,9 +1461,6 @@ var html='<div class="modal-hero">'
   document.getElementById('profileModal').classList.add('open');
 }
 
-/* =========================================
-   AUTH
-========================================= */
 function openAuthModal(tab){ document.getElementById('authModal').classList.add('open'); switchAuthTab(tab||'login'); }
 
 function switchAuthTab(tab){
@@ -1582,9 +1529,6 @@ function updateCadastroView(){
   else{ nl.style.display='none'; sa.style.display='none'; f.style.display='block'; }
 }
 
-/* =========================================
-   ADMIN — PAINEL
-========================================= */
 async function carregarPainelAdmin(){
   atletasCache=await carregarAtletas();
   renderAdminAtletas();
@@ -1631,7 +1575,7 @@ function renderAdminAtletas(){
     selTime.innerHTML='<option value="">Todos os times</option>';
     times.forEach(function(t){ var o=document.createElement('option'); o.value=t; o.textContent=t; selTime.appendChild(o); });
   }
-    if(selAg){
+  if(selAg){
     var ags=[...new Set(atletasCache.filter(function(a){ return a.agencia&&a.agencia!=='-'; }).map(function(a){ return a.agencia; }))].sort();
     selAg.innerHTML='<option value="">Todas as agências</option>';
     ags.forEach(function(ag){ var o=document.createElement('option'); o.value=ag; o.textContent=ag; selAg.appendChild(o); });
@@ -1656,28 +1600,21 @@ async function adminDel(idx){
   showToast('✅ Atleta removido.');
 }
 
-/* =========================================
-   ADMIN — USUÁRIOS
-========================================= */
 async function carregarUsuarios(){
   var tbody=document.getElementById('admin-usuarios-tbody');
   if(!tbody) return;
   tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--gray);padding:40px"><span class="spin" style="border-top-color:var(--blue);border-color:var(--border)"></span></td></tr>';
-
   var d=await api('/api/admin/usuarios');
-
   if(!d||d.erro){
-    tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--gray);padding:40px">⚠️ Endpoint <code>/api/admin/usuarios</code> não encontrado no backend.</td></tr>';
+    tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--gray);padding:40px">⚠️ Endpoint não encontrado.</td></tr>';
     return;
   }
-
   todosUsuarios=Array.isArray(d)?d:(d.usuarios||[]);
   renderTabelaUsuarios(todosUsuarios);
 }
 
 function renderTabelaUsuarios(lista){
   var tbody=document.getElementById('admin-usuarios-tbody'); if(!tbody) return;
-
   var total=lista.length;
   var assinantes=lista.filter(function(u){ return u.plano==='assinatura'; }).length;
   var gratuitos=lista.filter(function(u){ return !u.plano||u.plano==='gratuito'; }).length;
@@ -1686,12 +1623,10 @@ function renderTabelaUsuarios(lista){
   var s2=document.getElementById('stat-assinantes'); if(s2) s2.textContent=assinantes;
   var s3=document.getElementById('stat-gratuitos'); if(s3) s3.textContent=gratuitos;
   var s4=document.getElementById('stat-admins'); if(s4) s4.textContent=admins;
-
   if(!lista.length){
     tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--gray);padding:40px">Nenhum usuário encontrado.</td></tr>';
     return;
   }
-
   tbody.innerHTML=lista.map(function(u){
     var iniciais=(u.nome||'?').split(' ').map(function(w){ return w[0]; }).slice(0,2).join('').toUpperCase();
     var planoBadge=u.admin
@@ -1724,9 +1659,6 @@ function filtrarUsuarios(){
   renderTabelaUsuarios(r);
 }
 
-/* =========================================
-   ADMIN — ADICIONAR ATLETA
-========================================= */
 async function adicionarAtletaAdmin(){
   var nome=(document.getElementById('aa-nome').value||'').trim();
   var idade=document.getElementById('aa-idade').value;
@@ -1747,7 +1679,7 @@ async function adicionarAtletaAdmin(){
     whatsapp:document.getElementById('aa-whatsapp').value,
     forte:document.getElementById('aa-forte').value||'',
     fraco:document.getElementById('aa-fraco').value||'',
-    camisa: document.getElementById('aa-camisa') ? (document.getElementById('aa-camisa').value || '') : '',
+    camisa:'',
     video:document.getElementById('aa-video').value,
     cat1:(document.getElementById('aa-cat1').value||'').trim(),
     comp1:(document.getElementById('aa-comp1').value||'').trim(),
@@ -1770,14 +1702,10 @@ async function adicionarAtletaAdmin(){
   fotoAtualBase64=null;
   document.getElementById('foto-preview').style.display='none';
   document.getElementById('foto-placeholder').style.display='block';
-  document.getElementById('foto-upload-area').style.borderColor='var(--border)';
   atletasCache=await carregarAtletas(); renderAdminAtletas(); await init();
   showToast('✅ Atleta publicado!'); adminPanelTab('atletas');
 }
 
-/* =========================================
-   ADMIN — EDITAR ATLETA
-========================================= */
 function abrirEdicao(idx){
   var a=atletasCache[idx]; if(!a) return;
   editFotoBase64=null;
@@ -1785,19 +1713,17 @@ function abrirEdicao(idx){
   var campos={
     'edit-id':a.id,'edit-nome':a.nome||'','edit-idade':a.idade||'',
     'edit-posicao':a.posicao||'','edit-pe':a.pe||'Direito',
-    'edit-altura':a.altura||'','edit-peso':a.peso||'',
     'edit-disponivel':a.disponivel?'true':'false',
-    'edit-clube':a.clube||'','edit-contrato':a.contrato||'',
-    'edit-agencia':a.agencia||'','edit-instagram':a.instagram||'',
-    'edit-whatsapp':a.whatsapp||'','edit-forte':a.forte||'',
-    'edit-fraco':a.fraco||'','edit-video':a.video||'',
+    'edit-clube':a.clube||'','edit-agencia':a.agencia||'',
+    'edit-instagram':a.instagram||'','edit-camisa':a.camisa||'',
+    'edit-video':a.video||'','edit-video2':a.video2||'',
+    'edit-video3':a.video3||'','edit-video4':a.video4||'','edit-video5':a.video5||'',
     'edit-cat1': comp[0]?comp[0].categoria:'', 'edit-comp1': comp[0]?comp[0].competicao:'',
     'edit-cat2': comp[1]?comp[1].categoria:'', 'edit-comp2': comp[1]?comp[1].competicao:'',
     'edit-cat3': comp[2]?comp[2].categoria:'', 'edit-comp3': comp[2]?comp[2].competicao:'',
     'edit-gols1':a.stats_gols1||'','edit-assists1':a.stats_assists1||'','edit-jogos1':a.stats_jogos1||'',
     'edit-gols2':a.stats_gols2||'','edit-assists2':a.stats_assists2||'','edit-jogos2':a.stats_jogos2||'',
     'edit-gols3':a.stats_gols3||'','edit-assists3':a.stats_assists3||'','edit-jogos3':a.stats_jogos3||''
-
   };
   Object.keys(campos).forEach(function(k){ var el=document.getElementById(k); if(el) el.value=campos[k]; });
   if(a.foto){
@@ -1864,7 +1790,6 @@ async function salvarEdicao(){
     stats_gols3:document.getElementById('edit-gols3').value,
     stats_assists3:document.getElementById('edit-assists3').value,
     stats_jogos3:document.getElementById('edit-jogos3').value,
-
     status:atualIdx>=0?atletasCache[atualIdx].status:'aprovado'
   };
   var d=await api('/api/admin/atletas/'+id,{method:'PUT',body:JSON.stringify(payload)});
@@ -1876,9 +1801,6 @@ async function salvarEdicao(){
   showToast('✅ Atleta atualizado!');
 }
 
-/* =========================================
-   ADMIN — DESTAQUE CAPA
-========================================= */
 function preencherSelectDestaque(){
   var sel=document.getElementById('select-destaque'); if(!sel) return;
   var aprov=atletasCache.filter(function(a){ return a.status==='aprovado'; });
@@ -1904,9 +1826,6 @@ function salvarDestaque(){
   showToast('⭐ Atleta da capa atualizado!'); adminPanelTab('atletas');
 }
 
-/* =========================================
-   CLUBES
-========================================= */
 function renderAdminClubes(){
   var el=document.getElementById('admin-clubes-lista'); if(!el) return;
   el.innerHTML=dbClubes.map(function(c){
@@ -1950,9 +1869,6 @@ function renderClubes(){
   }).join('')||'<p style="color:var(--gray)">Nenhum clube no momento.</p>';
 }
 
-/* =========================================
-   CADASTRO ATLETA (usuário)
-========================================= */
 async function enviarCadastroAtleta(){
   var nome=(document.getElementById('c-nome').value||'').trim();
   var idade=document.getElementById('c-idade').value;
@@ -1975,9 +1891,6 @@ async function enviarCadastroAtleta(){
   showPage('pagar-atleta');
 }
 
-/* =========================================
-   FOTO UPLOAD
-========================================= */
 function handleFotoUpload(input){
   var file=input.files[0]; if(!file) return;
   if(file.size>5*1024*1024){ showToast('⚠️ Máx 5MB'); return; }
@@ -1997,9 +1910,6 @@ function handleFotoDrop(e){
   if(file&&file.type.startsWith('image/')) handleFotoUpload({files:[file]});
 }
 
-/* =========================================
-   PAGAMENTO
-========================================= */
 function assinar(){
   if(!currentUser){ openAuthModal('criar'); return; }
   showToast('Redirecionando...');
@@ -2021,9 +1931,6 @@ async function pagarAtleta(){
   }catch(e){ showToast('⚠️ Sem conexão.'); btn.innerHTML='🔒 PAGAR R$19,90 E ATIVAR →'; btn.disabled=false; }
 }
 
-/* =========================================
-   CSV IMPORT
-========================================= */
 function downloadModeloCSV(){
   var header='nome,idade,posicao,pe,altura,peso,clube,agencia,contrato,instagram,whatsapp,forte,fraco,video,cat1,comp1,cat2,comp2,cat3,comp3,gols,assists,passes,dribles,nota,jogos,disponivel';
   var ex='Joao Silva,23,Ala,Direito,174,70,Magnus Futsal,Elite Sports,1 ano,@joaosilva,11999999999,Velocidade,Marcacao,https://youtube.com,LNF,LNF,Estaduais,LNFES,,,8,14,89%,4.2,7.8,22,true';
@@ -2038,9 +1945,7 @@ function parseCSVLine(line){
   result.push(cur.trim()); return result;
 }
 function normHeader(h){
-  var map={nome:'nome',idade:'idade','posição':'posicao',posicao:'posicao','pé':'pe',pe:'pe',altura:'altura',peso:'peso','disponível':'disponivel',disponivel:'disponivel',clube:'clube',contrato:'contrato','agência':'agencia',agencia:'agencia',instagram:'instagram',whatsapp:'whatsapp',forte:'forte',fraco:'fraco',video:'video',
-    cat1:'cat1',comp1:'comp1',cat2:'cat2',comp2:'comp2',cat3:'cat3',comp3:'comp3',
-    gols:'gols',assists:'assists',passes:'passes',dribles:'dribles',nota:'nota',jogos:'jogos'};
+  var map={nome:'nome',idade:'idade','posição':'posicao',posicao:'posicao','pé':'pe',pe:'pe',altura:'altura',peso:'peso','disponível':'disponivel',disponivel:'disponivel',clube:'clube',contrato:'contrato','agência':'agencia',agencia:'agencia',instagram:'instagram',whatsapp:'whatsapp',forte:'forte',fraco:'fraco',video:'video',cat1:'cat1',comp1:'comp1',cat2:'cat2',comp2:'comp2',cat3:'cat3',comp3:'comp3',gols:'gols',assists:'assists',passes:'passes',dribles:'dribles',nota:'nota',jogos:'jogos'};
   var k=h.toLowerCase().trim().replace(/[áàãâ]/g,'a').replace(/[éê]/g,'e').replace(/[í]/g,'i').replace(/[óõô]/g,'o').replace(/[ú]/g,'u').replace(/[ç]/g,'c');
   return map[k]||k;
 }
@@ -2075,12 +1980,7 @@ async function importarCSV(){
   var count=0;
   for(var i=0;i<csvParsed.length;i++){
     var a=csvParsed[i]; if(!a.nome||!a.posicao) continue;
-    var payload={nome:a.nome,idade:parseInt(a.idade)||0,posicao:a.posicao,modalidade:'Futsal',clube:a.clube||'Sem clube',pe:a.pe||'Direito',altura:parseInt(a.altura)||0,peso:parseInt(a.peso)||0,disponivel:a.disponivel!=='false',agencia:a.agencia||'',contrato:a.contrato||'',instagram:a.instagram||'',whatsapp:a.whatsapp||'',forte:a.forte||'',fraco:a.fraco||'',video:a.video||'',
-      camisa:a.camisa||a.n||a.numero||'',
-      cat1:a.cat1||'',comp1:a.comp1||'',cat2:a.cat2||'',comp2:a.comp2||'',cat3:a.cat3||'',comp3:a.comp3||'',
-      stats_gols1:a.gols||'',stats_assists1:a.assists||'',stats_jogos1:a.jogos||'',
-      stats_gols:a.gols||'',stats_assists:a.assists||'',stats_passes:a.passes||'',stats_dribles:a.dribles||'',stats_nota:a.nota||'',stats_jogos:a.jogos||'',status:'aprovado',foto:null};
-
+    var payload={nome:a.nome,idade:parseInt(a.idade)||0,posicao:a.posicao,modalidade:'Futsal',clube:a.clube||'Sem clube',pe:a.pe||'Direito',altura:parseInt(a.altura)||0,peso:parseInt(a.peso)||0,disponivel:a.disponivel!=='false',agencia:a.agencia||'',contrato:a.contrato||'',instagram:a.instagram||'',whatsapp:a.whatsapp||'',forte:a.forte||'',fraco:a.fraco||'',video:a.video||'',camisa:'',cat1:a.cat1||'',comp1:a.comp1||'',cat2:a.cat2||'',comp2:a.comp2||'',cat3:a.cat3||'',comp3:a.comp3||'',stats_gols1:a.gols||'',stats_assists1:a.assists||'',stats_jogos1:a.jogos||'',stats_gols:a.gols||'',stats_assists:a.assists||'',stats_passes:a.passes||'',stats_dribles:a.dribles||'',stats_nota:a.nota||'',stats_jogos:a.jogos||'',status:'aprovado',foto:null};
     var d=await api('/api/admin/atletas',{method:'POST',body:JSON.stringify(payload)});
     if(!d.erro) count++;
   }
@@ -2093,9 +1993,6 @@ async function importarCSV(){
   showToast('✅ '+count+' atleta(s) importado(s)!'); adminPanelTab('atletas');
 }
 
-/* =========================================
-   CORREÇÃO
-========================================= */
 function abrirCorrecao(a){
   if(!a) return;
   document.getElementById('corr-atleta-id').value=a.id||'';
@@ -2122,31 +2019,13 @@ async function enviarCorrecao(){
   else showToast('⚠️ Erro ao enviar. Tente novamente.');
 }
 
-/* =========================================
-   RANKINGS — HOME (DINÂMICO A PARTIR DOS ATLETAS)
-========================================= */
-
-/* Retorna categorias únicas (na ordem em que aparecem) a partir dos atletas aprovados */
-function obterCategoriasRanking(){
-  var aprov=atletasCache.filter(function(a){ return a.status==='aprovado' && a.competicoes && a.competicoes.length; });
-  var cats=[];
-  aprov.forEach(function(a){
-    a.competicoes.forEach(function(c){
-      if(cats.indexOf(c.categoria)===-1) cats.push(c.categoria);
-    });
-  });
-  return cats;
-}
-
-/* Retorna torneios únicos (na ordem em que aparecem) para uma categoria */
+/* ===== RANKINGS ===== */
 function obterTorneiosRanking(categoria){
   var aprov=atletasCache.filter(function(a){ return a.status==='aprovado' && a.competicoes && a.competicoes.length; });
   var torneios=[];
   aprov.forEach(function(a){
     a.competicoes.forEach(function(c){
-      var catNorm=(c.categoria||'').trim();
-      var catBusca=(categoria||'').trim();
-      if(catNorm===catBusca && torneios.indexOf(c.competicao)===-1) torneios.push(c.competicao);
+      if((c.categoria||'').trim()===(categoria||'').trim() && torneios.indexOf(c.competicao)===-1) torneios.push(c.competicao);
     });
   });
   return torneios;
@@ -2239,22 +2118,18 @@ function renderRankingsHome(){
 
 function renderRankingLista(){
   var container=document.getElementById('rankingContainer'); if(!container) return;
-
   if(!catAtivaRanking || !torneioAtivoRanking){
     container.innerHTML='<div class="empty-state"><div style="font-size:48px">⚽</div><h3>Sem dados ainda</h3><p>Cadastre atletas com competições para ver os rankings aqui.</p></div>';
     return;
   }
-
   var aprov=atletasCache.filter(function(a){ return a.status==='aprovado' && a.competicoes && a.competicoes.length; });
   var lista=aprov.filter(function(a){
     return a.competicoes.some(function(c){ return c.categoria===catAtivaRanking && c.competicao===torneioAtivoRanking; });
   });
-
   if(!lista.length){
     container.innerHTML='<div class="empty-state"><div style="font-size:48px">⚽</div><h3>Sem dados ainda</h3><p>Em breve os atletas desta competição estarão no ranking.</p></div>';
     return;
   }
-
   var sorted=lista.slice().sort(function(a,b){ return getValRanking(b)-getValRanking(a); });
   var top3=sorted.slice(0,3), resto=sorted.slice(3);
 
@@ -2286,7 +2161,6 @@ function renderRankingLista(){
         +'<div class="mini-stat"><span class="mini-stat-val">'+cG+'</span><span class="mini-stat-label">Gols</span></div>'
       )
       +'</div>'
-
       +'</div></div>';
   });
   podiumHTML+='</div>';
@@ -2320,6 +2194,7 @@ function renderRankingLista(){
 
   container.innerHTML=podiumHTML+(resto.length?listaHTML:'');
 }
+
 function filtrarAdminAtletas(){
   var nome=(document.getElementById('admin-search-nome').value||'').toLowerCase().trim();
   var time=(document.getElementById('admin-search-time').value||'').toLowerCase();
@@ -2355,11 +2230,7 @@ function filtrarAdminAtletas(){
   }).join('') : '<tr><td colspan="8" style="color:var(--gray);padding:32px;text-align:center">Nenhum atleta encontrado.</td></tr>';
 }
 
-/* =========================================
-   START
-========================================= */
 init();
-
 </script>
 </body>
 </html>
