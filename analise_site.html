@@ -449,7 +449,7 @@ footer{
 /* ===== RANKINGS (HOME) ===== */
 .cat-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
 .cat-tab{padding:10px 22px;border-radius:100px;border:1.5px solid var(--border);background:var(--white);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:var(--gray);cursor:pointer;transition:all .2s}
-.cat-tab:hover{border-color:var(--blue);color:var(--blue)}
+@media(hover:hover){.cat-tab:hover{border-color:var(--blue);color:var(--blue)}}
 .cat-tab.active{background:var(--blue);border-color:var(--blue);color:#fff}
 
 .torneio-wrap{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:28px;padding:12px 16px;background:var(--gray-light);border-radius:12px;border:1.5px solid var(--border);min-height:52px;align-items:center}
@@ -2144,7 +2144,9 @@ function obterTorneiosRanking(categoria){
   var torneios=[];
   aprov.forEach(function(a){
     a.competicoes.forEach(function(c){
-      if(c.categoria===categoria && torneios.indexOf(c.competicao)===-1) torneios.push(c.competicao);
+      var catNorm=(c.categoria||'').trim();
+      var catBusca=(categoria||'').trim();
+      if(catNorm===catBusca && torneios.indexOf(c.competicao)===-1) torneios.push(c.competicao);
     });
   });
   return torneios;
