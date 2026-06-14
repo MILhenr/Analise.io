@@ -1261,9 +1261,8 @@ function normalizarCompeticoes(a){
   for(var i=1;i<=3;i++){
     var cat=(a['cat'+i]||a['categoria'+i]||'').toString().trim();
     var comp=(a['comp'+i]||a['competicao'+i]||'').toString().trim();
-    if(comp){ out.push({categoria: cat||'Outros', competicao: comp}); }
+    if(cat||comp){ out.push({categoria: cat||'Outros', competicao: comp||cat||'Geral'}); }
   }
-  // fallback: campo legado "competicao" único
   if(!out.length && a.competicao){
     out.push({categoria: a.categoria||'Outros', competicao: String(a.competicao).trim()});
   }
