@@ -2164,15 +2164,18 @@ function renderCatTabsRanking(){
   }).join('');
 }
 
-
 function setCategoriaRanking(cat){
   catAtivaRanking=cat;
   var torneios=obterTorneiosRanking(cat);
   torneioAtivoRanking=torneios[0]||null;
-  renderCatTabsRanking();
+  var el=document.getElementById('catTabs'); 
+  if(el) el.innerHTML=CATS_FIXAS.map(function(c){
+    return '<button class="cat-tab'+(c===catAtivaRanking?' active':'')+'" onclick="setCategoriaRanking('+JSON.stringify(c)+')">'+c+'</button>';
+  }).join('');
   renderTorneioTabsRanking();
   renderRankingLista();
 }
+
 
 function renderTorneioTabsRanking(){
   var el=document.getElementById('torneioWrap'); if(!el) return;
