@@ -2155,8 +2155,11 @@ var CATS_FIXAS=['Nacional','Estadual','Base'];
 
 function renderCatTabsRanking(){
   var el=document.getElementById('catTabs'); if(!el) return;
-  if(!catAtivaRanking) catAtivaRanking=CATS_FIXAS[0];
-  el.innerHTML=CATS_FIXAS.map(function(c){
+  var disponiveis=obterCategoriasRanking();
+  var cats=CATS_FIXAS.filter(function(c){ return disponiveis.indexOf(c)!==-1; });
+  if(!cats.length) cats=CATS_FIXAS;
+  if(!catAtivaRanking||cats.indexOf(catAtivaRanking)===-1) catAtivaRanking=cats[0];
+  el.innerHTML=cats.map(function(c){
     return '<button class="cat-tab'+(c===catAtivaRanking?' active':'')+'" onclick="setCategoriaRanking('+JSON.stringify(c)+')">'+c+'</button>';
   }).join('');
 }
