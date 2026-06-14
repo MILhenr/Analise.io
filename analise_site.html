@@ -2154,27 +2154,22 @@ var CATS_FIXAS=['Nacional','Estadual','Base'];
 
 function renderCatTabsRanking(){
   var el=document.getElementById('catTabs'); if(!el) return;
-  var disponiveis=obterCategoriasRanking();
-  var cats=CATS_FIXAS.filter(function(c){ return disponiveis.indexOf(c)!==-1; });
-  if(!cats.length) cats=CATS_FIXAS;
-  if(!catAtivaRanking||cats.indexOf(catAtivaRanking)===-1) catAtivaRanking=cats[0];
-  el.innerHTML=cats.map(function(c){
+  if(!catAtivaRanking) catAtivaRanking=CATS_FIXAS[0];
+  el.innerHTML=CATS_FIXAS.map(function(c){
     return '<button class="cat-tab'+(c===catAtivaRanking?' active':'')+'" onclick="setCategoriaRanking('+JSON.stringify(c)+')">'+c+'</button>';
   }).join('');
 }
+
 
 function setCategoriaRanking(cat){
   catAtivaRanking=cat;
+  torneioAtivoRanking=null;
   var torneios=obterTorneiosRanking(cat);
   torneioAtivoRanking=torneios[0]||null;
-  var el=document.getElementById('catTabs'); 
-  if(el) el.innerHTML=CATS_FIXAS.map(function(c){
-    return '<button class="cat-tab'+(c===catAtivaRanking?' active':'')+'" onclick="setCategoriaRanking('+JSON.stringify(c)+')">'+c+'</button>';
-  }).join('');
+  renderCatTabsRanking();
   renderTorneioTabsRanking();
   renderRankingLista();
 }
-
 
 function renderTorneioTabsRanking(){
   var el=document.getElementById('torneioWrap'); if(!el) return;
