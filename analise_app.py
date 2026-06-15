@@ -67,7 +67,7 @@ def init_db():
                     ("cat3", "TEXT DEFAULT ''"),
                     ("comp3", "TEXT DEFAULT ''"),
                     ("stats_gols1", "TEXT DEFAULT ''"),
-                    ("stats_assists1", "TEXT DEFAULT ''"), 
+                    ("stats_assists1", "TEXT DEFAULT ''"),
                     ("stats_jogos1", "TEXT DEFAULT ''"),
                     ("stats_gols2", "TEXT DEFAULT ''"),
                     ("stats_assists2", "TEXT DEFAULT ''"),
@@ -411,7 +411,6 @@ def admin_listar_usuarios():
             with conn.cursor() as c:
                 c.execute("SELECT email AS id,nome,email,plano,criado_em FROM usuarios ORDER BY criado_em DESC")
                 return jsonify([dict(r) for r in c.fetchall()])
-
     except Exception as e:
         return jsonify([])
 
@@ -571,11 +570,11 @@ def bot_buscar_atletas():
         with get_db() as conn:
             with conn.cursor() as c:
                 if nome and clube:
-                    c.execute("SELECT id,nome,clube,posicao,stats_gols,stats_assists,stats_jogos FROM atletas WHERE status='aprovado' AND LOWER(nome) LIKE %s AND LOWER(clube) LIKE %s", (f"%{nome.lower()}%", f"%{clube.lower()}%"))
+                    c.execute("SELECT id,nome,clube,posicao,pe,foto,stats_gols,stats_assists,stats_jogos,idade FROM atletas WHERE status='aprovado' AND LOWER(nome) LIKE %s AND LOWER(clube) LIKE %s", (f"%{nome.lower()}%", f"%{clube.lower()}%"))
                 elif nome:
-                    c.execute("SELECT id,nome,clube,posicao,stats_gols,stats_assists,stats_jogos FROM atletas WHERE status='aprovado' AND LOWER(nome) LIKE %s", (f"%{nome.lower()}%",))
+                    c.execute("SELECT id,nome,clube,posicao,pe,foto,stats_gols,stats_assists,stats_jogos,idade FROM atletas WHERE status='aprovado' AND LOWER(nome) LIKE %s", (f"%{nome.lower()}%",))
                 elif clube:
-                    c.execute("SELECT id,nome,clube,posicao,stats_gols,stats_assists,stats_jogos FROM atletas WHERE status='aprovado' AND LOWER(clube) LIKE %s", (f"%{clube.lower()}%",))
+                    c.execute("SELECT id,nome,clube,posicao,pe,foto,stats_gols,stats_assists,stats_jogos,idade FROM atletas WHERE status='aprovado' AND LOWER(clube) LIKE %s", (f"%{clube.lower()}%",))
                 else:
                     return jsonify([])
                 return jsonify([dict(r) for r in c.fetchall()])
@@ -649,6 +648,8 @@ def bot_registrar_jogo():
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
+# ── SYNC DO SCOUT ─────────────────────────────────────────────
+
 @app.route("/api/sync/atleta", methods=["POST"])
 def sync_criar_atleta():
     if request.headers.get("X-Bot-Secret") != BOT_SECRET:
@@ -672,8 +673,10 @@ def sync_criar_atleta():
                      data.get("stats_gols1","0"), data.get("stats_assists1","0"), data.get("stats_jogos1","0"),
                      "aprovado", datetime.now().strftime("%d/%m/%Y %H:%M")))
             conn.commit()
+        print(f"✅ SYNC CRIAR: {data['nome']} — {data.get('clube','')}")
         return jsonify({"ok": True, "id": aid})
     except Exception as e:
+        print(f"❌ SYNC CRIAR ERRO: {e}")
         return jsonify({"erro": str(e)}), 500
 
 @app.route("/api/sync/atleta/<aid>", methods=["PUT"])
@@ -695,8 +698,10 @@ def sync_atualizar_atleta(aid):
                      data.get("stats_gols1","0"), data.get("stats_assists1","0"), data.get("stats_jogos1","0"),
                      aid))
             conn.commit()
+        print(f"✅ SYNC ATUALIZAR: id={aid}")
         return jsonify({"ok": True})
     except Exception as e:
+        print(f"❌ SYNC ATUALIZAR ERRO: {e}")
         return jsonify({"erro": str(e)}), 500
 
 if __name__ == "__main__":
