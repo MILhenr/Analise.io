@@ -67,7 +67,7 @@ def init_db():
                     ("cat3", "TEXT DEFAULT ''"),
                     ("comp3", "TEXT DEFAULT ''"),
                     ("stats_gols1", "TEXT DEFAULT ''"),
-                    ("stats_assists1", "TEXT DEFAULT ''"),
+                    ("stats_assists1", "TEXT DEFAULT ''"), 
                     ("stats_jogos1", "TEXT DEFAULT ''"),
                     ("stats_gols2", "TEXT DEFAULT ''"),
                     ("stats_assists2", "TEXT DEFAULT ''"),
@@ -409,8 +409,9 @@ def admin_listar_usuarios():
     try:
         with get_db() as conn:
             with conn.cursor() as c:
-               c.execute("SELECT email AS id,nome,email,plano,criado_em FROM usuarios ORDER BY criado_em DESC")
+                c.execute("SELECT email AS id,nome,email,plano,criado_em FROM usuarios ORDER BY criado_em DESC")
                 return jsonify([dict(r) for r in c.fetchall()])
+
     except Exception as e:
         return jsonify([])
 
