@@ -1946,8 +1946,8 @@ async function pagarAtleta(){
 }
 
 function downloadModeloCSV(){
-  var header='nome,idade,posicao,pe,altura,peso,clube,agencia,contrato,instagram,whatsapp,forte,fraco,video,cat1,comp1,cat2,comp2,cat3,comp3,gols,assists,passes,dribles,nota,jogos,disponivel';
-  var ex='Joao Silva,23,Ala,Direito,174,70,Magnus Futsal,Elite Sports,1 ano,@joaosilva,11999999999,Velocidade,Marcacao,https://youtube.com,LNF,LNF,Estaduais,LNFES,,,8,14,89%,4.2,7.8,22,true';
+  var header='nome,clube,cat1,comp1,gols1,assists1,jogos1,cat2,comp2,gols2,assists2,jogos2,cat3,comp3,gols3,assists3,jogos3';
+  var ex='Joao Silva,Magnus Futsal,Nacional,LNF,8,14,22,,,,,,,,,,,';
   var blob=new Blob([header+'\n'+ex],{type:'text/csv'});
   var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='modelo_atletas_analiseio.csv'; a.click();
 }
