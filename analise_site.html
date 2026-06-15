@@ -1706,8 +1706,12 @@ async function adicionarAtletaAdmin(){
     stats_dribles:document.getElementById('aa-dribles').value,
     stats_nota:document.getElementById('aa-nota').value,
     stats_jogos:document.getElementById('aa-jogos').value,
+    stats_gols1:(document.getElementById('aa-cat1').value ? document.getElementById('aa-gols').value : ''),
+    stats_assists1:(document.getElementById('aa-cat1').value ? document.getElementById('aa-assists').value : ''),
+    stats_jogos1:(document.getElementById('aa-cat1').value ? document.getElementById('aa-jogos').value : ''),
     status:'aprovado', foto:fotoAtualBase64||null
-  };
+ };
+  
   var d=await api('/api/admin/atletas',{method:'POST',body:JSON.stringify(payload)});
   btn.innerHTML='PUBLICAR ATLETA →'; btn.disabled=false;
   if(d.erro){ showToast('⚠️ '+d.erro); return; }
