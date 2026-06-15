@@ -649,6 +649,56 @@ def bot_registrar_jogo():
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
+@app.route("/api/sync/atleta", methods=["POST"])
+def sync_criar_atleta():
+    if request.headers.get("X-Bot-Secret") != BOT_SECRET:
+        return jsonify({"erro": "Não autorizado"}), 401
+    data = request.json
+    try:
+        aid = str(uuid.uuid4())[:8].upper()
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute('''INSERT INTO atletas (
+                    id,nome,idade,posicao,modalidade,clube,
+                    pe,disponivel,cat1,comp1,
+                    stats_gols,stats_assists,stats_jogos,
+                    stats_gols1,stats_assists1,stats_jogos1,
+                    status,criado_em)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)''',
+                    (aid, data["nome"], 0, "", "Futsal",
+                     data.get("clube",""), "Direito", True,
+                     data.get("cat1",""), data.get("comp1",""),
+                     data.get("stats_gols","0"), data.get("stats_assists","0"), data.get("stats_jogos","0"),
+                     data.get("stats_gols1","0"), data.get("stats_assists1","0"), data.get("stats_jogos1","0"),
+                     "aprovado", datetime.now().strftime("%d/%m/%Y %H:%M")))
+            conn.commit()
+        return jsonify({"ok": True, "id": aid})
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+
+@app.route("/api/sync/atleta/<aid>", methods=["PUT"])
+def sync_atualizar_atleta(aid):
+    if request.headers.get("X-Bot-Secret") != BOT_SECRET:
+        return jsonify({"erro": "Não autorizado"}), 401
+    data = request.json
+    try:
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute("""UPDATE atletas SET
+                    clube=%s, cat1=%s, comp1=%s,
+                    stats_gols=%s, stats_assists=%s, stats_jogos=%s,
+                    stats_gols1=%s, stats_assists1=%s, stats_jogos1=%s
+                    WHERE id=%s""",
+                    (data.get("clube",""),
+                     data.get("cat1",""), data.get("comp1",""),
+                     data.get("stats_gols","0"), data.get("stats_assists","0"), data.get("stats_jogos","0"),
+                     data.get("stats_gols1","0"), data.get("stats_assists1","0"), data.get("stats_jogos1","0"),
+                     aid))
+            conn.commit()
+        return jsonify({"ok": True})
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+
 if __name__ == "__main__":
     try:
         conn = get_db()
