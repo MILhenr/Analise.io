@@ -409,10 +409,25 @@ def admin_listar_usuarios():
     try:
         with get_db() as conn:
             with conn.cursor() as c:
-                c.execute("SELECT nome,email,plano,criado_em FROM usuarios ORDER BY criado_em DESC")
+               c.execute("SELECT email AS id,nome,email,plano,criado_em FROM usuarios ORDER BY criado_em DESC")
                 return jsonify([dict(r) for r in c.fetchall()])
     except Exception as e:
         return jsonify([])
+
+@app.route("/api/admin/usuarios/<email>/plano", methods=["PUT"])
+def admin_alterar_plano(email):
+    if not session.get("admin"):
+        return jsonify({"erro": "Não autorizado"}), 401
+    data = request.json
+    plano = data.get("plano", "gratuito")
+    try:
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute("UPDATE usuarios SET plano=%s WHERE email=%s", (plano, email))
+            conn.commit()
+        return jsonify({"ok": True})
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
 
 @app.route("/api/clubes", methods=["GET"])
 def listar_clubes():
