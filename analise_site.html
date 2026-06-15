@@ -1657,7 +1657,9 @@ function renderTabelaUsuarios(lista){
       +'<td style="font-size:13px;color:var(--gray)">'+(u.email||'—')+'</td>'
       +'<td>'+planoBadge+'</td>'
       +'<td style="font-size:12px;color:var(--gray)">'+dataCad+'</td>'
-      +'<td>'+(u.admin?'<span style="font-size:12px;color:var(--blue);font-weight:600">Administrador</span>':'<span style="font-size:12px;color:var(--gray)">Usuário</span>')+'</td>'
+      +'<td>'+(u.admin?'<span style="font-size:12px;color:var(--blue);font-weight:600">Administrador</span>':
+      '<button onclick="alterarPlano(\''+u.email+'\',\''+(u.plano==='assinatura'?'gratuito':'assinatura')+'\')" style="background:'+(u.plano==='assinatura'?'#fee2e2':'#dcfce7')+';border:none;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;color:'+(u.plano==='assinatura'?'#b91c1c':'#15803d')+'">'+(u.plano==='assinatura'?'⬇ Remover':'⬆ Ativar Assinatura')+'</button>')+'</td>'
+
       +'</tr>';
   }).join('');
 }
@@ -2241,7 +2243,13 @@ function filtrarAdminAtletas(){
       +'</div></td></tr>';
   }).join('') : '<tr><td colspan="8" style="color:var(--gray);padding:32px;text-align:center">Nenhum atleta encontrado.</td></tr>';
 }
-
+  
+async function alterarPlano(email, novoPlano){
+  var d = await api('/api/admin/usuarios/'+encodeURIComponent(email)+'/plano', {method:'PUT', body:JSON.stringify({plano: novoPlano})});
+  if(d.ok){ showToast('✅ Plano atualizado!'); carregarUsuarios(); }
+  else showToast('⚠️ Erro ao atualizar.');
+}
+  
 init();
 </script>
 </body>
