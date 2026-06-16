@@ -687,10 +687,9 @@ footer{
 /* ===== CAROUSEL ===== */
 #hero-carousel{position:relative;overflow:hidden}
 .carousel-slide{
-  position:absolute;inset:0;opacity:0;
-  transition:opacity .25s ease
+  display:none
 }
-.carousel-slide.active{opacity:1;position:relative}
+.carousel-slide.active{display:block}
 .carousel-dots{
   position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
   display:flex;gap:8px;z-index:10
@@ -2417,6 +2416,7 @@ function setCategoriaRanking(cat){
   torneioAtivoRanking=torneios[0]||null;
   renderCatTabsRanking();
   renderTorneioTabsRanking();
+  atualizarAbasRanking();
   renderRankingLista();
 }
 
@@ -2439,6 +2439,7 @@ function renderTorneioTabsRanking(){
 function setTorneioRanking(t){
   torneioAtivoRanking=t;
   renderTorneioTabsRanking();
+  atualizarAbasRanking();
   renderRankingLista();
 }
 
@@ -2477,7 +2478,32 @@ function getLabelRanking(){
 function renderRankingsHome(){
   renderCatTabsRanking();
   renderTorneioTabsRanking();
+  atualizarAbasRanking();
   renderRankingLista();
+}
+
+function atualizarAbasRanking(){
+  if(!catAtivaRanking||!torneioAtivoRanking) return;
+  var aprov=atletasCache.filter(function(a){ return a.status==='aprovado'&&a.competicoes&&a.competicoes.length; });
+  var lista=aprov.filter(function(a){
+    return a.competicoes.some(function(c){ return c.categoria===catAtivaRanking&&c.competicao===torneioAtivoRanking; });
+  });
+  // Verificar se há assistências na competição
+  var temAssists=lista.some(function(a){
+    var idx=getCompIdx(a);
+    return (Number(a['stats_assists'+idx])||Number(a.stats_assists)||0)>0;
+  });
+  var temGols=lista.some(function(a){
+    var idx=getCompIdx(a);
+    return (Number(a['stats_gols'+idx])||Number(a.stats_gols)||0)>0;
+  });
+  var tabAssists=document.getElementById('tab-assists');
+  var tabGa=document.getElementById('tab-ga');
+  if(tabAssists) tabAssists.style.display=temAssists?'':'none';
+  if(tabGa) tabGa.style.display=(temAssists&&temGols)?'':'none';
+  // Se aba ativa ficou escondida, volta para gols
+  if(tipoRankingAtivo==='assists'&&!temAssists){ setTipoRanking('gols'); }
+  if(tipoRankingAtivo==='ga'&&!(temAssists&&temGols)){ setTipoRanking('gols'); }
 }
 
 function renderRankingLista(){
