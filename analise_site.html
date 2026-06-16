@@ -1531,13 +1531,7 @@ function renderCard(a, idx){
     +'</div>'
     +'<div class="ac-body">'
     +'<div class="ac-name">'+a.nome+'</div>'
-    +'<div class="ac-clube-row"><span class="ac-clube-label">Clube</span><span class="ac-clube-val">'+(a.clube||'—')+'</span></div>'
-    +'<div class="ac-clube-row" style="margin-top:1px"><span class="ac-clube-label">Agência</span><span class="ac-clube-val" style="color:var(--gray);font-weight:500">'+(a.agencia||'—')+'</span></div>'
-    +'<div class="ac-dark" style="grid-template-columns:repeat(3,1fr)">'
-    +'<div class="ac-data-item"><span class="ac-data-val">'+(a.idade||'—')+'</span><span class="ac-data-label">Idade</span></div>'
-    +'<div class="ac-data-item"><span class="ac-data-val">'+(a.pe?a.pe.charAt(0):'—')+'</span><span class="ac-data-label">Pé</span></div>'
-    +'<div class="ac-data-item"><span class="ac-data-val">'+(a.camisa||'—')+'</span><span class="ac-data-label">Camisa</span></div>'
-    +'</div>'
+    +'<div style="font-size:12px;color:var(--gray);font-weight:500;margin-top:2px">'+(a.clube||'—')+'</div>'
     +'<button class="ac-btn">ANÁLISE COMPLETA →</button>'
     +'</div></div>';
 }
