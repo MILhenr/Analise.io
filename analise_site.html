@@ -2485,7 +2485,10 @@ function renderRankingLista(){
     var cG=Number(a['stats_gols'+ci])||Number(a.stats_gols)||0;
     var cA=Number(a['stats_assists'+ci])||Number(a.stats_assists)||0;
     var cJ=Number(a['stats_jogos'+ci])||Number(a.stats_jogos)||0;
-    var fotoHTML=a.foto?'<img src="'+a.foto+'">':(a.emoji||'⭐');
+    var iniciais=(a.nome||'').split(' ').map(function(w){return w[0];}).slice(0,2).join('').toUpperCase();
+    var fotoHTML=a.foto
+      ?'<img src="'+a.foto+'">'
+      :'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:clamp(24px,5vw,40px);font-weight:900;color:rgba(255,255,255,.9);letter-spacing:-1px;text-align:center;padding:8px;line-height:1">'+iniciais+'</div>';
     podiumHTML+='<div class="podium-card rank-'+(i+1)+'" onclick="abrirPerfil('+idx+')">'
       +'<div class="podium-photo">'+fotoHTML+'<div class="rank-medal medal-'+(i+1)+'">'+(i+1)+'</div></div>'
       +'<div class="podium-body">'
@@ -2517,7 +2520,10 @@ function renderRankingLista(){
     var cG=Number(a['stats_gols'+ci])||Number(a.stats_gols)||0;
     var cA=Number(a['stats_assists'+ci])||Number(a.stats_assists)||0;
     var cJ=Number(a['stats_jogos'+ci])||Number(a.stats_jogos)||0;
-    var fotoHTML=a.foto?'<img src="'+a.foto+'">':(a.emoji||'⭐');
+    var iniciaisL=(a.nome||'').split(' ').map(function(w){return w[0];}).slice(0,2).join('').toUpperCase();
+    var fotoHTML=a.foto
+      ?'<img src="'+a.foto+'">'
+      :'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:16px;font-weight:900;color:rgba(255,255,255,.9);letter-spacing:-0.5px">'+iniciaisL+'</div>';
     listaHTML+='<div class="rank-row" onclick="abrirPerfil('+idx+')">'
       +'<div class="rank-num">'+(i+4)+'</div>'
       +'<div class="rank-photo">'+fotoHTML+'</div>'
