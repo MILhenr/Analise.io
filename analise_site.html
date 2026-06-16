@@ -688,7 +688,7 @@ footer{
 #hero-carousel{position:relative;overflow:hidden}
 .carousel-slide{
   position:absolute;inset:0;opacity:0;
-  transition:opacity .7s ease
+  transition:opacity .25s ease
 }
 .carousel-slide.active{opacity:1;position:relative}
 .carousel-dots{
@@ -907,7 +907,7 @@ footer{
   <!-- HERO ESPORTIVO -->
   <div class="sport-hero">
     <!-- CARROSSEL — até 3 atletas em destaque -->
-    <div class="sport-hero-card" id="hero-carousel">
+    <div class="sport-hero-card" id="hero-carousel" style="cursor:pointer" onclick="abrirPerfilDestaque(carouselIdx)">
       <!-- Slides -->
       <div class="carousel-slide active" id="cslide-0">
         <div class="sport-hero-img" id="cimg-0"><div class="sport-hero-gradient"></div></div>
@@ -920,10 +920,7 @@ footer{
             <div class="sport-hero-name" id="cnome-0">—</div>
             <div class="sport-hero-club" id="cclube-0">—</div>
           </div>
-          <button class="sport-hero-btn" onclick="abrirPerfilDestaque(0)">
-            VER PERFIL
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </button>
+
         </div>
       </div>
       <div class="carousel-slide" id="cslide-1">
@@ -937,10 +934,7 @@ footer{
             <div class="sport-hero-name" id="cnome-1">—</div>
             <div class="sport-hero-club" id="cclube-1">—</div>
           </div>
-          <button class="sport-hero-btn" onclick="abrirPerfilDestaque(1)">
-            VER PERFIL
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </button>
+
         </div>
       </div>
       <div class="carousel-slide" id="cslide-2">
@@ -954,10 +948,7 @@ footer{
             <div class="sport-hero-name" id="cnome-2">—</div>
             <div class="sport-hero-club" id="cclube-2">—</div>
           </div>
-          <button class="sport-hero-btn" onclick="abrirPerfilDestaque(2)">
-            VER PERFIL
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </button>
+
         </div>
       </div>
       <!-- Dots -->
