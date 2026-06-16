@@ -1699,9 +1699,10 @@ function openProfile(a){
   var b=!userAssinante;
 
   function rFree(label,val){
+    if(!val||val==='-'||val==='—'||val==='Futsal') return '';
     return '<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)">'
       +'<span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray)">'+label+'</span>'
-      +'<span style="font-weight:600;color:var(--text)">'+(val||'—')+'</span></div>';
+      +'<span style="font-weight:600;color:var(--text)">'+val+'</span></div>';
   }
 
   function rLock(label,val){
@@ -1753,34 +1754,50 @@ function openProfile(a){
     +'<div class="modal-name">'+a.nome+'</div>'
     +'<div class="modal-club">🏟 '+(a.clube&&a.clube!=='-'?a.clube:'Sem clube')+'</div>'
     +'</div></div>'
-    +'<div class="modal-stats-bar">'
-    +'<div class="mstat"><span class="mstat-val">'+(a.idade||'—')+'</span><span class="mstat-label">Idade</span></div>'
-    +'<div class="mstat"><span class="mstat-val">'+(a.pe?a.pe.charAt(0):'—')+'</span><span class="mstat-label">Pé Dom.</span></div>'
-    +'<div class="mstat"><span class="mstat-val">'+(a.camisa||'—')+'</span><span class="mstat-label">Camisa</span></div>'
-    +'</div>'
+    +(function(){
+      var itens=[];
+      if(a.idade) itens.push('<div class="mstat"><span class="mstat-val">'+a.idade+'</span><span class="mstat-label">Idade</span></div>');
+      if(a.pe) itens.push('<div class="mstat"><span class="mstat-val">'+a.pe.charAt(0)+'</span><span class="mstat-label">Pé Dom.</span></div>');
+      if(a.camisa) itens.push('<div class="mstat"><span class="mstat-val">'+a.camisa+'</span><span class="mstat-label">Camisa</span></div>');
+      return itens.length ? '<div class="modal-stats-bar">'+itens.join('')+'</div>' : '';
+    })()
     +'<div class="modal-body">'
     +'<div class="modal-sec"><div class="modal-sec-title">Estatísticas da Temporada</div>'
     +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:500px">'
-    +sStat(a.stats_gols||'0','Gols')
-    +sStat(a.stats_assists||'0','Assistências')
-    +sStat(a.stats_jogos||'0','Jogos')
+    +sStat((function(){
+        var t=(Number(a.stats_gols1)||0)+(Number(a.stats_gols2)||0)+(Number(a.stats_gols3)||0);
+        return t||Number(a.stats_gols)||0;
+      })(),'Gols')
+    +sStat((function(){
+        var t=(Number(a.stats_assists1)||0)+(Number(a.stats_assists2)||0)+(Number(a.stats_assists3)||0);
+        return t||Number(a.stats_assists)||0;
+      })(),'Assistências')
+    +sStat((function(){
+        var t=(Number(a.stats_jogos1)||0)+(Number(a.stats_jogos2)||0)+(Number(a.stats_jogos3)||0);
+        return t||Number(a.stats_jogos)||0;
+      })(),'Jogos')
     +'</div></div>'
-    +'<div class="modal-sec"><div class="modal-sec-title">Dados Básicos</div>'
-    +rFree('Posição',a.posicao)+rFree('Modalidade',a.modalidade||'Futsal')+rFree('Pé Dominante',a.pe)
-    +'</div>'
+    +(function(){
+      var rows=rFree('Posição',a.posicao)+rFree('Pé Dominante',a.pe);
+      return rows ? '<div class="modal-sec"><div class="modal-sec-title">Dados Básicos</div>'+rows+'</div>' : '';
+    })()
     +competicoesHtml
-    +'<div class="modal-sec"><div class="modal-sec-title">Links de Jogos</div>'
-    +[a.video,a.video2,a.video3,a.video4,a.video5].map(function(v,i){
-      if(!v||v==='-'||v==='—') return '';
-      if(b) return rLock('Link '+(i+1),v);
-      return '<div style="padding:10px 0;border-bottom:1px solid var(--border)"><a href="'+v+'" target="_blank" style="color:var(--blue);font-weight:600;font-size:14px;text-decoration:none">▶ Link '+(i+1)+': '+v.substring(0,40)+'...</a></div>';
-    }).join('')
+    +(function(){
+      var vids=[a.video,a.video2,a.video3,a.video4,a.video5].filter(function(v){ return v&&v!=='-'&&v!=='—'; });
+      if(!vids.length) return '';
+      var rows=vids.map(function(v,i){
+        if(b) return rLock('Link '+(i+1),v);
+        return '<div style="padding:10px 0;border-bottom:1px solid var(--border)"><a href="'+v+'" target="_blank" style="color:var(--blue);font-weight:600;font-size:14px;text-decoration:none">▶ Link '+(i+1)+': '+v.substring(0,40)+'...</a></div>';
+      }).join('');
+      return '<div class="modal-sec"><div class="modal-sec-title">Links de Jogos</div>'+rows+'</div>';
+    })()
     +'</div>'
-    +rLock('Link de Highlights',a.video)
-    +'</div>'
-    +'<div class="modal-sec"><div class="modal-sec-title">Contato & Agência</div>'
-    +rLock('Instagram',a.instagram)+rLock('Agência',a.agencia)
-    +'</div>'
+    +(function(){
+      var rows='';
+      if(a.instagram&&a.instagram!=='-'&&a.instagram!=='—') rows+=rLock('Instagram',a.instagram);
+      if(a.agencia&&a.agencia!=='-'&&a.agencia!=='—') rows+=rLock('Agência',a.agencia);
+      return rows ? '<div class="modal-sec"><div class="modal-sec-title">Contato & Agência</div>'+rows+'</div>' : '';
+    })()
     +'<div style="margin-top:16px;text-align:center">'
     +'<button onclick="abrirCorrecao(atletasCache.find(function(x){return x.id==='+JSON.stringify(a.id)+';}))" style="background:transparent;border:1.5px solid var(--border);color:var(--gray);padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">✏️ Solicitar Correção de Dados</button>'
     +'</div>'
