@@ -223,15 +223,14 @@ nav{
 .athlete-card{
   background:var(--white);border:1.5px solid var(--border);
   border-radius:14px;overflow:hidden;transition:all .25s;
-  cursor:pointer;display:flex;flex-direction:row;min-height:160px
+  cursor:pointer;display:flex;flex-direction:row;min-height:120px
 }
-
 .athlete-card:hover{
   border-color:var(--blue);transform:translateY(-2px);
   box-shadow:0 8px 28px rgba(26,86,255,.12)
 }
 .ac-photo{
-  width:45%;flex-shrink:0;position:relative;
+  width:40%;flex-shrink:0;position:relative;
   background:linear-gradient(135deg,var(--blue) 0%,var(--blue2) 100%);
   display:flex;align-items:center;justify-content:center;
   font-size:36px;overflow:hidden
@@ -413,6 +412,10 @@ nav{
 .s-pend{background:#fef9c3;color:#a16207}
 .s-aprov{background:#dcfce7;color:#15803d}
 .s-recus{background:#fee2e2;color:#b91c1c}
+.nivel-a{background:#dcfce7;color:#15803d;font-weight:900}
+.nivel-b{background:#fef9c3;color:#a16207;font-weight:900}
+.nivel-c{background:#fee2e2;color:#b91c1c;font-weight:900}
+.nivel-none{background:#f4f5f8;color:#6b7591;font-weight:700}
 .btn-act{
   padding:6px 12px;border-radius:6px;font-size:11px;
   font-weight:700;cursor:pointer;border:none;transition:all .2s;
@@ -541,8 +544,8 @@ footer{
 }
 @media(max-width:600px){
   .athletes-grid{grid-template-columns:1fr;gap:8px}
-  .athlete-card{min-height:140px}
-  .ac-photo{width:44%;font-size:28px}
+  .athlete-card{min-height:88px}
+  .ac-photo{width:36%;font-size:28px}
   .ac-name{font-size:13px}
   .ac-body{padding:7px 10px;gap:3px}
   .ac-dark{padding:4px 6px}
@@ -1183,10 +1186,11 @@ footer{
         <input class="form-input" id="admin-search-nome" placeholder="🔍 Buscar por nome..." style="flex:1;min-width:180px;padding:9px 14px" oninput="filtrarAdminAtletas()">
         <select class="form-input" id="admin-search-time" style="width:180px;padding:9px 14px" onchange="filtrarAdminAtletas()"><option value="">Todos os times</option></select>
         <select class="form-input" id="admin-search-agencia" style="width:180px;padding:9px 14px" onchange="filtrarAdminAtletas()"><option value="">Todas as agências</option></select>
+        <select class="form-input" id="admin-search-nivel" style="width:150px;padding:9px 14px" onchange="filtrarAdminAtletas()"><option value="">Todos os níveis</option><option value="A">⭐ Nível A</option><option value="B">🔵 Nível B</option><option value="C">⚪ Nível C</option><option value="">Sem nível</option></select>
       </div>
       <div style="overflow-x:auto">
         <table class="admin-table">
-          <thead><tr><th>Atleta</th><th>Posição</th><th>Clube</th><th>Status</th><th>Gols</th><th>Assist.</th><th>Nota</th><th>Ações</th></tr></thead>
+          <thead><tr><th>Atleta</th><th>Posição</th><th>Clube</th><th>Status</th><th>Nível</th><th>Gols</th><th>Assist.</th><th>Ações</th></tr></thead>
           <tbody id="admin-atletas-tbody"></tbody>
         </table>
       </div>
@@ -1532,7 +1536,13 @@ function renderCard(a, idx){
     +'</div>'
     +'<div class="ac-body">'
     +'<div class="ac-name">'+a.nome+'</div>'
-    +'<div style="font-size:12px;color:var(--gray);font-weight:500;margin-top:2px">'+(a.clube||'—')+'</div>'
+    +'<div class="ac-clube-row"><span class="ac-clube-label">Clube</span><span class="ac-clube-val">'+(a.clube||'—')+'</span></div>'
+    +'<div class="ac-clube-row" style="margin-top:1px"><span class="ac-clube-label">Agência</span><span class="ac-clube-val" style="color:var(--gray);font-weight:500">'+(a.agencia||'—')+'</span></div>'
+    +'<div class="ac-dark" style="grid-template-columns:repeat(3,1fr)">'
+    +'<div class="ac-data-item"><span class="ac-data-val">'+(a.idade||'—')+'</span><span class="ac-data-label">Idade</span></div>'
+    +'<div class="ac-data-item"><span class="ac-data-val">'+(a.pe?a.pe.charAt(0):'—')+'</span><span class="ac-data-label">Pé</span></div>'
+    +'<div class="ac-data-item"><span class="ac-data-val">'+(a.camisa||'—')+'</span><span class="ac-data-label">Camisa</span></div>'
+    +'</div>'
     +'<button class="ac-btn">ANÁLISE COMPLETA →</button>'
     +'</div></div>';
 }
@@ -1915,14 +1925,20 @@ function renderAdminAtletas(){
       +'<td>'+a.posicao+'</td>'
       +'<td>'+(a.clube||'—')+'</td>'
       +'<td><span class="status-badge '+(a.status==='pendente'?'s-pend':a.status==='aprovado'?'s-aprov':'s-recus')+'">'+a.status+'</span></td>'
+      +'<td>'+(a.nivel?'<span class="status-badge nivel-'+a.nivel.toLowerCase()+'">'+a.nivel+'</span>':'<span class="status-badge nivel-none">—</span>')+'</td>'
       +'<td style="color:var(--blue);font-weight:700">'+(a.stats_gols||'—')+'</td>'
       +'<td style="color:var(--blue);font-weight:700">'+(a.stats_assists||'—')+'</td>'
-      +'<td style="color:var(--blue);font-weight:700">'+(a.stats_nota||'—')+'</td>'
       +'<td><div style="display:flex;gap:5px;flex-wrap:wrap">'
       +(a.status!=='aprovado'?'<button class="btn-act btn-aprov" onclick="adminAcao('+idx+',\'aprovado\')">✓ Aprovar</button>':'')
       +(a.status!=='recusado'?'<button class="btn-act btn-recus" onclick="adminAcao('+idx+',\'recusado\')">✗ Recusar</button>':'')
       +'<button class="btn-act btn-see" onclick="openProfile(atletasCache['+idx+'])">👁 Ver</button>'
       +'<button class="btn-act btn-edit" onclick="abrirEdicao('+idx+')">✏️ Editar</button>'
+      +'<select onchange="setNivel('+idx+',this.value)" style="padding:5px 8px;border-radius:6px;border:1.5px solid var(--border);font-size:11px;font-weight:700;cursor:pointer;background:var(--white)">'
+      +'<option value="">Nível</option>'
+      +'<option value="A"'+(a.nivel==='A'?' selected':'')+'>⭐ A</option>'
+      +'<option value="B"'+(a.nivel==='B'?' selected':'')+'>🔵 B</option>'
+      +'<option value="C"'+(a.nivel==='C'?' selected':'')+'>⚪ C</option>'
+      +'</select>'
       +'<button class="btn-act" style="background:#fee2e2;color:#b91c1c" onclick="adminDel('+idx+')">🗑 Del</button>'
       +'</div></td></tr>';
     }).join('') : '<tr><td colspan="8" style="color:var(--gray);padding:32px;text-align:center">Nenhum atleta.</td></tr>';
@@ -2584,10 +2600,18 @@ function renderRankingLista(){
   container.innerHTML=podiumHTML+(resto.length?listaHTML:'');
 }
 
+async function setNivel(idx, nivel){
+  var a=atletasCache[idx]; if(!a) return;
+  a.nivel=nivel;
+  await api('/api/admin/atletas/'+a.id,{method:'PUT',body:JSON.stringify({nivel:nivel,status:a.status})});
+  showToast(nivel ? '✅ Nível '+nivel+' definido para '+a.nome : '✅ Nível removido de '+a.nome);
+}
+
 function filtrarAdminAtletas(){
   var nome=(document.getElementById('admin-search-nome').value||'').toLowerCase().trim();
   var time=(document.getElementById('admin-search-time').value||'').toLowerCase();
   var agencia=(document.getElementById('admin-search-agencia').value||'').toLowerCase();
+  var nivel=(document.getElementById('admin-search-nivel')?document.getElementById('admin-search-nivel').value||'':'');
   window._adminFiltroNome=document.getElementById('admin-search-nome').value;
   window._adminFiltroTime=document.getElementById('admin-search-time').value;
   window._adminFiltroAgencia=document.getElementById('admin-search-agencia').value;
@@ -2595,7 +2619,8 @@ function filtrarAdminAtletas(){
     var okNome=!nome||(a.nome||'').toLowerCase().includes(nome);
     var okTime=!time||(a.clube||'').toLowerCase()===time;
     var okAgencia=!agencia||(a.agencia||'').toLowerCase()===agencia;
-    return okNome&&okTime&&okAgencia;
+    var okNivel=!nivel||(a.nivel||'')=== nivel;
+    return okNome&&okTime&&okAgencia&&okNivel;
   });
   var tbody=document.getElementById('admin-atletas-tbody'); if(!tbody) return;
   tbody.innerHTML=lista.length ? lista.map(function(a){
@@ -2606,14 +2631,20 @@ function filtrarAdminAtletas(){
       +'<td>'+a.posicao+'</td>'
       +'<td>'+(a.clube||'—')+'</td>'
       +'<td><span class="status-badge '+(a.status==='pendente'?'s-pend':a.status==='aprovado'?'s-aprov':'s-recus')+'">'+a.status+'</span></td>'
+      +'<td>'+(a.nivel?'<span class="status-badge nivel-'+a.nivel.toLowerCase()+'">'+a.nivel+'</span>':'<span class="status-badge nivel-none">—</span>')+'</td>'
       +'<td style="color:var(--blue);font-weight:700">'+(a.stats_gols||'—')+'</td>'
       +'<td style="color:var(--blue);font-weight:700">'+(a.stats_assists||'—')+'</td>'
-      +'<td style="color:var(--blue);font-weight:700">'+(a.stats_nota||'—')+'</td>'
       +'<td><div style="display:flex;gap:5px;flex-wrap:wrap">'
       +(a.status!=='aprovado'?'<button class="btn-act btn-aprov" onclick="adminAcao('+idx+',\'aprovado\')">✓ Aprovar</button>':'')
       +(a.status!=='recusado'?'<button class="btn-act btn-recus" onclick="adminAcao('+idx+',\'recusado\')">✗ Recusar</button>':'')
       +'<button class="btn-act btn-see" onclick="openProfile(atletasCache['+idx+'])">👁 Ver</button>'
       +'<button class="btn-act btn-edit" onclick="abrirEdicao('+idx+')">✏️ Editar</button>'
+      +'<select onchange="setNivel('+idx+',this.value)" style="padding:5px 8px;border-radius:6px;border:1.5px solid var(--border);font-size:11px;font-weight:700;cursor:pointer;background:var(--white)">'
+      +'<option value="">Nível</option>'
+      +'<option value="A"'+(a.nivel==='A'?' selected':'')+'>⭐ A</option>'
+      +'<option value="B"'+(a.nivel==='B'?' selected':'')+'>🔵 B</option>'
+      +'<option value="C"'+(a.nivel==='C'?' selected':'')+'>⚪ C</option>'
+      +'</select>'
       +'<button class="btn-act" style="background:#fee2e2;color:#b91c1c" onclick="adminDel('+idx+')">🗑 Del</button>'
       +'</div></td></tr>';
   }).join('') : '<tr><td colspan="8" style="color:var(--gray);padding:32px;text-align:center">Nenhum atleta encontrado.</td></tr>';
