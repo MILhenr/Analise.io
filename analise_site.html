@@ -416,6 +416,12 @@ nav{
 .nivel-b{background:#fef9c3;color:#a16207;font-weight:900}
 .nivel-c{background:#fee2e2;color:#b91c1c;font-weight:900}
 .nivel-none{background:#f4f5f8;color:#6b7591;font-weight:700}
+.nivel-d{background:#ede9fe;color:#6d28d9;font-weight:900}
+.nivel-dropdown{position:relative;display:inline-block}
+.nivel-menu{position:absolute;right:0;top:100%;background:#fff;border:1.5px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:999;min-width:120px;overflow:hidden;display:none}
+.nivel-menu.open{display:block}
+.nivel-menu button{display:block;width:100%;padding:10px 16px;border:none;background:transparent;text-align:left;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s}
+.nivel-menu button:hover{background:var(--gray-light)}
 .btn-act{
   padding:6px 12px;border-radius:6px;font-size:11px;
   font-weight:700;cursor:pointer;border:none;transition:all .2s;
@@ -1931,14 +1937,16 @@ function renderAdminAtletas(){
       +'<td><div style="display:flex;gap:5px;flex-wrap:wrap">'
       +(a.status!=='aprovado'?'<button class="btn-act btn-aprov" onclick="adminAcao('+idx+',\'aprovado\')">✓ Aprovar</button>':'')
       +(a.status!=='recusado'?'<button class="btn-act btn-recus" onclick="adminAcao('+idx+',\'recusado\')">✗ Recusar</button>':'')
-      +'<button class="btn-act btn-see" onclick="openProfile(atletasCache['+idx+'])">👁 Ver</button>'
+      +'<div class="nivel-dropdown" id="nd-'+idx+'" style="position:relative;display:inline-block">'
+      +'<button class="btn-act" style="background:'+(a.nivel==='A'?'#dcfce7':a.nivel==='B'?'#fef9c3':a.nivel==='C'?'#fee2e2':a.nivel==='D'?'#ede9fe':'var(--blue-light)')+';color:'+(a.nivel==='A'?'#15803d':a.nivel==='B'?'#a16207':a.nivel==='C'?'#b91c1c':a.nivel==='D'?'#6d28d9':'var(--blue)')+';min-width:80px" onclick="toggleNivelMenu('+idx+')">'+(a.nivel?'Nível '+a.nivel:'Classificar')+'</button>'
+      +'<div class="nivel-menu" id="nm-'+idx+'">'
+      +'<button onclick="setNivel('+idx+',\'A\');fecharNivelMenus()">⭐ Nível A</button>'
+      +'<button onclick="setNivel('+idx+',\'B\');fecharNivelMenus()">🔵 Nível B</button>'
+      +'<button onclick="setNivel('+idx+',\'C\');fecharNivelMenus()">⚪ Nível C</button>'
+      +'<button onclick="setNivel('+idx+',\'D\');fecharNivelMenus()">🟣 Nível D</button>'
+      +'<button onclick="setNivel('+idx+',\'\');fecharNivelMenus()" style="color:#b91c1c">✕ Remover</button>'
+      +'</div></div>'
       +'<button class="btn-act btn-edit" onclick="abrirEdicao('+idx+')">✏️ Editar</button>'
-      +'<select onchange="setNivel('+idx+',this.value)" style="padding:5px 8px;border-radius:6px;border:1.5px solid var(--border);font-size:11px;font-weight:700;cursor:pointer;background:var(--white)">'
-      +'<option value="">Nível</option>'
-      +'<option value="A"'+(a.nivel==='A'?' selected':'')+'>⭐ A</option>'
-      +'<option value="B"'+(a.nivel==='B'?' selected':'')+'>🔵 B</option>'
-      +'<option value="C"'+(a.nivel==='C'?' selected':'')+'>⚪ C</option>'
-      +'</select>'
       +'<button class="btn-act" style="background:#fee2e2;color:#b91c1c" onclick="adminDel('+idx+')">🗑 Del</button>'
       +'</div></td></tr>';
     }).join('') : '<tr><td colspan="8" style="color:var(--gray);padding:32px;text-align:center">Nenhum atleta.</td></tr>';
@@ -2600,6 +2608,18 @@ function renderRankingLista(){
   container.innerHTML=podiumHTML+(resto.length?listaHTML:'');
 }
 
+function toggleNivelMenu(idx){
+  fecharNivelMenus();
+  var m=document.getElementById('nm-'+idx);
+  if(m) m.classList.toggle('open');
+}
+function fecharNivelMenus(){
+  document.querySelectorAll('.nivel-menu').forEach(function(m){ m.classList.remove('open'); });
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.nivel-dropdown')) fecharNivelMenus();
+});
+
 async function setNivel(idx, nivel){
   var a=atletasCache[idx]; if(!a) return;
   a.nivel=nivel;
@@ -2637,14 +2657,16 @@ function filtrarAdminAtletas(){
       +'<td><div style="display:flex;gap:5px;flex-wrap:wrap">'
       +(a.status!=='aprovado'?'<button class="btn-act btn-aprov" onclick="adminAcao('+idx+',\'aprovado\')">✓ Aprovar</button>':'')
       +(a.status!=='recusado'?'<button class="btn-act btn-recus" onclick="adminAcao('+idx+',\'recusado\')">✗ Recusar</button>':'')
-      +'<button class="btn-act btn-see" onclick="openProfile(atletasCache['+idx+'])">👁 Ver</button>'
+      +'<div class="nivel-dropdown" id="nd-'+idx+'" style="position:relative;display:inline-block">'
+      +'<button class="btn-act" style="background:'+(a.nivel==='A'?'#dcfce7':a.nivel==='B'?'#fef9c3':a.nivel==='C'?'#fee2e2':a.nivel==='D'?'#ede9fe':'var(--blue-light)')+';color:'+(a.nivel==='A'?'#15803d':a.nivel==='B'?'#a16207':a.nivel==='C'?'#b91c1c':a.nivel==='D'?'#6d28d9':'var(--blue)')+';min-width:80px" onclick="toggleNivelMenu('+idx+')">'+(a.nivel?'Nível '+a.nivel:'Classificar')+'</button>'
+      +'<div class="nivel-menu" id="nm-'+idx+'">'
+      +'<button onclick="setNivel('+idx+',\'A\');fecharNivelMenus()">⭐ Nível A</button>'
+      +'<button onclick="setNivel('+idx+',\'B\');fecharNivelMenus()">🔵 Nível B</button>'
+      +'<button onclick="setNivel('+idx+',\'C\');fecharNivelMenus()">⚪ Nível C</button>'
+      +'<button onclick="setNivel('+idx+',\'D\');fecharNivelMenus()">🟣 Nível D</button>'
+      +'<button onclick="setNivel('+idx+',\'\');fecharNivelMenus()" style="color:#b91c1c">✕ Remover</button>'
+      +'</div></div>'
       +'<button class="btn-act btn-edit" onclick="abrirEdicao('+idx+')">✏️ Editar</button>'
-      +'<select onchange="setNivel('+idx+',this.value)" style="padding:5px 8px;border-radius:6px;border:1.5px solid var(--border);font-size:11px;font-weight:700;cursor:pointer;background:var(--white)">'
-      +'<option value="">Nível</option>'
-      +'<option value="A"'+(a.nivel==='A'?' selected':'')+'>⭐ A</option>'
-      +'<option value="B"'+(a.nivel==='B'?' selected':'')+'>🔵 B</option>'
-      +'<option value="C"'+(a.nivel==='C'?' selected':'')+'>⚪ C</option>'
-      +'</select>'
       +'<button class="btn-act" style="background:#fee2e2;color:#b91c1c" onclick="adminDel('+idx+')">🗑 Del</button>'
       +'</div></td></tr>';
   }).join('') : '<tr><td colspan="8" style="color:var(--gray);padding:32px;text-align:center">Nenhum atleta encontrado.</td></tr>';
