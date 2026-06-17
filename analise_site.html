@@ -2986,15 +2986,9 @@ function promoverClube(nomeClube){
 }
   
 function removerTime(id){
-  // Time cadastrado — remove do dbTimes
-  dbTimes=dbTimes.filter(function(t){ return String(t.id)!==String(id); });
-
-  // Time "do atleta" (id começa com auto_) — adiciona na lista de ignorados
-  if(String(id).startsWith('auto_')){
-    var nome=String(id).replace('auto_','');
-    if(!window._timesIgnorados) window._timesIgnorados=[];
-    window._timesIgnorados.push(nome);
-  }
+  dbTimes=dbTimes.filter(function(t){return t.id!==id;});
+  renderAdminTimes(); renderEquipes(); showToast('Time removido.');
+}
 
 function renderAdminTimes(){
   var el=document.getElementById('admin-times-lista'); if(!el) return;
@@ -3025,7 +3019,9 @@ function renderAdminTimes(){
       +'</div>'
       +'<div style="display:flex;gap:6px;flex-shrink:0">'
       +'<button class="btn-act btn-edit" onclick="editarTime(\''+String(t.id).replace(/'/g,"\\'")+'\',\''+t.nome.replace(/'/g,"\\'")+'\')">✏️ Editar</button>'
-      +'<button class="btn-act btn-recus" onclick="removerTime(\''+String(t.id).replace(/'/g,"\\'")+'\')">🗑</button>'
+      +(item.tipo==='cadastrado'
+        ?'<button class="btn-act btn-recus" onclick="if(confirm(\'Deletar \'+\''+t.nome.replace(/'/g,"\\'")+'\'+\'?\')) removerTime('+t.id+')">🗑</button>'
+        :'<button class="btn-act" style="background:#dcfce7;color:#15803d" onclick="promoverClube(\''+t.nome.replace(/'/g,"\\'")+'\')">+ Cadastrar</button>')
       +'</div>'
       +'</div></div>';
   }).join('');
