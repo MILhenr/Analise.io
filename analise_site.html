@@ -3019,7 +3019,9 @@ function renderAdminTimes(){
       +'</div>'
       +'<div style="display:flex;gap:6px;flex-shrink:0">'
       +'<button class="btn-act btn-edit" onclick="editarTime(\''+String(t.id).replace(/'/g,"\\'")+'\',\''+t.nome.replace(/'/g,"\\'")+'\')">✏️ Editar</button>'
-      +(item.tipo==='cadastrado'?'<button class="btn-act btn-recus" onclick="removerTime('+t.id+')">Del</button>':'<button class="btn-act" style="background:#dcfce7;color:#15803d" onclick="promoverClube(\''+t.nome.replace(/'/g,"\\'")+'\')">+ Cadastrar</button>')
+      +(item.tipo==='cadastrado'
+        ?'<button class="btn-act btn-recus" onclick="if(confirm(\'Deletar \'+\''+t.nome.replace(/'/g,"\\'")+'\'+\'?\')) removerTime('+t.id+')">🗑</button>'
+        :'<button class="btn-act" style="background:#dcfce7;color:#15803d" onclick="promoverClube(\''+t.nome.replace(/'/g,"\\'")+'\')">+ Cadastrar</button>')
       +'</div>'
       +'</div></div>';
   }).join('');
