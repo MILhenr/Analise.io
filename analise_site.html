@@ -2859,6 +2859,35 @@ function adicionarTime(){
   showToast('✅ Time cadastrado!');
 }
 
+function editarTime(id, nomeAtual){
+  var novoNome=prompt('Novo nome para o time:', nomeAtual);
+  if(!novoNome||!novoNome.trim()) return;
+  novoNome=novoNome.trim();
+
+  // Se for time cadastrado, atualiza
+  var t=dbTimes.find(function(x){ return String(x.id)===String(id); });
+  if(t){
+    t.nome=novoNome;
+  } else {
+    // Era um clube de atleta — vira um time cadastrado com variação apontando pro nome antigo
+    dbTimes.push({id:Date.now(), nome:novoNome, logo:null, variacoes:[nomeAtual]});
+  }
+  renderAdminTimes();
+  renderEquipes();
+  showToast('✅ Time renomeado para "'+novoNome+'"');
+}
+
+function promoverClube(nomeClube){
+  // Transforma um clube de atleta em time cadastrado (para poder adicionar logo/variações)
+  if(dbTimes.find(function(t){ return t.nome===nomeClube; })){
+    showToast('Time já cadastrado!'); return;
+  }
+  dbTimes.push({id:Date.now(), nome:nomeClube, logo:null, variacoes:[]});
+  renderAdminTimes();
+  renderEquipes();
+  showToast('✅ "'+nomeClube+'" adicionado como time cadastrado!');
+}
+  
 function removerTime(id){
   dbTimes=dbTimes.filter(function(t){return t.id!==id;});
   renderAdminTimes(); renderEquipes(); showToast('Time removido.');
@@ -2866,16 +2895,35 @@ function removerTime(id){
 
 function renderAdminTimes(){
   var el=document.getElementById('admin-times-lista'); if(!el) return;
-  if(!dbTimes.length){ el.innerHTML='<p style="color:var(--gray);font-size:14px">Nenhum time cadastrado ainda.</p>'; return; }
-  el.innerHTML=dbTimes.map(function(t){
+
+  // Times cadastrados manualmente
+  var cadastrados=dbTimes.map(function(t){ return {time:t, tipo:'cadastrado'}; });
+
+  // Clubes dos atletas que NÃO têm cadastro
+  var aprov=atletasCache.filter(function(a){return a.status==='aprovado'&&a.clube&&a.clube!=='-'&&a.clube!=='Sem clube';});
+  var clubesSemCadastro=[...new Set(aprov.map(function(a){return a.clube.trim();}))].filter(function(c){return !encontrarTime(c);}).map(function(c){ return {time:{id:'auto_'+c,nome:c,logo:null,variacoes:[]}, tipo:'auto'}; });
+
+  var todos=cadastrados.concat(clubesSemCadastro);
+  if(!todos.length){ el.innerHTML='<p style="color:var(--gray);font-size:14px">Nenhum time encontrado.</p>'; return; }
+
+  el.innerHTML=todos.map(function(item){
+    var t=item.time;
     var logoHtml=t.logo?'<img src="'+t.logo+'">':'<span style="font-size:24px">⚽</span>';
     var vars=(t.variacoes||[]).join(', ')||'—';
+    var badge=item.tipo==='auto'
+      ?'<span style="background:#fef9c3;color:#a16207;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;margin-left:6px">do atleta</span>'
+      :'<span style="background:#dcfce7;color:#15803d;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;margin-left:6px">cadastrado</span>';
     return '<div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px">'
-      +'<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">'
+      +'<div style="display:flex;align-items:center;gap:12px">'
       +'<div style="width:40px;height:40px;border-radius:8px;background:var(--white);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden">'+logoHtml+'</div>'
-      +'<div style="flex:1"><div style="font-weight:700;font-size:14px">'+t.nome+'</div>'
-      +'<div style="font-size:11px;color:var(--gray);margin-top:2px">Variações: '+vars+'</div></div>'
-      +'<button class="btn-act btn-recus" onclick="removerTime('+t.id+')">Del</button>'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="font-weight:700;font-size:14px">'+t.nome+badge+'</div>'
+      +'<div style="font-size:11px;color:var(--gray);margin-top:2px">Variações: '+vars+'</div>'
+      +'</div>'
+      +'<div style="display:flex;gap:6px;flex-shrink:0">'
+      +'<button class="btn-act btn-edit" onclick="editarTime(\''+String(t.id).replace(/'/g,"\\'")+'\',\''+t.nome.replace(/'/g,"\\'")+'\')">✏️ Editar</button>'
+      +(item.tipo==='cadastrado'?'<button class="btn-act btn-recus" onclick="removerTime('+t.id+')">Del</button>':'<button class="btn-act" style="background:#dcfce7;color:#15803d" onclick="promoverClube(\''+t.nome.replace(/'/g,"\\'")+'\')">+ Cadastrar</button>')
+      +'</div>'
       +'</div></div>';
   }).join('');
 }
