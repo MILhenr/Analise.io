@@ -2739,7 +2739,9 @@ document.addEventListener('click',function(e){
 async function setNivel(idx, nivel){
   var a=atletasCache[idx]; if(!a) return;
   a.nivel=nivel;
-  await api('/api/admin/atletas/'+a.id,{method:'PUT',body:JSON.stringify({nivel:nivel,status:a.status})});
+  await api('/api/admin/atletas/'+a.id,{method:'PUT',body:JSON.stringify(Object.assign({},a,{nivel:nivel}))});
+  renderAdminAtletas();
+  filtrarAdminAtletas();
   showToast(nivel ? '✅ Nível '+nivel+' definido para '+a.nome : '✅ Nível removido de '+a.nome);
 }
 
