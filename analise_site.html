@@ -734,6 +734,42 @@ footer{
 
 <div class="toast" id="toast"></div>
 
+<!-- ===== MODAL: EDITAR TIME ===== -->
+<div class="modal-overlay" id="editTimeModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:500px">
+    <button class="modal-close" onclick="document.getElementById('editTimeModal').classList.remove('open')">✕</button>
+    <div style="padding:32px 40px 40px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;text-transform:uppercase;margin-bottom:24px">✏️ Editar Time</div>
+      <input type="hidden" id="edit-time-id">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="form-group">
+          <label class="form-label">Nome Oficial *</label>
+          <input class="form-input" id="edit-time-nome" placeholder="Ex: Jaraguá Futsal">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Logo do Time</label>
+          <div id="edit-time-logo-area" style="border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer;background:var(--white)" onclick="document.getElementById('edit-time-logo-input').click()">
+            <div id="edit-time-logo-preview" style="display:none;margin-bottom:8px">
+              <img id="edit-time-logo-img" style="width:72px;height:72px;border-radius:10px;object-fit:contain;border:1.5px solid var(--border)">
+            </div>
+            <div id="edit-time-logo-txt" style="font-size:13px;color:var(--gray)">🏟 Clique para trocar a logo</div>
+          </div>
+          <input type="file" id="edit-time-logo-input" accept="image/*" style="display:none" onchange="handleEditTimeLogo(this)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Variações do nome</label>
+          <p style="font-size:12px;color:var(--gray);margin-bottom:8px">Uma por linha. Tudo que for o mesmo time mas escrito diferente.</p>
+          <textarea class="form-input" id="edit-time-variacoes" rows="4" placeholder="Jaraguá&#10;Jaragua&#10;JARAGUÁ&#10;Jaraguá FC"></textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px">
+          <button class="btn-submit" onclick="salvarEdicaoTime()">SALVAR →</button>
+          <button onclick="document.getElementById('editTimeModal').classList.remove('open')" style="background:var(--gray-light);border:1.5px solid var(--border);color:var(--text);padding:16px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;text-transform:uppercase;cursor:pointer;margin-top:8px">CANCELAR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ===== MODAL: AUTH ===== -->
 <div class="modal-overlay" id="authModal" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="modal" style="max-width:440px;padding:40px;position:relative">
@@ -2859,33 +2895,94 @@ function adicionarTime(){
   showToast('✅ Time cadastrado!');
 }
 
-function editarTime(id, nomeAtual){
-  var novoNome=prompt('Novo nome para o time:', nomeAtual);
-  if(!novoNome||!novoNome.trim()) return;
-  novoNome=novoNome.trim();
+var _editTimeLogoBase64=null;
 
-  // Se for time cadastrado, atualiza
+function editarTime(id, nomeAtual){
+  var t=dbTimes.find(function(x){ return String(x.id)===String(id); });
+  _editTimeLogoBase64=null;
+
+  document.getElementById('edit-time-id').value=id;
+  document.getElementById('edit-time-nome').value=nomeAtual;
+  document.getElementById('edit-time-variacoes').value=t?(t.variacoes||[]).join('\n'):'';
+
+  // Logo atual
+  var logoAtual=t?t.logo:null;
+  if(logoAtual){
+    document.getElementById('edit-time-logo-img').src=logoAtual;
+    document.getElementById('edit-time-logo-preview').style.display='block';
+    document.getElementById('edit-time-logo-txt').textContent='📸 Logo atual — clique para trocar';
+  } else {
+    document.getElementById('edit-time-logo-preview').style.display='none';
+    document.getElementById('edit-time-logo-txt').textContent='🏟 Clique para adicionar logo';
+  }
+  document.getElementById('edit-time-logo-area').style.borderColor='var(--border)';
+  document.getElementById('edit-time-logo-input').value='';
+
+  document.getElementById('editTimeModal').classList.add('open');
+}
+
+function handleEditTimeLogo(input){
+  var file=input.files[0]; if(!file) return;
+  if(file.size>2*1024*1024){ showToast('⚠️ Máx 2MB'); return; }
+  var r=new FileReader();
+  r.onload=function(e){
+    _editTimeLogoBase64=e.target.result;
+    document.getElementById('edit-time-logo-img').src=_editTimeLogoBase64;
+    document.getElementById('edit-time-logo-preview').style.display='block';
+    document.getElementById('edit-time-logo-txt').textContent='✅ Nova logo selecionada';
+    document.getElementById('edit-time-logo-area').style.borderColor='var(--blue)';
+  };
+  r.readAsDataURL(file);
+}
+
+function salvarEdicaoTime(){
+  var id=document.getElementById('edit-time-id').value;
+  var nome=(document.getElementById('edit-time-nome').value||'').trim();
+  if(!nome){ showToast('⚠️ Nome obrigatório'); return; }
+  var varTxt=(document.getElementById('edit-time-variacoes').value||'');
+  var variacoes=varTxt.split('\n').map(function(v){return v.trim();}).filter(Boolean);
+
   var t=dbTimes.find(function(x){ return String(x.id)===String(id); });
   if(t){
-    t.nome=novoNome;
+    // Atualiza time existente
+    var nomeAntigo=t.nome;
+    t.nome=nome;
+    t.variacoes=variacoes;
+    if(_editTimeLogoBase64) t.logo=_editTimeLogoBase64;
+    // Se renomeou, adiciona nome antigo nas variações automaticamente
+    if(nomeAntigo!==nome && variacoes.indexOf(nomeAntigo)===-1){
+      t.variacoes.push(nomeAntigo);
+    }
   } else {
-    // Era um clube de atleta — vira um time cadastrado com variação apontando pro nome antigo
-    dbTimes.push({id:Date.now(), nome:novoNome, logo:null, variacoes:[nomeAtual]});
+    // Era clube de atleta — vira time cadastrado
+    var nomeOriginal=id.replace('auto_','');
+    var vars=variacoes.slice();
+    if(vars.indexOf(nomeOriginal)===-1) vars.push(nomeOriginal);
+    dbTimes.push({id:Date.now(), nome:nome, logo:_editTimeLogoBase64||null, variacoes:vars});
   }
+
+  document.getElementById('editTimeModal').classList.remove('open');
+  _editTimeLogoBase64=null;
   renderAdminTimes();
   renderEquipes();
-  showToast('✅ Time renomeado para "'+novoNome+'"');
+  showToast('✅ Time "'+nome+'" salvo!');
 }
 
 function promoverClube(nomeClube){
-  // Transforma um clube de atleta em time cadastrado (para poder adicionar logo/variações)
   if(dbTimes.find(function(t){ return t.nome===nomeClube; })){
     showToast('Time já cadastrado!'); return;
   }
-  dbTimes.push({id:Date.now(), nome:nomeClube, logo:null, variacoes:[]});
-  renderAdminTimes();
-  renderEquipes();
-  showToast('✅ "'+nomeClube+'" adicionado como time cadastrado!');
+  // Abre direto o modal de edição
+  var idFake='auto_'+nomeClube;
+  document.getElementById('edit-time-id').value=idFake;
+  document.getElementById('edit-time-nome').value=nomeClube;
+  document.getElementById('edit-time-variacoes').value='';
+  document.getElementById('edit-time-logo-preview').style.display='none';
+  document.getElementById('edit-time-logo-txt').textContent='🏟 Clique para adicionar logo';
+  document.getElementById('edit-time-logo-area').style.borderColor='var(--border)';
+  document.getElementById('edit-time-logo-input').value='';
+  _editTimeLogoBase64=null;
+  document.getElementById('editTimeModal').classList.add('open');
 }
   
 function removerTime(id){
