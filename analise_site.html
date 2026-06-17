@@ -1079,7 +1079,10 @@ footer{
       <select id="f-idade" class="form-input" style="width:150px;padding:10px 14px">
         <option value="">Idade</option><option value="18-">Até 18</option><option value="18-23">18–23</option><option value="23-28">23–28</option><option value="28-33">28–33</option><option value="33+">33+</option>
       </select>
-      <select id="f-time" class="form-input" style="width:180px;padding:10px 14px"><option value="">Time</option></select>
+      <div style="position:relative">
+      <input type="text" id="f-time" class="form-input" style="width:180px;padding:10px 14px" placeholder="🔍 Buscar time..." oninput="filtrarTimeSugestoes()" autocomplete="off">
+      <div id="f-time-sugestoes" style="display:none;position:absolute;background:#fff;border:1.5px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.1);z-index:200;max-height:220px;overflow-y:auto;min-width:200px;margin-top:2px"></div>
+      </div>
       <select id="f-competicao" class="form-input" style="width:170px;padding:10px 14px">
         <option value="">Competição</option>
         <option value="Nacional">Nacional</option>
@@ -1554,21 +1557,15 @@ function renderCard(a, idx){
   var fotoHtml=a.foto
     ? '<img src="'+a.foto+'" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">'
     : '<img src="'+PLACEHOLDER_FOTO+'" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">';
-  return '<div class="athlete-card" onclick="abrirPerfil('+idx+')">'
+  return '<div class="athlete-card" onclick="abrirPerfil('+idx+')">' 
     +'<div class="ac-photo" style="'+(a.foto?'background:none;':'')+'position:relative">'
     +fotoHtml
-    +'<div class="ac-pos-over">'+a.posicao+'</div>'
+    +(a.posicao?'<div class="ac-pos-over">'+a.posicao+'</div>':'')
     +'</div>'
-    +'<div class="ac-body">'
+    +'<div class="ac-body" style="justify-content:center">'
     +'<div class="ac-name">'+a.nome+'</div>'
-    +'<div class="ac-clube-row"><span class="ac-clube-label">Clube</span><span class="ac-clube-val">'+(a.clube||'—')+'</span></div>'
-    +'<div class="ac-clube-row" style="margin-top:1px"><span class="ac-clube-label">Agência</span><span class="ac-clube-val" style="color:var(--gray);font-weight:500">'+(a.agencia||'—')+'</span></div>'
-    +'<div class="ac-dark" style="grid-template-columns:repeat(3,1fr)">'
-    +'<div class="ac-data-item"><span class="ac-data-val">'+(a.idade||'—')+'</span><span class="ac-data-label">Idade</span></div>'
-    +'<div class="ac-data-item"><span class="ac-data-val">'+(a.pe?a.pe.charAt(0):'—')+'</span><span class="ac-data-label">Pé</span></div>'
-    +'<div class="ac-data-item"><span class="ac-data-val">'+(a.camisa||'—')+'</span><span class="ac-data-label">Camisa</span></div>'
-    +'</div>'
-    +'<button class="ac-btn">ANÁLISE COMPLETA →</button>'
+    +'<div style="font-size:12px;color:var(--gray);font-weight:500;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(a.clube||'—')+'</div>'
+    +'<button class="ac-btn" style="margin-top:auto">ANÁLISE COMPLETA →</button>'
     +'</div></div>';
 }
 
@@ -1698,7 +1695,7 @@ function aplicarFiltros(){
     else if(idade==='33+') lista=lista.filter(function(a){ return parseInt(a.idade)>=33; });
     else{ var p=idade.split('-').map(Number); lista=lista.filter(function(a){ return parseInt(a.idade)>=p[0]&&parseInt(a.idade)<p[1]; }); }
   }
-  if(time) lista=lista.filter(function(a){ return (a.clube||'').toLowerCase()===time.toLowerCase(); });
+  if(time) lista=lista.filter(function(a){ return (a.clube||'').toLowerCase().includes(time.toLowerCase()); });
   if(comp) lista=lista.filter(function(a){ return a.competicoes&&a.competicoes.some(function(c){ return c.categoria===comp; }); });
   if(ordenar){
     lista.sort(function(a,b){
@@ -1715,6 +1712,30 @@ function aplicarFiltros(){
   }
   renderAtletas(lista); showToast(lista.length+' atleta(s) encontrado(s)');
 }
+
+function filtrarTimeSugestoes(){
+  var q=(document.getElementById('f-time').value||'').toLowerCase().trim();
+  var times=[...new Set(atletasCache.filter(function(a){ return a.status==='aprovado'&&a.clube&&a.clube!=='Sem clube'&&a.clube!=='-'; }).map(function(a){ return a.clube.trim(); }))].sort();
+  var filtrados=q ? times.filter(function(t){ return t.toLowerCase().includes(q); }) : times;
+  var sug=document.getElementById('f-time-sugestoes');
+  if(!filtrados.length||!q){ sug.style.display='none'; return; }
+  sug.style.display='block';
+  sug.innerHTML=filtrados.slice(0,12).map(function(t){
+    return '<div onclick="escolherTime(\''+t.replace(/'/g,"\\'")+'\')" style="padding:10px 14px;cursor:pointer;font-size:13px;font-weight:500;border-bottom:1px solid var(--border);transition:background .15s" onmouseover="this.style.background=\'var(--blue-light)\'" onmouseout="this.style.background=\'\'">'+t+'</div>';
+  }).join('');
+}
+
+function escolherTime(t){
+  document.getElementById('f-time').value=t;
+  document.getElementById('f-time-sugestoes').style.display='none';
+  aplicarFiltros();
+}
+
+document.addEventListener('click',function(e){
+  if(!e.target.closest('#f-time')&&!e.target.closest('#f-time-sugestoes')){
+    var s=document.getElementById('f-time-sugestoes'); if(s) s.style.display='none';
+  }
+});
 
 function popularFiltroAgencias(){
   var sel=document.getElementById('f-time'); if(!sel) return;
