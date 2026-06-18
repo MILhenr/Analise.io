@@ -2934,33 +2934,20 @@ function handleEditTimeLogo(input){
   };
   r.readAsDataURL(file);
 }
-
 function salvarEdicaoTime(){
   var id=document.getElementById('edit-time-id').value;
   var nome=(document.getElementById('edit-time-nome').value||'').trim();
   if(!nome){ showToast('⚠️ Nome obrigatório'); return; }
   var varTxt=(document.getElementById('edit-time-variacoes').value||'');
   var variacoes=varTxt.split('\n').map(function(v){return v.trim();}).filter(Boolean);
-
   var t=dbTimes.find(function(x){ return String(x.id)===String(id); });
   if(t){
-    // Atualiza time existente
-    var nomeAntigo=t.nome;
     t.nome=nome;
     t.variacoes=variacoes;
     if(_editTimeLogoBase64) t.logo=_editTimeLogoBase64;
-    // Se renomeou, adiciona nome antigo nas variações automaticamente
-    if(nomeAntigo!==nome && variacoes.indexOf(nomeAntigo)===-1){
-      t.variacoes.push(nomeAntigo);
-    }
   } else {
-    // Era clube de atleta — vira time cadastrado
-    var nomeOriginal=id.replace('auto_','');
-    var vars=variacoes.slice();
-    if(vars.indexOf(nomeOriginal)===-1) vars.push(nomeOriginal);
-    dbTimes.push({id:Date.now(), nome:nome, logo:_editTimeLogoBase64||null, variacoes:vars});
+    dbTimes.push({id:Date.now(), nome:nome, logo:_editTimeLogoBase64||null, variacoes:variacoes});
   }
-
   document.getElementById('editTimeModal').classList.remove('open');
   _editTimeLogoBase64=null;
   renderAdminTimes();
@@ -2993,40 +2980,70 @@ function removerTime(id){
 function renderAdminTimes(){
   var el=document.getElementById('admin-times-lista'); if(!el) return;
 
-  // Times cadastrados manualmente
-  var cadastrados=dbTimes.map(function(t){ return {time:t, tipo:'cadastrado'}; });
+  // Auto-criar times para clubes de atletas aprovados que nao tem cadastro
+  var aprov=atletasCache.filter(function(a){
+    return a.status==='aprovado'&&a.clube&&a.clube!=='-'&&a.clube!=='Sem clube';
+  });
+  function jaCadastrado(c){
+    return dbTimes.some(function(t){
+      if(normalizarNome(t.nome)===normalizarNome(c)) return true;
+      return (t.variacoes||[]).some(function(v){ return normalizarNome(v)===normalizarNome(c); });
+    });
+  }
+  var clubesSemCadastro=[...new Set(aprov.map(function(a){return a.clube.trim();}))].filter(function(c){ return !jaCadastrado(c); });
+  clubesSemCadastro.forEach(function(c){
+    dbTimes.push({id:'t'+Date.now()+'r'+Math.random().toString(36).slice(2,6), nome:c, logo:null, variacoes:[]});
+  });
 
-  // Clubes dos atletas que NÃO têm cadastro
-  var aprov=atletasCache.filter(function(a){return a.status==='aprovado'&&a.clube&&a.clube!=='-'&&a.clube!=='Sem clube';});
-  var clubesSemCadastro=[...new Set(aprov.map(function(a){return a.clube.trim();}))].filter(function(c){return !encontrarTime(c);}).map(function(c){ return {time:{id:'auto_'+c,nome:c,logo:null,variacoes:[]}, tipo:'auto'}; });
+  if(!dbTimes.length){ el.innerHTML='<p style="color:var(--gray);font-size:14px">Nenhum time encontrado.</p>'; return; }
 
-  var todos=cadastrados.concat(clubesSemCadastro);
-  if(!todos.length){ el.innerHTML='<p style="color:var(--gray);font-size:14px">Nenhum time encontrado.</p>'; return; }
-
-  el.innerHTML=todos.map(function(item){
-    var t=item.time;
-    var logoHtml=t.logo?'<img src="'+t.logo+'">':'<span style="font-size:24px">⚽</span>';
+  el.innerHTML=dbTimes.map(function(t){
+    var logoHtml=t.logo?'<img src="'+t.logo+'" style="width:100%;height:100%;object-fit:contain">':'<span style="font-size:24px">⚽</span>';
     var vars=(t.variacoes||[]).join(', ')||'—';
-    var badge=item.tipo==='auto'
-      ?'<span style="background:#fef9c3;color:#a16207;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;margin-left:6px">do atleta</span>'
-      :'<span style="background:#dcfce7;color:#15803d;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;margin-left:6px">cadastrado</span>';
-    return '<div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px">'
+    var tidJson=JSON.stringify(String(t.id));
+    var nomeSafe=t.nome.replace(/'/g,"\\'");
+    return '<div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px">'
       +'<div style="display:flex;align-items:center;gap:12px">'
-      +'<div style="width:40px;height:40px;border-radius:8px;background:var(--white);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden">'+logoHtml+'</div>'
+      +'<div style="width:44px;height:44px;border-radius:8px;background:var(--white);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">'+logoHtml+'</div>'
       +'<div style="flex:1;min-width:0">'
-      +'<div style="font-weight:700;font-size:14px">'+t.nome+badge+'</div>'
+      +'<div style="font-weight:700;font-size:14px">'+t.nome+'</div>'
       +'<div style="font-size:11px;color:var(--gray);margin-top:2px">Variações: '+vars+'</div>'
       +'</div>'
       +'<div style="display:flex;gap:6px;flex-shrink:0">'
-      +'<button class="btn-act btn-edit" onclick="editarTime(\''+String(t.id).replace(/'/g,"\\'")+'\',\''+t.nome.replace(/'/g,"\\'")+'\')">✏️ Editar</button>'
-      +(item.tipo==='cadastrado'
-        ?'<button class="btn-act btn-recus" onclick="if(confirm(\'Deletar \'+\''+t.nome.replace(/'/g,"\\'")+'\'+\'?\')) removerTime('+t.id+')">🗑</button>'
-        :'<button class="btn-act" style="background:#dcfce7;color:#15803d" onclick="promoverClube(\''+t.nome.replace(/'/g,"\\'")+'\')">+ Cadastrar</button>')
+      +'<button class="btn-act btn-edit" onclick="event.stopPropagation();_editarTimePorId('+tidJson+')">✏️ Editar</button>'
+      +'<button class="btn-act btn-recus" onclick="event.stopPropagation();if(confirm(\'Deletar '+nomeSafe+'?\'))_removerTimePorId('+tidJson+')">🗑</button>'
       +'</div>'
       +'</div></div>';
   }).join('');
 }
 
+function _editarTimePorId(id){
+  var t=dbTimes.find(function(x){ return String(x.id)===String(id); });
+  if(!t){ showToast('Time não encontrado'); return; }
+  _editTimeLogoBase64=null;
+  document.getElementById('edit-time-id').value=t.id;
+  document.getElementById('edit-time-nome').value=t.nome;
+  document.getElementById('edit-time-variacoes').value=(t.variacoes||[]).join('\n');
+  if(t.logo){
+    document.getElementById('edit-time-logo-img').src=t.logo;
+    document.getElementById('edit-time-logo-preview').style.display='block';
+    document.getElementById('edit-time-logo-txt').textContent='📸 Logo atual — clique para trocar';
+  } else {
+    document.getElementById('edit-time-logo-preview').style.display='none';
+    document.getElementById('edit-time-logo-txt').textContent='🏟 Clique para adicionar logo';
+  }
+  document.getElementById('edit-time-logo-area').style.borderColor='var(--border)';
+  document.getElementById('edit-time-logo-input').value='';
+  document.getElementById('editTimeModal').classList.add('open');
+}
+  
+function _removerTimePorId(id){
+  dbTimes=dbTimes.filter(function(t){ return String(t.id)!==String(id); });
+  renderAdminTimes();
+  renderEquipes();
+  showToast('Time removido.');
+} 
+  
 function getJogadoresDoTime(time){
   return atletasCache.filter(function(a){
     if(a.status!=='aprovado'||!a.clube) return false;
@@ -3034,76 +3051,113 @@ function getJogadoresDoTime(time){
     return t&&t.id===time.id;
   });
 }
-
 function renderEquipes(){
   var grid=document.getElementById('equipes-grid'); if(!grid) return;
-  var timesComAtletas=dbTimes.map(function(t){ return {time:t,jogadores:getJogadoresDoTime(t)}; }).filter(function(x){return x.jogadores.length>0;});
-  var aprov=atletasCache.filter(function(a){return a.status==='aprovado'&&a.clube&&a.clube!=='-'&&a.clube!=='Sem clube';});
-  var clubesSemCadastro=[...new Set(aprov.map(function(a){return a.clube.trim();}))].filter(function(c){return !encontrarTime(c);});
+
+  // Sincroniza: auto-criar times para clubes sem cadastro
+  var aprov=atletasCache.filter(function(a){
+    return a.status==='aprovado'&&a.clube&&a.clube!=='-'&&a.clube!=='Sem clube';
+  });
+  function jaCadastrado2(c){
+    return dbTimes.some(function(t){
+      if(normalizarNome(t.nome)===normalizarNome(c)) return true;
+      return (t.variacoes||[]).some(function(v){ return normalizarNome(v)===normalizarNome(c); });
+    });
+  }
+  var semCad=[...new Set(aprov.map(function(a){return a.clube.trim();}))].filter(function(c){ return !jaCadastrado2(c); });
+  semCad.forEach(function(c){
+    if(!dbTimes.find(function(t){ return t.nome===c; })){
+      dbTimes.push({id:'eq'+Date.now()+'r'+Math.random().toString(36).slice(2,6), nome:c, logo:null, variacoes:[]});
+    }
+  });
+
   var html='';
-  timesComAtletas.forEach(function(x){
-    var t=x.time;
-    var logoHtml=t.logo?'<img src="'+t.logo+'">':'<span style="font-size:28px">⚽</span>';
-    html+='<div class="time-card" onclick="abrirEquipe('+t.id+')">'
+  dbTimes.forEach(function(t){
+    var jogadores=getJogadoresDoTime(t);
+    if(!jogadores.length) return;
+    var logoHtml=t.logo
+      ?'<img src="'+t.logo+'" style="width:100%;height:100%;object-fit:contain">'
+      :'<span style="font-size:28px">⚽</span>';
+    var tidJson=JSON.stringify(String(t.id));
+    html+='<div class="time-card" onclick="_abrirEquipePorId('+tidJson+')">'
       +'<div class="time-logo">'+logoHtml+'</div>'
       +'<div><div class="time-info-nome">'+t.nome+'</div>'
-      +'<div class="time-info-sub">'+x.jogadores.length+' jogador(es)</div>'
+      +'<div class="time-info-sub">'+jogadores.length+' jogador(es)</div>'
       +'</div></div>';
-  });
-  clubesSemCadastro.forEach(function(c){
-    var jogadores=aprov.filter(function(a){return a.clube.trim()===c;});
-    html+='<div class="time-card" onclick="abrirEquipeSemCadastro(\''+c.replace(/'/g,"\\'")+'\')"><div class="time-logo"><span style="font-size:28px">⚽</span></div><div><div class="time-info-nome">'+c+'</div><div class="time-info-sub">'+jogadores.length+' jogador(es)</div></div></div>';
   });
   grid.innerHTML=html||'<p style="color:var(--gray)">Nenhuma equipe encontrada.</p>';
 }
+  
+function _abrirEquipePorId(id){
+  var t=dbTimes.find(function(x){ return String(x.id)===String(id); });
+  if(!t){ showToast('Equipe não encontrada'); return; }
+  var logoHtml=t.logo
+    ?'<img src="'+t.logo+'" style="width:100%;height:100%;object-fit:contain">'
+    :'<span style="font-size:36px">⚽</span>';
+  _mostrarEquipeDetalhe(t.nome, logoHtml, getJogadoresDoTime(t));
+}
 
 function abrirEquipe(timeId){
-  var t=dbTimes.find(function(x){return x.id===timeId;}); if(!t) return;
-  var logoHtml=t.logo?'<img src="'+t.logo+'" style="width:100%;height:100%;object-fit:contain">':'<span style="font-size:36px">⚽</span>';
-  _mostrarEquipeDetalhe(t.nome,logoHtml,getJogadoresDoTime(t));
+  _abrirEquipePorId(timeId);
 }
 
 function abrirEquipeSemCadastro(clube){
-  var jogadores=atletasCache.filter(function(a){return a.status==='aprovado'&&a.clube&&a.clube.trim()===clube;});
+  var t=dbTimes.find(function(x){ return x.nome===clube; });
+  if(t){ _abrirEquipePorId(t.id); return; }
+  var jogadores=atletasCache.filter(function(a){ return a.status==='aprovado'&&a.clube&&a.clube.trim()===clube; });
   _mostrarEquipeDetalhe(clube,'<span style="font-size:36px">⚽</span>',jogadores);
 }
 
-function _mostrarEquipeDetalhe(nome,logoHtml,jogadores){
-  document.getElementById('equipes-grid').parentElement.style.display='none';
+function _mostrarEquipeDetalhe(nome, logoHtml, jogadores){
+  var gw=document.getElementById('equipes-grid');
+  if(gw&&gw.parentElement) gw.parentElement.style.display='none';
   var det=document.getElementById('equipe-detalhe');
   det.style.display='block';
+
   document.getElementById('equipe-detalhe-header').innerHTML=
-    '<div style="width:80px;height:80px;border-radius:16px;background:var(--blue-light);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">'+logoHtml+'</div>'
-    +'<div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:32px;font-weight:900;text-transform:uppercase">'+nome+'</div>'
-    +'<div style="font-size:14px;color:var(--gray);margin-top:4px">'+jogadores.length+' jogador(es) cadastrado(s)</div></div>';
+    '<div style="width:80px;height:80px;border-radius:16px;background:var(--blue-light);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">'
+    +logoHtml+'</div>'
+    +'<div style="flex:1;min-width:0">'
+    +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:clamp(22px,4vw,36px);font-weight:900;text-transform:uppercase;color:var(--black);line-height:1">'+nome+'</div>'
+    +'<div style="font-size:14px;color:var(--gray);margin-top:6px">'+jogadores.length+' jogador(es) cadastrado(s)</div>'
+    +'</div>'
+    +'<button onclick="fecharEquipeDetalhe()" style="flex-shrink:0;display:flex;align-items:center;gap:8px;background:var(--gray-light);border:1.5px solid var(--border);color:var(--text);font-size:13px;font-weight:700;cursor:pointer;padding:10px 18px;border-radius:8px;transition:all .2s" onmouseover="this.style.borderColor=\'var(--blue)\';this.style.color=\'var(--blue)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--text)\'">← Voltar</button>';
+
   var locked=!userAssinante;
   var rows=jogadores.map(function(a){
     var idx=atletasCache.indexOf(a);
-    var fotoHtml=a.foto?'<img src="'+a.foto+'" style="width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0">':'<img src="'+PLACEHOLDER_FOTO+'" style="width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0">';
+    var fotoHtml=a.foto
+      ?'<img src="'+a.foto+'" style="width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0">'
+      :'<img src="'+PLACEHOLDER_FOTO+'" style="width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0">';
     var totalG=(Number(a.stats_gols1)||0)+(Number(a.stats_gols2)||0)+(Number(a.stats_gols3)||0)||Number(a.stats_gols)||0;
     var totalA=(Number(a.stats_assists1)||0)+(Number(a.stats_assists2)||0)+(Number(a.stats_assists3)||0)||Number(a.stats_assists)||0;
     var statsHtml=locked
       ?'<div style="display:flex;gap:12px;align-items:center">'
         +'<div style="text-align:center"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;font-weight:900;color:var(--blue);filter:blur(6px)">'+totalG+'</div><div style="font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.05em">Gols</div></div>'
         +'<div style="text-align:center"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;font-weight:900;color:var(--blue);filter:blur(6px)">'+totalA+'</div><div style="font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.05em">Assist.</div></div>'
-        +'<button onclick="showPage(\'assinatura\')" style="background:var(--black);border:none;color:#fff;font-size:10px;font-weight:700;padding:6px 12px;border-radius:100px;cursor:pointer;white-space:nowrap">ASSINE</button>'
+        +'<button onclick="event.stopPropagation();showPage(\'assinatura\')" style="background:var(--black);border:none;color:#fff;font-size:10px;font-weight:700;padding:6px 12px;border-radius:100px;cursor:pointer;white-space:nowrap">ASSINE</button>'
         +'</div>'
       :'<div style="display:flex;gap:20px;align-items:center">'
         +'<div style="text-align:center"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:24px;font-weight:900;color:var(--blue)">'+totalG+'</div><div style="font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.05em">Gols</div></div>'
         +'<div style="text-align:center"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:24px;font-weight:900;color:var(--blue)">'+totalA+'</div><div style="font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.05em">Assist.</div></div>'
         +'</div>';
-    return '<div onclick="abrirPerfil('+idx+')" style="display:flex;align-items:center;gap:16px;padding:16px;background:var(--white);border:1.5px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s;margin-bottom:10px" onmouseover="this.style.borderColor=\'var(--blue)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'
+    return '<div onclick="abrirPerfil('+idx+')" style="display:flex;align-items:center;gap:16px;padding:16px;background:var(--white);border:1.5px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s;margin-bottom:10px" onmouseover="this.style.borderColor=\'var(--blue)\';this.style.background=\'var(--blue-light)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.background=\'var(--white)\'">'
       +fotoHtml
-      +'<div style="flex:1;min-width:0"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:16px;font-weight:900;text-transform:uppercase">'+a.nome+'</div><div style="font-size:12px;color:var(--gray);margin-top:2px">'+a.posicao+(a.idade?' · '+a.idade+' anos':'')+'</div></div>'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:16px;font-weight:900;text-transform:uppercase">'+a.nome+'</div>'
+      +'<div style="font-size:12px;color:var(--gray);margin-top:2px">'+a.posicao+(a.idade?' · '+a.idade+' anos':'')+'</div>'
+      +'</div>'
       +statsHtml+'</div>';
   }).join('');
-  document.getElementById('equipe-jogadores-lista').innerHTML=rows||'<p style="color:var(--gray)">Nenhum jogador encontrado.</p>';
+  document.getElementById('equipe-jogadores-lista').innerHTML=
+    rows||'<p style="color:var(--gray);padding:60px 0;text-align:center">Nenhum jogador encontrado.</p>';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function fecharEquipeDetalhe(){
   document.getElementById('equipe-detalhe').style.display='none';
-  document.getElementById('equipes-grid').parentElement.style.display='block';
+  var gw=document.getElementById('equipes-grid');
+  if(gw&&gw.parentElement) gw.parentElement.style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
