@@ -2838,8 +2838,8 @@ function filtrarAdminAtletas(){
       +'<button onclick="setNivel('+idx+',\'D\');fecharNivelMenus()">🟣 Nível D</button>'
       +'<button onclick="setNivel('+idx+',\'\');fecharNivelMenus()" style="color:#b91c1c">✕ Remover</button>'
       +'</div></div>'
-      +'<button class="btn-act btn-edit" onclick="abrirEdicao('+idx+')">✏️ Editar</button>'
-      +'<button class="btn-act" style="background:#fee2e2;color:#b91c1c" onclick="adminDel('+idx+')">🗑 Del</button>'
+      +'<button class="btn-act btn-edit" onclick="event.stopPropagation();abrirEdicao('+idx+')">✏️ Editar</button>'
+      +'<button class="btn-act" style="background:#fee2e2;color:#b91c1c" onclick="event.stopPropagation();adminDel('+idx+')">🗑 Del</button>'
       +'</div></td></tr>';
   }).join('') : '<tr><td colspan="8" style="color:var(--gray);padding:32px;text-align:center">Nenhum atleta encontrado.</td></tr>';
 }
@@ -2979,21 +2979,6 @@ function removerTime(id){
 
 function renderAdminTimes(){
   var el=document.getElementById('admin-times-lista'); if(!el) return;
-
-  // Auto-criar times para clubes de atletas aprovados que nao tem cadastro
-  var aprov=atletasCache.filter(function(a){
-    return a.status==='aprovado'&&a.clube&&a.clube!=='-'&&a.clube!=='Sem clube';
-  });
-  function jaCadastrado(c){
-    return dbTimes.some(function(t){
-      if(normalizarNome(t.nome)===normalizarNome(c)) return true;
-      return (t.variacoes||[]).some(function(v){ return normalizarNome(v)===normalizarNome(c); });
-    });
-  }
-  var clubesSemCadastro=[...new Set(aprov.map(function(a){return a.clube.trim();}))].filter(function(c){ return !jaCadastrado(c); });
-  clubesSemCadastro.forEach(function(c){
-    dbTimes.push({id:'t'+Date.now()+'r'+Math.random().toString(36).slice(2,6), nome:c, logo:null, variacoes:[]});
-  });
 
   if(!dbTimes.length){ el.innerHTML='<p style="color:var(--gray);font-size:14px">Nenhum time encontrado.</p>'; return; }
 
@@ -3181,6 +3166,20 @@ adminPanelTab=function(tab){
   if(tab==='destaque') preencherSelectDestaque();
   if(tab==='usuarios') carregarUsuarios();
 };
+
+function sincronizarTimesDeAtletas(){
+  var aprov=atletasCache.filter(function(a){
+    return a.status==='aprovado'&&a.clube&&a.clube!=='-'&&a.clube!=='Sem clube';
+  });
+  aprov.forEach(function(a){
+    var c=a.clube.trim();
+    var jaTem=dbTimes.some(function(t){
+      if(normalizarNome(t.nome)===normalizarNome(c)) return true;
+      return (t.variacoes||[]).some(function(v){ return normalizarNome(v)===normalizarNome(c); });
+    });
+    if(!jaTem) dbTimes.push({id:'auto_'+c, nome:c, logo:null, variacoes:[]});
+  });
+}
 
 init();
 </script>
