@@ -2849,6 +2849,21 @@ function filtrarAdminAtletas(){
 var dbTimes=[];
 var logoTimeBase64=null;
 
+function salvarTimes(){
+  localStorage.setItem('analiseio_times', JSON.stringify(dbTimes));
+}
+
+function carregarTimes(){
+  try{
+    var dados = localStorage.getItem('analiseio_times');
+    if(dados){
+      dbTimes = JSON.parse(dados);
+    }
+  }catch(e){
+    console.error(e);
+  }
+}
+  
 function normalizarNome(s){
   return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s*(futsal|fc|esporte clube|ec|esportes)\s*/gi,'').replace(/\s+/g,' ').trim();
 }
@@ -2879,20 +2894,50 @@ function handleLogoUpload(input){
 }
 
 function adicionarTime(){
+
   var nome=(document.getElementById('at-nome').value||'').trim();
-  if(!nome){ showToast('⚠️ Nome obrigatório'); return; }
+
+  if(!nome){
+    showToast('⚠️ Nome obrigatório');
+    return;
+  }
+
   var varTxt=(document.getElementById('at-variacoes').value||'');
-  var variacoes=varTxt.split('\n').map(function(v){return v.trim();}).filter(Boolean);
-  dbTimes.push({id:Date.now(),nome:nome,logo:logoTimeBase64||null,variacoes:variacoes});
+
+  var variacoes=varTxt
+    .split('\n')
+    .map(function(v){
+      return v.trim();
+    })
+    .filter(Boolean);
+
+  dbTimes.push({
+    id:Date.now(),
+    nome:nome,
+    logo:logoTimeBase64||null,
+    variacoes:variacoes
+  });
+
+  salvarTimes();
+
   document.getElementById('at-nome').value='';
   document.getElementById('at-variacoes').value='';
+
   logoTimeBase64=null;
+
   document.getElementById('at-logo-preview').style.display='none';
-  document.getElementById('at-logo-txt').textContent='🏟 Clique para enviar a logo';
-  document.getElementById('at-logo-area').style.borderColor='var(--border)';
+
+  document.getElementById('at-logo-txt').textContent=
+    '📸 Clique para enviar a logo';
+
+  document.getElementById('at-logo-area').style.borderColor=
+    'var(--border)';
+
   document.getElementById('at-logo-input').value='';
+
   renderAdminTimes();
   renderEquipes();
+
   showToast('✅ Time cadastrado!');
 }
 
@@ -2935,27 +2980,62 @@ function handleEditTimeLogo(input){
   };
   r.readAsDataURL(file);
 }
+  
 function salvarEdicaoTime(){
+
   var id=document.getElementById('edit-time-id').value;
+
   var nome=(document.getElementById('edit-time-nome').value||'').trim();
-  if(!nome){ showToast('⚠️ Nome obrigatório'); return; }
+
+  if(!nome){
+    showToast('⚠️ Nome obrigatório');
+    return;
+  }
+
   var varTxt=(document.getElementById('edit-time-variacoes').value||'');
-  var variacoes=varTxt.split('\n').map(function(v){return v.trim();}).filter(Boolean);
-  var t=dbTimes.find(function(x){ return String(x.id)===String(id); });
+
+  var variacoes=varTxt
+    .split('\n')
+    .map(function(v){
+      return v.trim();
+    })
+    .filter(Boolean);
+
+  var t=dbTimes.find(function(x){
+    return String(x.id)===String(id);
+  });
+
   if(t){
+
     t.nome=nome;
     t.variacoes=variacoes;
-    if(_editTimeLogoBase64) t.logo=_editTimeLogoBase64;
+
+    if(_editTimeLogoBase64){
+      t.logo=_editTimeLogoBase64;
+    }
+
   } else {
-    dbTimes.push({id:Date.now(), nome:nome, logo:_editTimeLogoBase64||null, variacoes:variacoes});
+
+    dbTimes.push({
+      id:Date.now(),
+      nome:nome,
+      logo:_editTimeLogoBase64||null,
+      variacoes:variacoes
+    });
+
   }
+
+  salvarTimes();
+
   document.getElementById('editTimeModal').classList.remove('open');
+
   _editTimeLogoBase64=null;
+
   renderAdminTimes();
   renderEquipes();
+
   showToast('✅ Time "'+nome+'" salvo!');
 }
-
 function promoverClube(nomeClube){
   if(dbTimes.find(function(t){ return t.nome===nomeClube; })){
     showToast('Time já cadastrado!'); return;
@@ -2974,10 +3054,12 @@ function promoverClube(nomeClube){
 }
   
 function removerTime(id){
-  dbTimes=dbTimes.filter(function(t){return t.id!==id;});
-  renderAdminTimes(); renderEquipes(); showToast('Time removido.');
-}
+  dbTimes=dbTimes.filter(function(t){
+    return t.id!==id;
+  });
 
+  salvarTimes();
+  
 function renderAdminTimes(){
   var el=document.getElementById('admin-times-lista'); if(!el) return;
 
@@ -3148,18 +3230,47 @@ function fecharEquipeDetalhe(){
 }
 
 function sincronizarTimesDeAtletas(){
+
   var aprov=atletasCache.filter(function(a){
-    return a.status==='aprovado'&&a.clube&&a.clube!=='-'&&a.clube!=='Sem clube';
+    return a.status==="aprovado" &&
+           a.clube &&
+           a.clube!=="" &&
+           a.clube!=="Sem Clube";
   });
+
   aprov.forEach(function(a){
+
     var c=a.clube.trim();
+
     var jaTem=dbTimes.some(function(t){
-      if(normalizarNome(t.nome)===normalizarNome(c)) return true;
-      return (t.variacoes||[]).some(function(v){ return normalizarNome(v)===normalizarNome(c); });
+
+      if(normalizarNome(t.nome)===normalizarNome(c)){
+        return true;
+      }
+
+      return (t.variacoes||[]).some(function(v){
+        return normalizarNome(v)===normalizarNome(c);
+      });
+
     });
-    if(!jaTem) dbTimes.push({id:'auto_'+c, nome:c, logo:null, variacoes:[]});
+
+    if(!jaTem){
+
+      dbTimes.push({
+        id:"auto_"+c,
+        nome:c,
+        logo:null,
+        variacoes:[]
+      });
+
+      salvarTimes();
+
+    }
+
   });
+
 }
+carregarTimes();
 
 init();
 </script>
