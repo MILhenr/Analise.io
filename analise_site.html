@@ -3210,7 +3210,11 @@ function fecharEquipeDetalhe(){
 
 carregarTimes().then(function(){
   renderEquipes();
-}).catch(function(){ dbTimes=[]; });
+  renderAdminTimes();
+}).catch(function(){ 
+  dbTimes=[];
+  renderEquipes();
+});
 
 init();
 </script>
