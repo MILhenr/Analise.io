@@ -3233,49 +3233,6 @@ function fecharEquipeDetalhe(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function sincronizarTimesDeAtletas(){
-
-  var aprov=atletasCache.filter(function(a){
-    return a.status==="aprovado" &&
-           a.clube &&
-           a.clube!=="" &&
-           a.clube!=="Sem Clube";
-  });
-
-  aprov.forEach(function(a){
-
-    var c=a.clube.trim();
-
-    var jaTem=dbTimes.some(function(t){
-
-      if(normalizarNome(t.nome)===normalizarNome(c)){
-        return true;
-      }
-
-      return (t.variacoes||[]).some(function(v){
-        return normalizarNome(v)===normalizarNome(c);
-      });
-
-    });
-
-    if(!jaTem){
-
-      dbTimes.push({
-        id:"auto_"+c,
-        nome:c,
-        logo:null,
-        variacoes:[]
-      });
-
-      salvarTimes();
-
-    }
-
-  });
-
-}
-carregarTimes();
-
 init();
 </script>
 </body>
