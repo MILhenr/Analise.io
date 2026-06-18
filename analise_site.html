@@ -3227,6 +3227,10 @@ function fecharEquipeDetalhe(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+carregarTimes().then(function(){
+  renderEquipes();
+}).catch(function(){ dbTimes=[]; });
+
 init();
 </script>
 </body>
