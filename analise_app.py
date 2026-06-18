@@ -534,8 +534,6 @@ def criar_pagamento():
 
 @app.route("/api/admin/times", methods=["GET"])
 def get_times():
-    if not session.get("admin"):
-        return jsonify({"erro": "Não autorizado"}), 401
     try:
         with get_db() as conn:
             with conn.cursor() as c:
