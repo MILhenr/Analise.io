@@ -2037,8 +2037,8 @@ function renderAdminAtletas(){
       +'<button onclick="setNivel('+idx+',\'D\');fecharNivelMenus()">🟣 Nível D</button>'
       +'<button onclick="setNivel('+idx+',\'\');fecharNivelMenus()" style="color:#b91c1c">✕ Remover</button>'
       +'</div></div>'
-      +'<button class="btn-act btn-edit" onclick="abrirEdicao('+idx+')">✏️ Editar</button>'
-      +'<button class="btn-act" style="background:#fee2e2;color:#b91c1c" onclick="adminDel('+idx+')">🗑 Del</button>'
+      +'<button class="btn-act btn-edit" onclick="event.stopPropagation();_editarTimePorId('+tidJson+')">✏️ Editar</button>'
+      +'<button class="btn-act btn-recus" onclick="event.stopPropagation();if(confirm(\'Deletar '+nomeSafe+'?\'))_removerTimePorId('+tidJson+')">🗑</button>'
       +'</div></td></tr>';
     }).join('') : '<tr><td colspan="8" style="color:var(--gray);padding:32px;text-align:center">Nenhum atleta.</td></tr>';
   var selTime=document.getElementById('admin-search-time');
