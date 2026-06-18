@@ -2849,15 +2849,18 @@ function filtrarAdminAtletas(){
 var dbTimes=[];
 var logoTimeBase64=null;
 
-function salvarTimes(){
-  try{ localStorage.setItem('analiseio_times_v2', JSON.stringify(dbTimes)); }catch(e){}
+async function salvarTimes(){
+  await api('/api/admin/times', {
+    method:'POST',
+    body:JSON.stringify({times: dbTimes})
+  });
 }
 
 async function carregarTimes(){
-  try{
-    var d=localStorage.getItem('analiseio_times_v2');
-    if(d) dbTimes=JSON.parse(d);
-  }catch(e){ dbTimes=[]; }
+  var d = await api('/api/admin/times');
+  if(d && Array.isArray(d)) dbTimes = d;
+  else if(d && d.times) dbTimes = d.times;
+  else dbTimes = [];
 }
   
 function normalizarNome(s){
