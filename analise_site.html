@@ -3061,9 +3061,9 @@ function removerTime(id){
   dbTimes=dbTimes.filter(function(t){
     return t.id!==id;
   });
-
   salvarTimes();
-  
+}
+
 function renderAdminTimes(){
   var el=document.getElementById('admin-times-lista'); if(!el) return;
 
