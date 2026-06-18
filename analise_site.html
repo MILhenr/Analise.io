@@ -3120,23 +3120,6 @@ function getJogadoresDoTime(time){
 function renderEquipes(){
   var grid=document.getElementById('equipes-grid'); if(!grid) return;
 
-  // Sincroniza: auto-criar times para clubes sem cadastro
-  var aprov=atletasCache.filter(function(a){
-    return a.status==='aprovado'&&a.clube&&a.clube!=='-'&&a.clube!=='Sem clube';
-  });
-  function jaCadastrado2(c){
-    return dbTimes.some(function(t){
-      if(normalizarNome(t.nome)===normalizarNome(c)) return true;
-      return (t.variacoes||[]).some(function(v){ return normalizarNome(v)===normalizarNome(c); });
-    });
-  }
-  var semCad=[...new Set(aprov.map(function(a){return a.clube.trim();}))].filter(function(c){ return !jaCadastrado2(c); });
-  semCad.forEach(function(c){
-    if(!dbTimes.find(function(t){ return t.nome===c; })){
-      dbTimes.push({id:'eq'+Date.now()+'r'+Math.random().toString(36).slice(2,6), nome:c, logo:null, variacoes:[]});
-    }
-  });
-
   var html='';
   dbTimes.forEach(function(t){
     var jogadores=getJogadoresDoTime(t);
