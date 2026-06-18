@@ -2850,12 +2850,16 @@ var dbTimes=[];
 var logoTimeBase64=null;
 
 function salvarTimes(){
-  localStorage.setItem('analiseio_times', JSON.stringify(dbTimes));
+  localStorage.setItem(
+    'analiseio_times',
+    JSON.stringify(dbTimes)
+  );
 }
 
 function carregarTimes(){
   try{
     var dados = localStorage.getItem('analiseio_times');
+
     if(dados){
       dbTimes = JSON.parse(dados);
     }
