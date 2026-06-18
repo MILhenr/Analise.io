@@ -3066,7 +3066,7 @@ function renderAdminTimes(){
   el.innerHTML=dbTimes.map(function(t){
     var logoHtml=t.logo?'<img src="'+t.logo+'" style="width:100%;height:100%;object-fit:contain">':'<span style="font-size:24px">⚽</span>';
     var vars=(t.variacoes||[]).join(', ')||'—';
-    var tidJson=JSON.stringify(String(t.id));
+    var tidSafe=String(t.id).replace(/'/g,"\\'");
     var nomeSafe=t.nome.replace(/'/g,"\\'");
     return '<div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px">'
       +'<div style="display:flex;align-items:center;gap:12px">'
@@ -3127,8 +3127,8 @@ function renderEquipes(){
     var logoHtml=t.logo
       ?'<img src="'+t.logo+'" style="width:100%;height:100%;object-fit:contain">'
       :'<span style="font-size:28px">⚽</span>';
-    var tidJson=JSON.stringify(String(t.id));
-    html+='<div class="time-card" onclick="_abrirEquipePorId('+tidJson+')">'
+    var tidSafe=String(t.id).replace(/'/g,"\\'");
+    html+='<div class="time-card" onclick="_abrirEquipePorId(\''+tidSafe+'\')">'
       +'<div class="time-logo">'+logoHtml+'</div>'
       +'<div><div class="time-info-nome">'+t.nome+'</div>'
       +'<div class="time-info-sub">'+jogadores.length+' jogador(es)</div>'
