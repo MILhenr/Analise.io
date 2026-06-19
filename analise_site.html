@@ -2364,7 +2364,9 @@ function renderAdminAgencias(){
   if(!dbAgencias.length){ el.innerHTML='<p style="color:var(--gray);font-size:14px">Nenhuma agência.</p>'; return; }
   el.innerHTML=dbAgencias.map(function(ag){
     var idSafe=String(ag.id).replace(/'/g,"\\'");
-    var logoHtml=ag.logo?'<img src="'+ag.logo+'" style="width:32px;height:32px;object-fit:contain">':'🏢';
+    var logoHtml=ag.logo
+      ?'<div style="width:44px;height:44px;border-radius:8px;background:#fff;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden"><img src="'+ag.logo+'" style="width:100%;height:100%;object-fit:contain"></div>'
+      :'<div style="width:44px;height:44px;border-radius:8px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:22px">🏢</div>';
     return '<div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center">'
       +'<div style="display:flex;align-items:center;gap:10px">'+logoHtml+' <strong>'+ag.nome+'</strong></div>'
       +'<button class="btn-act btn-recus" onclick="dbAgencias=dbAgencias.filter(function(x){return String(x.id)!==\''+idSafe+'\';});salvarAgencias();renderAdminAgencias();renderEquipes();">🗑</button>'
@@ -3203,7 +3205,7 @@ function renderEquipes(){
     if(!jogadores.length) return;
     var agSafe=ag.nome.replace(/'/g,"\\'");
     html+='<div class="time-card" onclick="_abrirAgencia(\''+agSafe+'\')" style="border-color:var(--blue-mid)">'
-      +'<div class="time-logo" style="background:var(--blue-light);color:var(--blue);font-size:26px">🏢</div>'
+      +'<div class="time-logo" style="background:var(--white);overflow:hidden">'+(ag.logo?'<img src="'+ag.logo+'" style="width:100%;height:100%;object-fit:contain">':'<span style="font-size:26px">🏢</span>')+'</div>'
       +'<div>'
       +'<div class="time-info-nome">'+ag.nome+'</div>'
       +'<div class="time-info-sub" style="display:flex;align-items:center;gap:6px">'
