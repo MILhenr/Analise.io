@@ -3220,8 +3220,13 @@ function renderEquipes(){
 
 function _abrirAgencia(nomeAgencia){
   var jogadores=getJogadoresDaAgencia(nomeAgencia);
-  _mostrarEquipeDetalhe('🏢 '+nomeAgencia, '<span style="font-size:36px">🏢</span>', jogadores, true);
+  var ag=dbAgencias.find(function(x){ return x.nome===nomeAgencia; });
+  var logoHtml=ag&&ag.logo
+    ?'<img src="'+ag.logo+'" style="width:100%;height:100%;object-fit:contain">'
+    :'<span style="font-size:36px">🏢</span>';
+  _mostrarEquipeDetalhe(nomeAgencia, logoHtml, jogadores, true);
 }
+
   
 function _abrirEquipePorId(id){
   var t=dbTimes.find(function(x){ return String(x.id)===String(id); });
