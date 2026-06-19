@@ -3118,10 +3118,17 @@ function getJogadoresDoTime(time){
     return t&&t.id===time.id;
   });
 }
+function getJogadoresDaAgencia(nomeAgencia){
+  return atletasCache.filter(function(a){
+    return a.status==='aprovado' && (a.agencia||'').trim()===nomeAgencia.trim();
+  });
+}
+
 function renderEquipes(){
   var grid=document.getElementById('equipes-grid'); if(!grid) return;
 
   var html='';
+
   dbTimes.forEach(function(t){
     var jogadores=getJogadoresDoTime(t);
     if(!jogadores.length) return;
@@ -3135,7 +3142,34 @@ function renderEquipes(){
       +'<div class="time-info-sub">'+jogadores.length+' jogador(es)</div>'
       +'</div></div>';
   });
+
+  var agencias=[...new Set(
+    atletasCache
+      .filter(function(a){ return a.status==='aprovado' && a.agencia && a.agencia.trim() && a.agencia!=='-' && a.agencia!=='—'; })
+      .map(function(a){ return a.agencia.trim(); })
+  )].sort();
+
+  agencias.forEach(function(ag){
+    var jogadores=getJogadoresDaAgencia(ag);
+    if(!jogadores.length) return;
+    var agSafe=ag.replace(/'/g,"\\'");
+    html+='<div class="time-card" onclick="_abrirAgencia(\''+agSafe+'\')" style="border-color:var(--blue-mid)">'
+      +'<div class="time-logo" style="background:var(--blue-light);color:var(--blue);font-size:26px">🏢</div>'
+      +'<div>'
+      +'<div class="time-info-nome">'+ag+'</div>'
+      +'<div class="time-info-sub" style="display:flex;align-items:center;gap:6px">'
+      +'<span style="background:var(--blue-light);color:var(--blue);font-size:9px;font-weight:700;padding:2px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:.06em">Agência</span>'
+      +jogadores.length+' atleta(s)'
+      +'</div>'
+      +'</div></div>';
+  });
+
   grid.innerHTML=html||'<p style="color:var(--gray)">Nenhuma equipe encontrada.</p>';
+}
+
+function _abrirAgencia(nomeAgencia){
+  var jogadores=getJogadoresDaAgencia(nomeAgencia);
+  _mostrarEquipeDetalhe('🏢 '+nomeAgencia, '<span style="font-size:36px">🏢</span>', jogadores, true);
 }
   
 function _abrirEquipePorId(id){
@@ -3157,8 +3191,8 @@ function abrirEquipeSemCadastro(clube){
   var jogadores=atletasCache.filter(function(a){ return a.status==='aprovado'&&a.clube&&a.clube.trim()===clube; });
   _mostrarEquipeDetalhe(clube,'<span style="font-size:36px">⚽</span>',jogadores);
 }
-
-function _mostrarEquipeDetalhe(nome, logoHtml, jogadores){
+  
+function _mostrarEquipeDetalhe(nome, logoHtml, jogadores, isAgencia){
   var gw=document.getElementById('equipes-grid');
   if(gw&&gw.parentElement) gw.parentElement.style.display='none';
   var det=document.getElementById('equipe-detalhe');
@@ -3169,7 +3203,7 @@ function _mostrarEquipeDetalhe(nome, logoHtml, jogadores){
     +logoHtml+'</div>'
     +'<div style="flex:1;min-width:0">'
     +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:clamp(22px,4vw,36px);font-weight:900;text-transform:uppercase;color:var(--black);line-height:1">'+nome+'</div>'
-    +'<div style="font-size:14px;color:var(--gray);margin-top:6px">'+jogadores.length+' jogador(es) cadastrado(s)</div>'
+    +'<div style="font-size:14px;color:var(--gray);margin-top:6px">'+(isAgencia?'<span style="background:var(--blue-light);color:var(--blue);font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;text-transform:uppercase;letter-spacing:.06em;margin-right:8px">Agência</span>':'')+jogadores.length+' jogador(es) cadastrado(s)</div>'
     +'</div>'
     +'<button onclick="fecharEquipeDetalhe()" style="flex-shrink:0;display:flex;align-items:center;gap:8px;background:var(--gray-light);border:1.5px solid var(--border);color:var(--text);font-size:13px;font-weight:700;cursor:pointer;padding:10px 18px;border-radius:8px;transition:all .2s" onmouseover="this.style.borderColor=\'var(--blue)\';this.style.color=\'var(--blue)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--text)\'">← Voltar</button>';
 
