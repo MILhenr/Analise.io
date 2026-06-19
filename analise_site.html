@@ -1340,7 +1340,7 @@ footer{
       <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:20px">Adicionar Agência</h3>
       <div style="display:flex;flex-direction:column;gap:14px">
         <div class="form-group"><label class="form-label">Nome da Agência *</label><input class="form-input" id="ag-nome" placeholder="Ex: Top Go"></div>
-        <div class="form-group"><label class="form-label">Logo</label><input type="file" id="ag-logo-input" accept="image/*"></div>        
+        <div class="form-group"><label class="form-label">Logo</label><input type="file" id="ag-logo-input" accept="image/*" onchange="handleAgenciaLogoUpload(this)"></div>
         <button class="btn-submit" onclick="adicionarAgencia()">SALVAR AGÊNCIA →</button>
       </div>
     </div>
@@ -2288,9 +2288,12 @@ async function salvarEdicao(){
   btn.innerHTML='SALVAR ALTERAÇÕES →'; btn.disabled=false;
   if(d.erro){ showToast('⚠️ '+d.erro); return; }
   document.getElementById('editModal').classList.remove('open');
-  atletasCache=await carregarAtletas(); renderAdminAtletas(); await init();
+  editFotoBase64=null;
+  atletasCache=await carregarAtletas();
+  await init();
+  renderAdminAtletas();
   filtrarAdminAtletas();
-  showToast('✅ Atleta atualizado!');
+  showToast('✅ Atleta atualizado! (foto pode levar alguns segundos para aparecer)');
 }
 
 function preencherSelectDestaque(){
@@ -2339,22 +2342,21 @@ function adicionarClube(){
 function adicionarAgencia(){
   var nome=(document.getElementById('ag-nome').value||'').trim();
   if(!nome){ showToast('⚠️ Nome obrigatório'); return; }
-  var fileInput=document.getElementById('ag-logo-input');
-  var file=fileInput.files[0];
   function salvar(logoBase64){
     dbAgencias.push({id:Date.now(), nome:nome, logo:logoBase64||null});
     salvarAgencias();
     document.getElementById('ag-nome').value='';
-    fileInput.value='';
+    document.getElementById('ag-logo-input').value='';
+    agenciaLogoBase64=null;
     renderAdminAgencias();
     renderEquipes();
     showToast('✅ Agência "'+nome+'" criada!');
   }
-  if(file){
-    var r=new FileReader();
-    r.onload=function(e){ salvar(e.target.result); };
-    r.readAsDataURL(file);
-  } else { salvar(null); }
+  if(agenciaLogoBase64){
+    salvar(agenciaLogoBase64);
+  } else {
+    salvar(null);
+  }
 }
 
 function renderAdminAgencias(){
@@ -3310,7 +3312,15 @@ async function carregarAgencias(){
   else if(d&&d.agencias) dbAgencias=d.agencias;
   else dbAgencias=[];
 }
+var agenciaLogoBase64 = null;
 
+function handleAgenciaLogoUpload(input){
+  var file = input.files[0]; if(!file) return;
+  if(file.size > 2*1024*1024){ showToast('⚠️ Máx 2MB'); return; }
+  var r = new FileReader();
+  r.onload = function(e){ agenciaLogoBase64 = e.target.result; showToast('✅ Logo carregada!'); };
+  r.readAsDataURL(file);
+}
 init();
 </script>
 </body>
