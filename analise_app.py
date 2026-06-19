@@ -565,6 +565,41 @@ def save_times():
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
+@app.route("/api/admin/agencias", methods=["GET"])
+def get_agencias():
+    try:
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute("""CREATE TABLE IF NOT EXISTS configuracoes 
+                    (chave TEXT PRIMARY KEY, valor TEXT)""")
+                c.execute("SELECT valor FROM configuracoes WHERE chave='agencias'")
+                row = c.fetchone()
+                if row:
+                    return jsonify(json.loads(row["valor"]))
+                return jsonify([])
+    except Exception as e:
+        return jsonify([])
+
+@app.route("/api/admin/agencias", methods=["POST"])
+def save_agencias():
+    if not session.get("admin"):
+        return jsonify({"erro": "Não autorizado"}), 401
+    data = request.json
+    agencias = data.get("agencias", [])
+    try:
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute("""CREATE TABLE IF NOT EXISTS configuracoes 
+                    (chave TEXT PRIMARY KEY, valor TEXT)""")
+                c.execute("""INSERT INTO configuracoes (chave, valor) 
+                    VALUES ('agencias', %s)
+                    ON CONFLICT (chave) DO UPDATE SET valor=EXCLUDED.valor""",
+                    (json.dumps(agencias),))
+            conn.commit()
+        return jsonify({"ok": True})
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+        
 @app.route("/api/webhook_mp", methods=["POST"])
 def webhook_mp():
     try:
