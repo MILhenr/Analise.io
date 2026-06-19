@@ -3262,16 +3262,15 @@ function _mostrarEquipeDetalhe(nome, logoHtml, jogadores, isAgencia){
       :'<img src="'+PLACEHOLDER_FOTO+'" style="width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0">';
     var totalG=(Number(a.stats_gols1)||0)+(Number(a.stats_gols2)||0)+(Number(a.stats_gols3)||0)||Number(a.stats_gols)||0;
     var totalA=(Number(a.stats_assists1)||0)+(Number(a.stats_assists2)||0)+(Number(a.stats_assists3)||0)||Number(a.stats_assists)||0;
-    var statsHtml=locked
-      ?'<div style="display:flex;gap:12px;align-items:center">'
-        +'<div style="text-align:center"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;font-weight:900;color:var(--blue);filter:blur(6px)">'+totalG+'</div><div style="font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.05em">Gols</div></div>'
-        +'<div style="text-align:center"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;font-weight:900;color:var(--blue);filter:blur(6px)">'+totalA+'</div><div style="font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.05em">Assist.</div></div>'
-        +'<button onclick="event.stopPropagation();showPage(\'assinatura\')" style="background:var(--black);border:none;color:#fff;font-size:10px;font-weight:700;padding:6px 12px;border-radius:100px;cursor:pointer;white-space:nowrap">ASSINE</button>'
-        +'</div>'
-      :'<div style="display:flex;gap:20px;align-items:center">'
-        +'<div style="text-align:center"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:24px;font-weight:900;color:var(--blue)">'+totalG+'</div><div style="font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.05em">Gols</div></div>'
-        +'<div style="text-align:center"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:24px;font-weight:900;color:var(--blue)">'+totalA+'</div><div style="font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.05em">Assist.</div></div>'
-        +'</div>';
+    var totalJ=(Number(a.stats_jogos1)||0)+(Number(a.stats_jogos2)||0)+(Number(a.stats_jogos3)||0)||Number(a.stats_jogos)||0;
+    var blur=locked?'filter:blur(6px)':'';
+    var statsHtml='<div style="display:flex;gap:16px;align-items:center">'
+      +'<div style="text-align:center"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;font-weight:900;color:var(--blue);'+blur+'">'+totalG+'</div><div style="font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.05em">Gols</div></div>'
+      +(totalA>0?'<div style="text-align:center"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;font-weight:900;color:var(--blue);'+blur+'">'+totalA+'</div><div style="font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.05em">Assist.</div></div>':'')
+      +(totalJ>0?'<div style="text-align:center"><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;font-weight:900;color:var(--text);'+blur+'">'+totalJ+'</div><div style="font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.05em">Jogos</div></div>':'')
+      +(locked?'<button onclick="event.stopPropagation();showPage(\'assinatura\')" style="background:var(--black);border:none;color:#fff;font-size:10px;font-weight:700;padding:6px 12px;border-radius:100px;cursor:pointer;white-space:nowrap">ASSINE</button>':'')
+      +'</div>';
+
     return '<div onclick="abrirPerfil('+idx+')" style="display:flex;align-items:center;gap:16px;padding:16px;background:var(--white);border:1.5px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s;margin-bottom:10px" onmouseover="this.style.borderColor=\'var(--blue)\';this.style.background=\'var(--blue-light)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.background=\'var(--white)\'">'
       +fotoHtml
       +'<div style="flex:1;min-width:0">'
