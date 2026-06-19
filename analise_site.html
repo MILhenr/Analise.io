@@ -1211,6 +1211,7 @@ footer{
       <button class="admin-tab" id="atab-add" onclick="adminPanelTab('add')">+ Adicionar Atleta</button>
       <button class="admin-tab" id="atab-destaque" onclick="adminPanelTab('destaque')">⭐ Capa</button>
       <button class="admin-tab" id="atab-times" onclick="adminPanelTab('times')">⚽ Times</button>
+      <button class="admin-tab" id="atab-agencias" onclick="adminPanelTab('agencias')">🏢 Agências</button>
       <button class="admin-tab" id="atab-csv" onclick="adminPanelTab('csv')">📊 CSV</button>
     </div>
 
@@ -1332,6 +1333,22 @@ footer{
         </div>
       </div>
     </div>
+
+    <div id="atab-content-agencias" style="display:none">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start">
+    <div>
+      <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:20px">Adicionar Agência</h3>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="form-group"><label class="form-label">Nome da Agência *</label><input class="form-input" id="ag-nome" placeholder="Ex: Top Go"></div>
+        <button class="btn-submit" onclick="adicionarAgencia()">SALVAR AGÊNCIA →</button>
+      </div>
+    </div>
+    <div>
+      <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:20px">Agências Cadastradas</h3>
+      <div id="admin-agencias-lista" style="display:flex;flex-direction:column;gap:12px"></div>
+    </div>
+  </div>
+</div>
 
     <div id="atab-content-add" style="display:none">
       <div style="max-width:700px">
@@ -2002,7 +2019,7 @@ async function carregarPainelAdmin(){
 }
 
 function adminPanelTab(tab){
-  ['atletas','usuarios','clubes','times','add','destaque','csv'].forEach(function(t){
+  ['atletas','usuarios','clubes','times','agencias','add','destaque','csv'].forEach(function(t){
     var c=document.getElementById('atab-content-'+t);
     var b=document.getElementById('atab-'+t);
     if(c) c.style.display=t===tab?'block':'none';
@@ -2316,6 +2333,34 @@ function adicionarClube(){
   dbClubes.push({id:Date.now(),nome,cidade:document.getElementById('ac-cidade').value||'Brasil',posicao,idade:document.getElementById('ac-idade').value||'Sem restrição',detalhes:document.getElementById('ac-detalhes').value||'—',contato:document.getElementById('ac-contato').value||'',status:'aprovado'});
   ['ac-nome','ac-cidade','ac-posicao','ac-idade','ac-detalhes','ac-contato'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
   renderAdminClubes(); renderClubes(); showToast('✅ Clube adicionado!');
+}
+
+function adicionarAgencia(){
+  var nome=(document.getElementById('ag-nome').value||'').trim();
+  if(!nome){ showToast('⚠️ Nome obrigatório'); return; }
+  if(dbAgencias.find(function(a){ return a.nome===nome; })){ showToast('Agência já existe'); return; }
+  dbAgencias.push({id:Date.now(), nome:nome});
+  salvarAgencias();
+  document.getElementById('ag-nome').value='';
+  renderAdminAgencias();
+  renderEquipes();
+  showToast('✅ Agência "'+nome+'" criada!');
+}
+
+function renderAdminAgencias(){
+  var el=document.getElementById('admin-agencias-lista'); if(!el) return;
+  if(!dbAgencias.length){ el.innerHTML='<p style="color:var(--gray);font-size:14px">Nenhuma agência.</p>'; return; }
+  el.innerHTML=dbAgencias.map(function(ag){
+    var idSafe=String(ag.id).replace(/'/g,"\\'");
+    var nomeSafe=ag.nome.replace(/'/g,"\\'");
+    return '<div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center">'
+      +'<div style="display:flex;align-items:center;gap:10px"><span style="font-size:20px">🏢</span>'
+      +'<div><div style="font-weight:700;font-size:14px">'+ag.nome+'</div>'
+      +'<div style="font-size:12px;color:var(--gray)">'+getJogadoresDaAgencia(ag.nome).length+' atleta(s)</div>'
+      +'</div></div>'
+      +'<button class="btn-act btn-recus" onclick="if(confirm(\'Remover '+nomeSafe+'?\')){ dbAgencias=dbAgencias.filter(function(x){return String(x.id)!==\''+idSafe+'\';}); salvarAgencias(); renderAdminAgencias(); renderEquipes(); showToast(\'Agência removida\'); }">🗑</button>'
+      +'</div>';
+  }).join('');
 }
 
 function removerClube(id){
@@ -2847,6 +2892,7 @@ function filtrarAdminAtletas(){
 
 /* ===== TIMES ===== */
 var dbTimes=[];
+var dbAgencias=[];
 var logoTimeBase64=null;
 
 async function salvarTimes(){
@@ -3143,20 +3189,14 @@ function renderEquipes(){
       +'</div></div>';
   });
 
-  var agencias=[...new Set(
-    atletasCache
-      .filter(function(a){ return a.status==='aprovado' && a.agencia && a.agencia.trim() && a.agencia!=='-' && a.agencia!=='—'; })
-      .map(function(a){ return a.agencia.trim(); })
-  )].sort();
-
-  agencias.forEach(function(ag){
-    var jogadores=getJogadoresDaAgencia(ag);
+  dbAgencias.forEach(function(ag){
+    var jogadores=getJogadoresDaAgencia(ag.nome);
     if(!jogadores.length) return;
-    var agSafe=ag.replace(/'/g,"\\'");
+    var agSafe=ag.nome.replace(/'/g,"\\'");
     html+='<div class="time-card" onclick="_abrirAgencia(\''+agSafe+'\')" style="border-color:var(--blue-mid)">'
       +'<div class="time-logo" style="background:var(--blue-light);color:var(--blue);font-size:26px">🏢</div>'
       +'<div>'
-      +'<div class="time-info-nome">'+ag+'</div>'
+      +'<div class="time-info-nome">'+ag.nome+'</div>'
       +'<div class="time-info-sub" style="display:flex;align-items:center;gap:6px">'
       +'<span style="background:var(--blue-light);color:var(--blue);font-size:9px;font-weight:700;padding:2px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:.06em">Agência</span>'
       +jogadores.length+' atleta(s)'
@@ -3245,13 +3285,25 @@ function fecharEquipeDetalhe(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-carregarTimes().then(function(){
+Promise.all([carregarTimes(), carregarAgencias()]).then(function(){
   renderEquipes();
   renderAdminTimes();
+  renderAdminAgencias();
 }).catch(function(){ 
   dbTimes=[];
+  dbAgencias=[];
   renderEquipes();
 });
+
+async function salvarAgencias(){
+  await api('/api/admin/agencias',{method:'POST',body:JSON.stringify({agencias:dbAgencias})});
+}
+async function carregarAgencias(){
+  var d=await api('/api/admin/agencias');
+  if(d&&Array.isArray(d)) dbAgencias=d;
+  else if(d&&d.agencias) dbAgencias=d.agencias;
+  else dbAgencias=[];
+}
 
 init();
 </script>
