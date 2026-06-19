@@ -2104,7 +2104,6 @@ async function carregarUsuarios(){
   todosUsuarios=Array.isArray(d)?d:(d.usuarios||[]);
   renderTabelaUsuarios(todosUsuarios);
 }
-
 function renderTabelaUsuarios(lista){
   var tbody=document.getElementById('admin-usuarios-tbody'); if(!tbody) return;
   var total=lista.length;
@@ -2121,25 +2120,42 @@ function renderTabelaUsuarios(lista){
   }
   tbody.innerHTML=lista.map(function(u){
     var iniciais=(u.nome||'?').split(' ').map(function(w){ return w[0]; }).slice(0,2).join('').toUpperCase();
+    var isAssinante=u.plano==='assinatura';
     var planoBadge=u.admin
       ? '<span class="status-badge" style="background:#e0e7ff;color:#3730a3">⚙ Admin</span>'
-      : u.plano==='assinatura'
+      : isAssinante
         ? '<span class="status-badge s-aprov">✅ Assinante</span>'
         : '<span class="status-badge s-pend">Gratuito</span>';
     var dataCad=u.criado_em
-      ? new Date(u.criado_em).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})
+      ? new Date(u.criado_em).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'})
       : '—';
+    var btnPlano=u.admin?'':
+      isAssinante
+        ? '<button onclick="alterarPlanoUsuario(\''+u.id+'\',\'gratuito\')" style="background:#fee2e2;border:none;color:#b91c1c;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">✕ Remover acesso</button>'
+        : '<button onclick="alterarPlanoUsuario(\''+u.id+'\',\'assinatura\')" style="background:#dcfce7;border:none;color:#15803d;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">✓ Liberar acesso</button>';
     return '<tr>'
       +'<td><div style="display:flex;align-items:center;gap:10px">'
       +'<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue2));display:flex;align-items:center;justify-content:center;color:#fff;font-family:\'Barlow Condensed\',sans-serif;font-size:14px;font-weight:900;flex-shrink:0">'+iniciais+'</div>'
-      +'<div><div style="font-weight:600;font-size:14px">'+(u.nome||'—')+'</div><div style="font-size:11px;color:var(--gray)">#'+(u.id||'—')+'</div></div>'
+      +'<div><div style="font-weight:600;font-size:14px">'+(u.nome||'—')+'</div><div style="font-size:11px;color:var(--gray)">'+(u.email||'—')+'</div></div>'
       +'</div></td>'
-      +'<td style="font-size:13px;color:var(--gray)">'+(u.email||'—')+'</td>'
       +'<td>'+planoBadge+'</td>'
+      +'<td>'+btnPlano+'</td>'
       +'<td style="font-size:12px;color:var(--gray)">'+dataCad+'</td>'
-      +'<td>'+(u.admin?'<span style="font-size:12px;color:var(--blue);font-weight:600">Administrador</span>':'<span style="font-size:12px;color:var(--gray)">Usuário</span>')+'</td>'
+      +'<td>'+(u.admin?'<span style="font-size:12px;color:var(--blue);font-weight:600">Admin</span>':'<span style="font-size:12px;color:var(--gray)">Usuário</span>')+'</td>'
       +'</tr>';
   }).join('');
+}
+
+async function alterarPlanoUsuario(userId, plano){
+  var label=plano==='assinatura'?'liberar acesso':'remover acesso';
+  if(!confirm('Deseja '+label+' para este usuário?')) return;
+  var d=await api('/api/admin/usuarios/'+userId+'/plano',{method:'PUT',body:JSON.stringify({plano:plano})});
+  if(d&&!d.erro){
+    showToast(plano==='assinatura'?'✅ Acesso liberado!':'✅ Acesso removido!');
+    carregarUsuarios();
+  } else {
+    showToast('⚠️ Erro: '+(d&&d.erro?d.erro:'tente novamente'));
+  }
 }
 
 function filtrarUsuarios(){
