@@ -723,10 +723,18 @@ def sync_criar_atleta():
     if request.headers.get("X-Bot-Secret") != BOT_SECRET:
         return jsonify({"erro": "Não autorizado"}), 401
     data = request.json
+
+    aid = str(data.get("id", "")).strip()
+    if not aid.isdigit() or not (1 <= int(aid) <= 5000000):
+        return jsonify({"erro": "ID inválido. Envie um número entre 1 e 5000000."}), 400
+
     try:
-        aid = str(uuid.uuid4())[:8].upper()
         with get_db() as conn:
             with conn.cursor() as c:
+                c.execute("SELECT id FROM atletas WHERE id=%s", (aid,))
+                if c.fetchone():
+                    return jsonify({"erro": "ID já existe. Use PUT para atualizar."}), 409
+
                 c.execute('''INSERT INTO atletas (
                     id,nome,idade,posicao,modalidade,clube,
                     pe,disponivel,cat1,comp1,
@@ -741,7 +749,7 @@ def sync_criar_atleta():
                      data.get("stats_gols1","0"), data.get("stats_assists1","0"), data.get("stats_jogos1","0"),
                      "aprovado", datetime.now().strftime("%d/%m/%Y %H:%M")))
             conn.commit()
-        print(f"✅ SYNC CRIAR: {data['nome']} — {data.get('clube','')}")
+        print(f"✅ SYNC CRIAR: id={aid} — {data['nome']} — {data.get('clube','')}")
         return jsonify({"ok": True, "id": aid})
     except Exception as e:
         print(f"❌ SYNC CRIAR ERRO: {e}")
