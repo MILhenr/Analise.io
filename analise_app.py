@@ -58,6 +58,9 @@ def init_db():
                     id TEXT PRIMARY KEY, nome TEXT, cidade TEXT, posicao TEXT,
                     idade TEXT, detalhes TEXT, contato TEXT,
                     status TEXT DEFAULT 'pendente', criado_em TEXT)''')
+                c.execute('''CREATE TABLE IF NOT EXISTS eventos (
+                    id TEXT PRIMARY KEY, atleta_id TEXT, tipo TEXT, competicao TEXT,
+                    data TEXT, adversario TEXT, quantidade INTEGER DEFAULT 1, criado_em TEXT)''')
 
                 novas_colunas = [
                     ("cat1", "TEXT DEFAULT ''"),
@@ -778,6 +781,120 @@ def sync_atualizar_atleta(aid):
         return jsonify({"ok": True})
     except Exception as e:
         print(f"❌ SYNC ATUALIZAR ERRO: {e}")
+        return jsonify({"erro": str(e)}), 500
+
+def _find_comp_index(atleta, competicao):
+    for i in range(1, 4):
+        if (atleta.get(f"comp{i}") or "").strip() == (competicao or "").strip():
+            return i
+    return None
+
+@app.route("/api/admin/eventos", methods=["POST"])
+def admin_criar_evento():
+    if not session.get("admin"):
+        return jsonify({"erro": "Não autorizado"}), 401
+    data = request.json
+    atleta_id = data.get("atleta_id")
+    tipo = data.get("tipo")
+    competicao = data.get("competicao", "")
+    data_evento = data.get("data", "")
+    adversario = data.get("adversario", "")
+    try:
+        quantidade = int(data.get("quantidade") or 1)
+    except (ValueError, TypeError):
+        quantidade = 1
+    if quantidade < 1:
+        quantidade = 1
+
+    if not atleta_id or not tipo:
+        return jsonify({"erro": "atleta_id e tipo são obrigatórios"}), 400
+
+    try:
+        eid = str(uuid.uuid4())[:8].upper()
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute("SELECT * FROM atletas WHERE id=%s", (atleta_id,))
+                atleta = c.fetchone()
+                if not atleta:
+                    return jsonify({"erro": "Atleta não encontrado"}), 404
+
+                idx = _find_comp_index(atleta, competicao)
+
+                c.execute('''INSERT INTO eventos (id,atleta_id,tipo,competicao,data,adversario,quantidade,criado_em)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s)''',
+                    (eid, atleta_id, tipo, competicao, data_evento, adversario, quantidade,
+                     datetime.now().strftime("%d/%m/%Y %H:%M")))
+
+                if tipo == "gol":
+                    campo_total, campo_idx = "stats_gols", (f"stats_gols{idx}" if idx else None)
+                elif tipo == "assistencia":
+                    campo_total, campo_idx = "stats_assists", (f"stats_assists{idx}" if idx else None)
+                else:
+                    campo_total, campo_idx = "stats_jogos", (f"stats_jogos{idx}" if idx else None)
+
+                novo_total = int(atleta.get(campo_total) or 0) + quantidade
+                c.execute(f"UPDATE atletas SET {campo_total}=%s WHERE id=%s", (str(novo_total), atleta_id))
+
+                if campo_idx:
+                    novo_idx = int(atleta.get(campo_idx) or 0) + quantidade
+                    c.execute(f"UPDATE atletas SET {campo_idx}=%s WHERE id=%s", (str(novo_idx), atleta_id))
+            conn.commit()
+        return jsonify({"ok": True, "id": eid})
+    except Exception as e:
+        print("❌ ERRO CRIAR EVENTO:", e)
+        return jsonify({"erro": str(e)}), 500
+
+@app.route("/api/admin/eventos/<atleta_id>", methods=["GET"])
+def admin_listar_eventos(atleta_id):
+    if not session.get("admin"):
+        return jsonify({"erro": "Não autorizado"}), 401
+    try:
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute("SELECT * FROM eventos WHERE atleta_id=%s ORDER BY criado_em DESC", (atleta_id,))
+                return jsonify([dict(r) for r in c.fetchall()])
+    except Exception as e:
+        return jsonify([])
+
+@app.route("/api/admin/eventos/<eid>", methods=["DELETE"])
+def admin_deletar_evento(eid):
+    if not session.get("admin"):
+        return jsonify({"erro": "Não autorizado"}), 401
+    try:
+        with get_db() as conn:
+            with conn.cursor() as c:
+                c.execute("SELECT * FROM eventos WHERE id=%s", (eid,))
+                evento = c.fetchone()
+                if not evento:
+                    return jsonify({"erro": "Evento não encontrado"}), 404
+
+                atleta_id = evento["atleta_id"]
+                tipo = evento["tipo"]
+                quantidade = int(evento.get("quantidade") or 1)
+                competicao = evento.get("competicao", "")
+
+                c.execute("SELECT * FROM atletas WHERE id=%s", (atleta_id,))
+                atleta = c.fetchone()
+
+                if atleta:
+                    idx = _find_comp_index(atleta, competicao)
+                    if tipo == "gol":
+                        campo_total, campo_idx = "stats_gols", (f"stats_gols{idx}" if idx else None)
+                    elif tipo == "assistencia":
+                        campo_total, campo_idx = "stats_assists", (f"stats_assists{idx}" if idx else None)
+                    else:
+                        campo_total, campo_idx = "stats_jogos", (f"stats_jogos{idx}" if idx else None)
+
+                    novo_total = max(0, int(atleta.get(campo_total) or 0) - quantidade)
+                    c.execute(f"UPDATE atletas SET {campo_total}=%s WHERE id=%s", (str(novo_total), atleta_id))
+                    if campo_idx:
+                        novo_idx = max(0, int(atleta.get(campo_idx) or 0) - quantidade)
+                        c.execute(f"UPDATE atletas SET {campo_idx}=%s WHERE id=%s", (str(novo_idx), atleta_id))
+
+                c.execute("DELETE FROM eventos WHERE id=%s", (eid,))
+            conn.commit()
+        return jsonify({"ok": True})
+    except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
 if __name__ == "__main__":
