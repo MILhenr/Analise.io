@@ -61,38 +61,43 @@ def init_db():
                 c.execute('''CREATE TABLE IF NOT EXISTS eventos (
                     id TEXT PRIMARY KEY, atleta_id TEXT, tipo TEXT, competicao TEXT,
                     data TEXT, adversario TEXT, quantidade INTEGER DEFAULT 1, criado_em TEXT)''')
-
-                novas_colunas = [
-                    ("cat1", "TEXT DEFAULT ''"),
-                    ("comp1", "TEXT DEFAULT ''"),
-                    ("cat2", "TEXT DEFAULT ''"),
-                    ("comp2", "TEXT DEFAULT ''"),
-                    ("cat3", "TEXT DEFAULT ''"),
-                    ("comp3", "TEXT DEFAULT ''"),
-                    ("stats_gols1", "TEXT DEFAULT ''"),
-                    ("stats_assists1", "TEXT DEFAULT ''"),
-                    ("stats_jogos1", "TEXT DEFAULT ''"),
-                    ("stats_gols2", "TEXT DEFAULT ''"),
-                    ("stats_assists2", "TEXT DEFAULT ''"),
-                    ("stats_jogos2", "TEXT DEFAULT ''"),
-                    ("stats_gols3", "TEXT DEFAULT ''"),
-                    ("stats_assists3", "TEXT DEFAULT ''"),
-                    ("stats_jogos3", "TEXT DEFAULT ''"),
-                    ("camisa", "TEXT DEFAULT ''"),
-                    ("video2", "TEXT DEFAULT ''"),
-                    ("video3", "TEXT DEFAULT ''"),
-                    ("video4", "TEXT DEFAULT ''"),
-                    ("video5", "TEXT DEFAULT ''"),
-                ]
-                for col, col_type in novas_colunas:
-                    try:
-                        c.execute(f"ALTER TABLE atletas ADD COLUMN {col} {col_type}")
-                    except Exception:
-                        pass
+                c.execute('''CREATE TABLE IF NOT EXISTS configuracoes (
+                    chave TEXT PRIMARY KEY, valor TEXT)''')
             conn.commit()
-        print("✅ Tabelas verificadas/criadas")
+        print("✅ Tabelas base criadas/verificadas")
     except Exception as e:
-        print("❌ ERRO init_db:", e)
+        print("❌ ERRO init_db (tabelas):", e)
+
+    novas_colunas = [
+        ("cat1", "TEXT DEFAULT ''"),
+        ("comp1", "TEXT DEFAULT ''"),
+        ("cat2", "TEXT DEFAULT ''"),
+        ("comp2", "TEXT DEFAULT ''"),
+        ("cat3", "TEXT DEFAULT ''"),
+        ("comp3", "TEXT DEFAULT ''"),
+        ("stats_gols1", "TEXT DEFAULT ''"),
+        ("stats_assists1", "TEXT DEFAULT ''"),
+        ("stats_jogos1", "TEXT DEFAULT ''"),
+        ("stats_gols2", "TEXT DEFAULT ''"),
+        ("stats_assists2", "TEXT DEFAULT ''"),
+        ("stats_jogos2", "TEXT DEFAULT ''"),
+        ("stats_gols3", "TEXT DEFAULT ''"),
+        ("stats_assists3", "TEXT DEFAULT ''"),
+        ("stats_jogos3", "TEXT DEFAULT ''"),
+        ("camisa", "TEXT DEFAULT ''"),
+        ("video2", "TEXT DEFAULT ''"),
+        ("video3", "TEXT DEFAULT ''"),
+        ("video4", "TEXT DEFAULT ''"),
+        ("video5", "TEXT DEFAULT ''"),
+    ]
+    for col, col_type in novas_colunas:
+        try:
+            with get_db() as conn:
+                with conn.cursor() as c:
+                    c.execute(f"ALTER TABLE atletas ADD COLUMN IF NOT EXISTS {col} {col_type}")
+                conn.commit()
+        except Exception as e:
+            print(f"❌ ERRO ao adicionar coluna {col}:", e)
 
 init_db()
 
