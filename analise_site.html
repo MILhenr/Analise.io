@@ -11,7 +11,7 @@
   --blue:#1a56ff;
   --blue2:#0d3fd4;
   --blue-light:#e8eeff;
-  --blue-mid:#c7d4ff;
+  --blue-mid:#c7d4ff; 
   --white:#ffffff;
   --black:#060a12;
   --gray:#6b7591;
@@ -1683,6 +1683,7 @@ function renderAtletas(lista){
 }
 
 async function init(){
+  updateEquipesTabVisibility();
   atletasCache=await carregarAtletas();
   var aprov=atletasCache.filter(function(a){ return a.status==='aprovado'; });
 
@@ -2015,6 +2016,7 @@ function updateNavLogado(){
     if(u) u.style.display='none';
     if(a) a.style.display='none';
     if(hg) hg.style.display='block';
+    updateEquipesTabVisibility();
     return;
   }
   if(hg) hg.style.display='none';
@@ -2029,8 +2031,19 @@ function updateNavLogado(){
     var nn=document.getElementById('nav-nome'); if(nn) nn.textContent=currentUser.nome;
     var b=document.getElementById('nav-btn-assinar'); if(b) b.style.display=userAssinante?'none':'inline-flex';
   }
+  updateEquipesTabVisibility();
 }
 
+function updateEquipesTabVisibility(){
+  var tab=document.getElementById('nmtab-equipes');
+  if(!tab) return;
+  var isAdmin = !!(currentUser && currentUser.admin);
+  tab.style.display = isAdmin ? '' : 'none';
+  var pgEquipes=document.getElementById('page-equipes');
+  if(!isAdmin && pgEquipes && pgEquipes.classList.contains('active')){
+    showPage('home'); setNavTab('rankings');
+  }
+}
 async function doLogout(){
   await api('/api/logout');
   currentUser=null; userAssinante=false;
