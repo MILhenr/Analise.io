@@ -902,6 +902,52 @@ def admin_deletar_evento(eid):
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
+@app.route("/api/admin/eventos/lote-jogo", methods=["POST"])
+def admin_criar_eventos_lote_jogo():
+    if not session.get("admin"):
+        return jsonify({"erro": "Não autorizado"}), 401
+    data = request.json
+    atleta_ids = data.get("atleta_ids", [])
+    competicao = data.get("competicao", "")
+    adversario = data.get("adversario", "")
+    data_evento = data.get("data", "")
+
+    if not atleta_ids:
+        return jsonify({"erro": "atleta_ids obrigatório"}), 400
+
+    try:
+        atualizados = 0
+        with get_db() as conn:
+            with conn.cursor() as c:
+                for atleta_id in atleta_ids:
+                    c.execute("SELECT * FROM atletas WHERE id=%s", (atleta_id,))
+                    atleta = c.fetchone()
+                    if not atleta:
+                        continue
+
+                    idx = _find_comp_index(atleta, competicao) if competicao else None
+
+                    eid = str(uuid.uuid4())[:8].upper()
+                    c.execute('''INSERT INTO eventos (id,atleta_id,tipo,competicao,data,adversario,quantidade,criado_em)
+                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s)''',
+                        (eid, atleta_id, "jogo", competicao, data_evento, adversario, 1,
+                         datetime.now().strftime("%d/%m/%Y %H:%M")))
+
+                    novo_total = int(atleta.get("stats_jogos") or 0) + 1
+                    c.execute("UPDATE atletas SET stats_jogos=%s WHERE id=%s", (str(novo_total), atleta_id))
+
+                    if idx:
+                        campo_idx = f"stats_jogos{idx}"
+                        novo_idx = int(atleta.get(campo_idx) or 0) + 1
+                        c.execute(f"UPDATE atletas SET {campo_idx}=%s WHERE id=%s", (str(novo_idx), atleta_id))
+
+                    atualizados += 1
+            conn.commit()
+        return jsonify({"ok": True, "atualizados": atualizados})
+    except Exception as e:
+        print("❌ ERRO LOTE JOGO:", e)
+        return jsonify({"erro": str(e)}), 500
+
 if __name__ == "__main__":
     try:
         conn = get_db()
