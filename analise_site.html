@@ -11,7 +11,7 @@
   --blue:#1a56ff;
   --blue2:#0d3fd4;
   --blue-light:#e8eeff;
-  --blue-mid:#c7d4ff; 
+  --blue-mid:#c7d4ff;
   --white:#ffffff;
   --black:#060a12;
   --gray:#6b7591;
@@ -941,7 +941,7 @@ footer{
       <div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:12px;padding:16px;margin-bottom:20px">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
           <div class="form-group"><label class="form-label">Tipo *</label>
-            <select class="form-select" id="ev-tipo" onchange="toggleQuantidadeEvento()">
+            <select class="form-select" id="ev-tipo">
               <option value="gol">⚽ Gol</option>
               <option value="assistencia">🎯 Assistência</option>
               <option value="jogo">🏟 Jogo</option>
@@ -949,9 +949,7 @@ footer{
           <div class="form-group"><label class="form-label">Competição *</label>
             <select class="form-select" id="ev-competicao"></select></div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-          <div class="form-group" id="ev-qtd-group"><label class="form-label">Quantidade</label>
-            <input class="form-input" id="ev-quantidade" type="number" min="1" value="1"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
           <div class="form-group"><label class="form-label">Data</label>
             <input class="form-input" id="ev-data" type="date"></div>
           <div class="form-group"><label class="form-label">Adversário</label>
@@ -965,6 +963,7 @@ footer{
     </div>
   </div>
 </div>
+
 <!-- ===== NAV ===== -->
 <nav>
   <!-- Linha 1: Logo + Auth -->
@@ -1683,7 +1682,6 @@ function renderAtletas(lista){
 }
 
 async function init(){
-  updateEquipesTabVisibility();
   atletasCache=await carregarAtletas();
   var aprov=atletasCache.filter(function(a){ return a.status==='aprovado'; });
 
@@ -2016,7 +2014,6 @@ function updateNavLogado(){
     if(u) u.style.display='none';
     if(a) a.style.display='none';
     if(hg) hg.style.display='block';
-    updateEquipesTabVisibility();
     return;
   }
   if(hg) hg.style.display='none';
@@ -2031,19 +2028,8 @@ function updateNavLogado(){
     var nn=document.getElementById('nav-nome'); if(nn) nn.textContent=currentUser.nome;
     var b=document.getElementById('nav-btn-assinar'); if(b) b.style.display=userAssinante?'none':'inline-flex';
   }
-  updateEquipesTabVisibility();
 }
 
-function updateEquipesTabVisibility(){
-  var tab=document.getElementById('nmtab-equipes');
-  if(!tab) return;
-  var isAdmin = !!(currentUser && currentUser.admin);
-  tab.style.display = isAdmin ? '' : 'none';
-  var pgEquipes=document.getElementById('page-equipes');
-  if(!isAdmin && pgEquipes && pgEquipes.classList.contains('active')){
-    showPage('home'); setNavTab('rankings');
-  }
-}
 async function doLogout(){
   await api('/api/logout');
   currentUser=null; userAssinante=false;
@@ -3401,19 +3387,12 @@ function handleAgenciaLogoUpload(input){
   r.onload = function(e){ agenciaLogoBase64 = e.target.result; showToast('✅ Logo carregada!'); };
   r.readAsDataURL(file);
 }
-  
-function toggleQuantidadeEvento(){
-  var tipo=document.getElementById('ev-tipo').value;
-  document.getElementById('ev-qtd-group').style.display = tipo==='jogo' ? 'none' : 'block';
-}
 async function abrirEventos(idx){
   var a=atletasCache[idx]; if(!a) return;
   document.getElementById('ev-atleta-id').value=a.id;
   document.getElementById('ev-atleta-nome').textContent=a.nome;
   document.getElementById('ev-data').value='';
   document.getElementById('ev-adversario').value='';
-  document.getElementById('ev-quantidade').value='1';
-  toggleQuantidadeEvento();
 
   var sel=document.getElementById('ev-competicao');
   sel.innerHTML='';
@@ -3453,7 +3432,6 @@ async function registrarEvento(){
   var atletaId=document.getElementById('ev-atleta-id').value;
   var tipo=document.getElementById('ev-tipo').value;
   var competicao=document.getElementById('ev-competicao').value;
-  var quantidade=parseInt(document.getElementById('ev-quantidade').value)||1;
   var data=document.getElementById('ev-data').value;
   var adversario=(document.getElementById('ev-adversario').value||'').trim();
 
@@ -3464,17 +3442,15 @@ async function registrarEvento(){
   if(tipo==='jogo'&&!adversario){
     showToast('⚠️ Informe o adversário'); return;
   }
-  if(quantidade<1) quantidade=1;
 
   var d=await api('/api/admin/eventos',{method:'POST',body:JSON.stringify({
-    atleta_id:atletaId, tipo:tipo, competicao:competicao, data:data, adversario:adversario, quantidade:quantidade
+    atleta_id:atletaId, tipo:tipo, competicao:competicao, data:data, adversario:adversario
   })});
   if(d.erro){ showToast('⚠️ '+d.erro); return; }
 
   document.getElementById('ev-data').value='';
   document.getElementById('ev-adversario').value='';
-  document.getElementById('ev-quantidade').value='1';
-  showToast('✅ '+quantidade+' '+(tipo==='gol'?'gol(s)':tipo==='assistencia'?'assistência(s)':'jogo')+' registrado(s)!');
+  showToast('✅ Evento registrado!');
   carregarEventosAtleta(atletaId);
   atletasCache=await carregarAtletas();
   renderAdminAtletas();
