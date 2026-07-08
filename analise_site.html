@@ -3470,13 +3470,6 @@ function fecharEquipeDetalhe(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function fecharEquipeDetalhe(){
-  document.getElementById('equipe-detalhe').style.display='none';
-  var gw=document.getElementById('equipes-grid');
-  if(gw&&gw.parentElement) gw.parentElement.style.display='block';
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
 Promise.all([carregarTimes(), carregarAgencias()]).then(function(){
   renderEquipes();
   renderAdminTimes();
