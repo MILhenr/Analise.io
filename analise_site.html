@@ -808,6 +808,8 @@ footer{
       <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:6px">⚽ Registrar Jogo em Lote</div>
       <p style="font-size:13px;color:var(--gray);margin-bottom:24px"><span id="jl-contador">0</span> jogador(es) selecionado(s) vão ganhar +1 jogo.</p>
       <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="form-group"><label class="form-label">Competição *</label>
+          <select class="form-select" id="jl-competicao"></select></div>
         <div class="form-group"><label class="form-label">Data do jogo</label>
           <input class="form-input" id="jl-data" type="date"></div>
         <div class="form-group"><label class="form-label">Adversário</label>
@@ -1280,6 +1282,7 @@ footer{
       <div class="sel-bar" id="sel-bar">
         <span class="sel-count" id="sel-count">0</span><span style="font-size:13px;color:rgba(255,255,255,.7)">selecionados</span>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-left:8px">
+          <button onclick="abrirModalJogoLoteAdmin()" style="background:var(--blue);border:none;color:#fff;padding:8px 14px;border-radius:8px;font-weight:900;font-size:12px;cursor:pointer">⚽ +1 JOGO</button>
           <button onclick="acaoMassaNivel('A')" style="background:#dcfce7;border:none;color:#15803d;padding:8px 14px;border-radius:8px;font-weight:900;font-size:12px;cursor:pointer">⭐ Nível A</button>
           <button onclick="acaoMassaNivel('B')" style="background:#fef9c3;border:none;color:#a16207;padding:8px 14px;border-radius:8px;font-weight:900;font-size:12px;cursor:pointer">🔵 Nível B</button>
           <button onclick="acaoMassaNivel('C')" style="background:#fee2e2;border:none;color:#b91c1c;padding:8px 14px;border-radius:8px;font-weight:900;font-size:12px;cursor:pointer">⚪ Nível C</button>
@@ -3425,27 +3428,62 @@ function limparSelecaoEquipe(){
   var cbAll=document.getElementById('cb-equipe-all'); if(cbAll) cbAll.checked=false;
   updateSelecaoEquipe();
 }
+var _jogoLoteAtletaIds = [];
 
+function _popularCompeticoesModalLote(atletas){
+  var sel=document.getElementById('jl-competicao');
+  var comps=[];
+  atletas.forEach(function(a){
+    (a.competicoes||[]).forEach(function(c){
+      if(c.competicao && comps.indexOf(c.competicao)===-1) comps.push(c.competicao);
+    });
+  });
+  if(!comps.length){
+    sel.innerHTML='<option value="">Nenhuma competição cadastrada</option>';
+    return;
+  }
+  sel.innerHTML=comps.map(function(c){ return '<option value="'+c+'">'+c+'</option>'; }).join('');
+}
+
+// Chamado a partir da página Equipes (já existente)
 function abrirModalJogoLote(){
   if(!_equipeSelecionados.size){ showToast('⚠️ Selecione ao menos um jogador'); return; }
+  _jogoLoteAtletaIds = Array.from(_equipeSelecionados);
+  var atletasSel = atletasCache.filter(function(a){ return _jogoLoteAtletaIds.indexOf(String(a.id))>-1 || _jogoLoteAtletaIds.indexOf(a.id)>-1; });
+  _popularCompeticoesModalLote(atletasSel);
   document.getElementById('jl-data').value='';
   document.getElementById('jl-adversario').value='';
-  document.getElementById('jl-contador').textContent=_equipeSelecionados.size;
+  document.getElementById('jl-contador').textContent=_jogoLoteAtletaIds.length;
+  document.getElementById('jogoLoteModal').classList.add('open');
+}
+
+// Novo: chamado a partir da barra de seleção da tabela de Atletas (admin)
+function abrirModalJogoLoteAdmin(){
+  if(!_selecaoAtiva.size){ showToast('⚠️ Selecione ao menos um atleta'); return; }
+  var idxs = Array.from(_selecaoAtiva);
+  var atletasSel = idxs.map(function(i){ return atletasCache[i]; }).filter(Boolean);
+  _jogoLoteAtletaIds = atletasSel.map(function(a){ return a.id; });
+  _popularCompeticoesModalLote(atletasSel);
+  document.getElementById('jl-data').value='';
+  document.getElementById('jl-adversario').value='';
+  document.getElementById('jl-contador').textContent=_jogoLoteAtletaIds.length;
   document.getElementById('jogoLoteModal').classList.add('open');
 }
 
 async function confirmarJogoLote(){
-  var ids=Array.from(_equipeSelecionados);
+  var ids = _jogoLoteAtletaIds;
   if(!ids.length){ showToast('⚠️ Nenhum jogador selecionado'); return; }
+  var competicao=document.getElementById('jl-competicao').value;
   var data=document.getElementById('jl-data').value;
   var adversario=(document.getElementById('jl-adversario').value||'').trim();
+  if(!competicao){ showToast('⚠️ Selecione a competição'); return; }
   if(!data && !adversario){ showToast('⚠️ Informe a data ou o adversário'); return; }
 
   var btn=document.getElementById('btn-confirmar-jogo-lote');
   btn.innerHTML='<span class="spin"></span> Salvando...'; btn.disabled=true;
 
   var d=await api('/api/admin/eventos/lote-jogo',{method:'POST',body:JSON.stringify({
-    atleta_ids: ids, data: data, adversario: adversario
+    atleta_ids: ids, competicao: competicao, data: data, adversario: adversario
   })});
 
   btn.innerHTML='SALVAR PARA TODOS →'; btn.disabled=false;
@@ -3454,10 +3492,14 @@ async function confirmarJogoLote(){
     document.getElementById('jogoLoteModal').classList.remove('open');
     showToast('✅ +1 jogo registrado para '+d.atualizados+' jogador(es)!');
     atletasCache=await carregarAtletas();
-    var t=dbTimes.find(function(x){ return x.nome===_equipeAtualNome; });
-    if(t){ _abrirEquipePorId(t.id); }
-    else { abrirEquipeSemCadastro(_equipeAtualNome); }
+    limparSelecao();
     renderAdminAtletas();
+    filtrarAdminAtletas();
+    // se a chamada veio da tela de Equipes, atualiza aquela tela também
+    if(document.getElementById('equipe-detalhe').style.display==='block'){
+      var t=dbTimes.find(function(x){ return x.nome===_equipeAtualNome; });
+      if(t){ _abrirEquipePorId(t.id); } else { abrirEquipeSemCadastro(_equipeAtualNome); }
+    }
   } else {
     showToast('⚠️ Erro: '+(d&&d.erro?d.erro:'tente novamente'));
   }
