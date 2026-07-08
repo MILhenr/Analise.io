@@ -957,6 +957,7 @@ footer{
     <div style="padding:32px 40px 40px">
       <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:4px">📊 Eventos — <span id="ev-atleta-nome"></span></div>
       <p style="font-size:12px;color:var(--gray);margin-bottom:20px">Cada gol/assistência precisa de data OU adversário. Cada jogo precisa do adversário.</p>
+      <div id="ev-roster" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:10px;margin-bottom:16px;border-bottom:1.5px solid var(--border)"></div>
       <input type="hidden" id="ev-atleta-id">
 
       <div style="background:var(--gray-light);border:1.5px solid var(--border);border-radius:12px;padding:16px;margin-bottom:20px">
@@ -3540,6 +3541,29 @@ function handleAgenciaLogoUpload(input){
   r.onload = function(e){ agenciaLogoBase64 = e.target.result; showToast('✅ Logo carregada!'); };
   r.readAsDataURL(file);
 }
+
+function renderRosterEventos(clube, atletaAtualId){
+  var el = document.getElementById('ev-roster');
+  var jogadores = atletasCache.filter(function(a){
+    return a.status==='aprovado' && (a.clube||'').trim() === (clube||'').trim();
+  });
+  if(!jogadores.length){ el.innerHTML=''; return; }
+  el.innerHTML = jogadores.map(function(a){
+    var ativo = String(a.id)===String(atletaAtualId);
+    var foto = a.foto || PLACEHOLDER_FOTO;
+    return '<div onclick="trocarAtletaEventos(\''+a.id+'\')" style="flex-shrink:0;text-align:center;cursor:pointer;padding:6px;border-radius:10px;border:2px solid '+(ativo?'var(--blue)':'transparent')+';background:'+(ativo?'var(--blue-light)':'transparent')+';width:60px">'
+      +'<img src="'+foto+'" style="width:44px;height:44px;border-radius:8px;object-fit:cover;display:block;margin:0 auto 4px">'
+      +'<span style="font-size:9px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block">'+a.nome+'</span>'
+      +'</div>';
+  }).join('');
+}
+
+function trocarAtletaEventos(atletaId){
+  var idx = atletasCache.findIndex(function(a){ return String(a.id)===String(atletaId); });
+  if(idx<0) return;
+  abrirEventos(idx);
+}
+  
 async function abrirEventos(idx){
   var a=atletasCache[idx]; if(!a) return;
   document.getElementById('ev-atleta-id').value=a.id;
@@ -3559,7 +3583,8 @@ async function abrirEventos(idx){
   }
 
   document.getElementById('eventosModal').classList.add('open');
-  carregarEventosAtleta(a.id);
+    renderRosterEventos(a.clube, a.id);
+    carregarEventosAtleta(a.id);
 }
 
 async function carregarEventosAtleta(atletaId){
