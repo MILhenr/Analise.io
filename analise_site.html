@@ -73,6 +73,15 @@ nav{
   background:var(--blue2);transform:translateY(-1px);
   box-shadow:0 6px 20px rgba(26,86,255,.3)
 }
+.nav-search-bar{
+  flex:1;max-width:360px;margin:0 24px;
+  display:flex;align-items:center;gap:9px;
+  background:var(--gray-light);border:1.5px solid var(--border);
+  border-radius:100px;padding:9px 18px;cursor:pointer;
+  transition:all .2s
+}
+.nav-search-bar:hover{border-color:var(--blue);background:var(--white);box-shadow:0 4px 16px rgba(26,86,255,.08)}
+.nav-search-placeholder{font-size:13px;color:var(--gray);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ===== HERO ===== */
 .hero{
@@ -538,6 +547,8 @@ footer{
 @media(max-width:900px){
   nav{padding:0 16px}
   .nav-links{display:none}
+  .nav-search-bar{max-width:140px;margin:0 10px;padding:9px 12px}
+  .nav-search-placeholder{display:none}
   .hero{grid-template-columns:1fr;padding:90px 16px 60px}
   .hero-right{display:none}
   .search-section{padding:20px 16px}
@@ -1007,24 +1018,28 @@ footer{
 <!-- ===== NAV ===== -->
 <nav>
   <!-- Linha 1: Logo + Auth -->
-  <div class="nav-top">
+    <div class="nav-top">
     <div class="logo" onclick="showPage('home');setNavTab('rankings')">ANALISE<span>.IO</span></div>
+    <div class="nav-search-bar" onclick="abrirBuscaGlobal()">
+      <span style="font-size:14px;color:var(--gray)">🔍</span>
+      <span class="nav-search-placeholder">Pesquisar atleta ou time...</span>
+    </div>
     <div class="nav-auth-btns">
       <div id="nav-guest" style="display:flex;gap:6px;align-items:center">
+        <button class="btn-nav-outline" onclick="openAuthModal('login')">Entrar</button>
+        <button class="btn-nav-outline" onclick="openAuthModal('criar')">Criar Conta</button>
         <button class="btn-nav-solid" onclick="showPage('cadastro-atleta');updateCadastroView()" style="font-size:12px;padding:7px 14px">+ Cadastrar Atleta</button>
       </div>
       <div id="nav-user" style="display:none;gap:6px;align-items:center">
         <span id="nav-nome" style="font-size:12px;color:var(--gray)"></span>
-        <button class="btn-nav-outline" onclick="showPage('assinatura')" id="nav-btn-assinar">R$9,90</button>
         <button class="btn-nav-outline" onclick="doLogout()">Sair</button>
       </div>
-        <div id="nav-admin" style="display:none;gap:6px;align-items:center">
-                <button class="btn-nav-solid" style="background:#111;font-size:12px;padding:7px 12px" onclick="showPage('admin-panel');carregarPainelAdmin()">Admin</button>
-                <button class="btn-nav-outline" onclick="doLogout()">Sair</button>
-              </div>
-              <button onclick="abrirBuscaGlobal()" style="background:transparent;border:none;color:var(--text);width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px" title="Buscar">🔍</button>
-            </div>
-          </div>
+      <div id="nav-admin" style="display:none;gap:6px;align-items:center">
+        <button class="btn-nav-solid" style="background:#111;font-size:12px;padding:7px 12px" onclick="showPage('admin-panel');carregarPainelAdmin()">Admin</button>
+        <button class="btn-nav-outline" onclick="doLogout()">Sair</button>
+      </div>
+    </div>
+  </div>
 
 
   <!-- Linha 2: 3 abas -->
@@ -1098,15 +1113,7 @@ footer{
 
   <!-- AUTH + STATS abaixo do carrossel -->
   <div id="home-auth-block" style="background:var(--white);border-bottom:1px solid var(--border);padding:20px 16px;display:flex;flex-direction:column;gap:10px">
-    <!-- Botões auth — só quando deslogado -->
-    <div id="home-guest-btns">
-      <button onclick="openAuthModal('login')" style="display:block;width:100%;background:var(--blue);border:none;color:#fff;padding:14px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;margin-bottom:10px">
-        Entrar
-      </button>
-      <button onclick="openAuthModal('criar')" style="display:block;width:100%;background:var(--white);border:1.5px solid var(--border);color:var(--text);padding:13px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;cursor:pointer">
-        Criar conta
-      </button>
-    </div>
+
     <!-- Stats -->
     <div style="display:flex;gap:0;background:var(--gray-light);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-top:4px">
       <div style="flex:1;padding:14px 8px;text-align:center;border-right:1px solid var(--border)">
@@ -1951,7 +1958,8 @@ function popularFiltroAgencias(){
 
 function openProfile(a){
   if(!a){ showToast('Atleta não encontrado'); return; }
-  var b=!userAssinante;
+    var b=false; // paywall desativado — todo mundo vê tudo por enquanto
+
 
   function rFree(label,val){
     if(!val||val==='-'||val==='—'||val==='Futsal') return '';
