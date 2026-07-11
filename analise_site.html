@@ -734,6 +734,24 @@ footer{
 
 <div class="toast" id="toast"></div>
 
+<!-- ===== MODAL: BUSCA GLOBAL ===== -->
+<div class="modal-overlay" id="buscaGlobalModal" onclick="if(event.target===this)fecharBuscaGlobal()" style="align-items:flex-start;padding-top:0">
+  <div class="modal" style="max-width:640px;width:100%;max-height:100vh;height:100vh;border-radius:0;margin:0">
+    <div style="position:sticky;top:0;background:var(--white);z-index:20;padding:16px 20px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;gap:12px">
+      <button onclick="fecharBuscaGlobal()" style="background:transparent;border:none;font-size:20px;cursor:pointer;color:var(--text);flex-shrink:0">←</button>
+      <div class="search-bar" style="flex:1;margin:0">
+        <input type="text" id="buscaGlobalInput" placeholder="Procurar atleta ou time..." oninput="filtrarBuscaGlobal()">
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;padding:14px 20px 0;flex-wrap:wrap">
+      <button class="filter-pill active" id="bg-tab-todos" onclick="setBuscaGlobalTipo('todos')">Todos</button>
+      <button class="filter-pill" id="bg-tab-time" onclick="setBuscaGlobalTipo('time')">Time</button>
+      <button class="filter-pill" id="bg-tab-jogador" onclick="setBuscaGlobalTipo('jogador')">Jogador</button>
+    </div>
+    <div id="buscaGlobalResultados" style="padding:16px 20px 40px"></div>
+  </div>
+</div>
+
 <!-- ===== MODAL: EDITAR TIME ===== -->
 <div class="modal-overlay" id="editTimeModal" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="modal" style="max-width:500px">
@@ -1000,12 +1018,14 @@ footer{
         <button class="btn-nav-outline" onclick="showPage('assinatura')" id="nav-btn-assinar">R$9,90</button>
         <button class="btn-nav-outline" onclick="doLogout()">Sair</button>
       </div>
-      <div id="nav-admin" style="display:none;gap:6px;align-items:center">
-        <button class="btn-nav-solid" style="background:#111;font-size:12px;padding:7px 12px" onclick="showPage('admin-panel');carregarPainelAdmin()">Admin</button>
-        <button class="btn-nav-outline" onclick="doLogout()">Sair</button>
-      </div>
-    </div>
-  </div>
+        <div id="nav-admin" style="display:none;gap:6px;align-items:center">
+                <button class="btn-nav-solid" style="background:#111;font-size:12px;padding:7px 12px" onclick="showPage('admin-panel');carregarPainelAdmin()">Admin</button>
+                <button class="btn-nav-outline" onclick="doLogout()">Sair</button>
+              </div>
+              <button onclick="abrirBuscaGlobal()" style="background:transparent;border:none;color:var(--text);width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px" title="Buscar">🔍</button>
+            </div>
+          </div>
+
 
   <!-- Linha 2: 3 abas -->
   <div class="nav-main-tabs">
@@ -1109,8 +1129,7 @@ footer{
     <div class="eyebrow">Temporada 2026</div>
     <h2 class="sec-title">RANKINGS DA TEMPORADA</h2>
 
-    <div class="cat-tabs" id="catTabs"></div>
-    <div class="torneio-wrap" id="torneioWrap"></div>
+        <div class="cat-tabs" id="campTabs"></div>
 
     <div class="rank-type-tabs">
       <button class="rank-type-tab active" id="tab-gols" onclick="setTipoRanking('gols')">
@@ -1121,6 +1140,9 @@ footer{
       </button>
       <button class="rank-type-tab" id="tab-ga" onclick="setTipoRanking('ga')">
         <span class="tab-icon">🔥</span> G/A
+      </button>
+      <button class="rank-type-tab" id="tab-media" onclick="setTipoRanking('media')">
+        <span class="tab-icon">📊</span> Média Gols
       </button>
     </div>
 
@@ -1609,7 +1631,8 @@ var dbClubes=[
 ];
 var EMOJIS={Goleiro:'🧤',Fixo:'🛡️',Ala:'⚡','Pivô':'💪',Universal:'🌟'};
 
-var catAtivaRanking=null, torneioAtivoRanking=null, tipoRankingAtivo='gols';
+var CAMPEONATOS_ATIVOS=['LNF']; // depois: adicione 'LNF Silver' nesta lista
+var campeonatoAtivoRanking=null, tipoRankingAtivo='gols';
 
 function setNavTab(tab){
   ['rankings','atletas','equipes'].forEach(function(t){
@@ -1635,6 +1658,62 @@ function showToast(msg){
   var t=document.getElementById('toast');
   t.textContent=msg; t.classList.add('show');
   setTimeout(function(){ t.classList.remove('show'); }, 3200);
+}
+
+var buscaGlobalTipo='todos';
+
+function abrirBuscaGlobal(){
+  document.getElementById('buscaGlobalModal').classList.add('open');
+  document.getElementById('buscaGlobalInput').value='';
+  setBuscaGlobalTipo('todos');
+  setTimeout(function(){ document.getElementById('buscaGlobalInput').focus(); }, 100);
+}
+function fecharBuscaGlobal(){
+  document.getElementById('buscaGlobalModal').classList.remove('open');
+}
+function setBuscaGlobalTipo(tipo){
+  buscaGlobalTipo=tipo;
+  ['todos','time','jogador'].forEach(function(t){
+    var b=document.getElementById('bg-tab-'+t);
+    if(b) b.classList.toggle('active', t===tipo);
+  });
+  filtrarBuscaGlobal();
+}
+function filtrarBuscaGlobal(){
+  var q=(document.getElementById('buscaGlobalInput').value||'').toLowerCase().trim();
+  var aprov=atletasCache.filter(function(a){ return a.status==='aprovado'; });
+
+  var jogadores=[];
+  if(buscaGlobalTipo!=='time'){
+    jogadores=aprov.filter(function(a){ return !q || a.nome.toLowerCase().includes(q); })
+      .map(function(a){ return {tipo:'jogador', nome:a.nome, sub:(a.clube||'—')+' · '+a.posicao, foto:a.foto, idx:atletasCache.indexOf(a)}; });
+  }
+  var times=[];
+  if(buscaGlobalTipo!=='jogador'){
+    times=dbTimes.filter(function(t){ return !q || t.nome.toLowerCase().includes(q); })
+      .map(function(t){ return {tipo:'time', nome:t.nome, sub:getJogadoresDoTime(t).length+' jogador(es)', foto:t.logo, timeId:t.id}; });
+  }
+  var resultados=times.concat(jogadores).slice(0, q?30:15);
+  renderBuscaGlobalResultados(resultados, !q);
+}
+function renderBuscaGlobalResultados(lista, isRecente){
+  var el=document.getElementById('buscaGlobalResultados');
+  if(!lista.length){ el.innerHTML='<p style="color:var(--gray);padding:24px 0;text-align:center">Nenhum resultado encontrado.</p>'; return; }
+  var titulo=isRecente ? '<div style="font-size:13px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Sugestões</div>' : '';
+  el.innerHTML=titulo+lista.map(function(r){
+    var fotoHtml=r.foto
+      ? '<img src="'+r.foto+'" style="width:100%;height:100%;object-fit:'+(r.tipo==='time'?'contain':'cover')+'">'
+      : '<span style="font-size:20px">'+(r.tipo==='time'?'⚽':'👤')+'</span>';
+    var onclickAttr=r.tipo==='time' ? "fecharBuscaGlobal();_abrirEquipePorId('"+String(r.timeId).replace(/'/g,"\\'")+"')" : "fecharBuscaGlobal();abrirPerfil("+r.idx+")";
+    return '<div onclick="'+onclickAttr+'" style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer">'
+      +'<div style="width:48px;height:48px;border-radius:'+(r.tipo==='time'?'10px':'50%')+';background:var(--gray-light);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">'+fotoHtml+'</div>'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r.nome+'</div>'
+      +'<div style="font-size:12px;color:var(--gray)">'+r.sub+'</div>'
+      +'</div>'
+      +'<span style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--blue);background:var(--blue-light);padding:3px 10px;border-radius:100px;flex-shrink:0">'+(r.tipo==='time'?'Time':'Jogador')+'</span>'
+      +'</div>';
+  }).join('');
 }
 
 function showPage(p){
@@ -2625,69 +2704,33 @@ async function enviarCorrecao(){
 }
 
 /* ===== RANKINGS ===== */
-function obterTorneiosRanking(categoria){
-  var aprov=atletasCache.filter(function(a){ return a.status==='aprovado' && a.competicoes && a.competicoes.length; });
-  var torneios=[];
-  aprov.forEach(function(a){
-    a.competicoes.forEach(function(c){
-      if((c.categoria||'').trim()===(categoria||'').trim() && torneios.indexOf(c.competicao)===-1) torneios.push(c.competicao);
-    });
-  });
-  return torneios;
+function normalizarNomeCampeonato(s){
+  return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
 }
-
-var CATS_FIXAS=['Nacional','Estadual','Base'];
 
 function renderCatTabsRanking(){
-  var el=document.getElementById('catTabs'); if(!el) return;
-  if(!catAtivaRanking) catAtivaRanking=CATS_FIXAS[0];
+  var el=document.getElementById('campTabs'); if(!el) return;
+  if(!campeonatoAtivoRanking) campeonatoAtivoRanking=CAMPEONATOS_ATIVOS[0];
   el.innerHTML='';
-  CATS_FIXAS.forEach(function(c){
+  CAMPEONATOS_ATIVOS.forEach(function(c){
     var btn=document.createElement('button');
-    btn.className='cat-tab'+(c===catAtivaRanking?' active':'');
+    btn.className='cat-tab'+(c===campeonatoAtivoRanking?' active':'');
     btn.textContent=c;
-    btn.addEventListener('click',function(){ setCategoriaRanking(c); });
+    btn.addEventListener('click',function(){ setCampeonatoRanking(c); });
     el.appendChild(btn);
   });
 }
 
-function setCategoriaRanking(cat){
-  catAtivaRanking=cat;
-  torneioAtivoRanking=null;
-  var torneios=obterTorneiosRanking(cat);
-  torneioAtivoRanking=torneios[0]||null;
+function setCampeonatoRanking(camp){
+  campeonatoAtivoRanking=camp;
   renderCatTabsRanking();
-  renderTorneioTabsRanking();
-  atualizarAbasRanking();
-  renderRankingLista();
-}
-
-function renderTorneioTabsRanking(){
-  var el=document.getElementById('torneioWrap'); if(!el) return;
-  if(!catAtivaRanking){ el.innerHTML=''; return; }
-  var torneios=obterTorneiosRanking(catAtivaRanking);
-  if(!torneios.length){ el.innerHTML=''; return; }
-  if(!torneioAtivoRanking || torneios.indexOf(torneioAtivoRanking)===-1) torneioAtivoRanking=torneios[0];
-  el.innerHTML='';
-  torneios.forEach(function(t){
-    var btn=document.createElement('button');
-    btn.className='torneio-tab'+(t===torneioAtivoRanking?' active':'');
-    btn.textContent=t;
-    btn.addEventListener('click',function(){ setTorneioRanking(t); });
-    el.appendChild(btn);
-  });
-}
-
-function setTorneioRanking(t){
-  torneioAtivoRanking=t;
-  renderTorneioTabsRanking();
   atualizarAbasRanking();
   renderRankingLista();
 }
 
 function setTipoRanking(tipo){
   tipoRankingAtivo=tipo;
-  ['gols','assists','ga'].forEach(function(t){
+  ['gols','assists','ga','media'].forEach(function(t){
     var b=document.getElementById('tab-'+t);
     if(b) b.classList.toggle('active', t===tipo);
   });
@@ -2697,72 +2740,91 @@ function setTipoRanking(tipo){
 function getCompIdx(a){
   if(!a.competicoes) return 0;
   for(var i=0;i<a.competicoes.length;i++){
-    if(a.competicoes[i].competicao===torneioAtivoRanking) return i+1;
+    if(normalizarNomeCampeonato(a.competicoes[i].competicao)===normalizarNomeCampeonato(campeonatoAtivoRanking)) return i+1;
   }
   return 0;
 }
 
-function getValRanking(a){
+function getStatsRanking(a){
   var idx=getCompIdx(a);
-  var g=Number(a['stats_gols'+idx])||Number(a.stats_gols)||0;
-  var as=Number(a['stats_assists'+idx])||Number(a.stats_assists)||0;
-  if(tipoRankingAtivo==='gols') return g;
-  if(tipoRankingAtivo==='assists') return as;
-  return g+as;
+  return {
+    gols: Number(a['stats_gols'+idx])||Number(a.stats_gols)||0,
+    assists: Number(a['stats_assists'+idx])||Number(a.stats_assists)||0,
+    jogos: Number(a['stats_jogos'+idx])||Number(a.stats_jogos)||0
+  };
+}
+
+function getValRanking(a){
+  var s=getStatsRanking(a);
+  if(tipoRankingAtivo==='gols') return s.gols;
+  if(tipoRankingAtivo==='assists') return s.assists;
+  if(tipoRankingAtivo==='media') return s.jogos>0 ? (s.gols/s.jogos) : 0;
+  return s.gols+s.assists;
+}
+
+function formatValRanking(a){
+  var v=getValRanking(a);
+  return tipoRankingAtivo==='media' ? v.toFixed(2) : v;
 }
 
 function getLabelRanking(){
   if(tipoRankingAtivo==='gols') return 'Gols';
   if(tipoRankingAtivo==='assists') return 'Assistências';
+  if(tipoRankingAtivo==='media') return 'Média Gols';
   return 'G/A';
+}
+
+function compararRanking(a,b){
+  if(tipoRankingAtivo==='media'){
+    var sa=getStatsRanking(a), sb=getStatsRanking(b);
+    var ma=sa.jogos>0?sa.gols/sa.jogos:0, mb=sb.jogos>0?sb.gols/sb.jogos:0;
+    if(mb!==ma) return mb-ma;
+    if(sb.jogos!==sa.jogos) return sb.jogos-sa.jogos;
+    return sb.gols-sa.gols;
+  }
+  return getValRanking(b)-getValRanking(a);
 }
 
 function renderRankingsHome(){
   renderCatTabsRanking();
-  renderTorneioTabsRanking();
   atualizarAbasRanking();
   renderRankingLista();
 }
 
 function atualizarAbasRanking(){
-  if(!catAtivaRanking||!torneioAtivoRanking) return;
+  if(!campeonatoAtivoRanking) return;
   var aprov=atletasCache.filter(function(a){ return a.status==='aprovado'&&a.competicoes&&a.competicoes.length; });
   var lista=aprov.filter(function(a){
-    return a.competicoes.some(function(c){ return c.categoria===catAtivaRanking&&c.competicao===torneioAtivoRanking; });
+    return a.competicoes.some(function(c){ return normalizarNomeCampeonato(c.competicao)===normalizarNomeCampeonato(campeonatoAtivoRanking); });
   });
-  // Verificar se há assistências na competição
-  var temAssists=lista.some(function(a){
-    var idx=getCompIdx(a);
-    return (Number(a['stats_assists'+idx])||Number(a.stats_assists)||0)>0;
-  });
-  var temGols=lista.some(function(a){
-    var idx=getCompIdx(a);
-    return (Number(a['stats_gols'+idx])||Number(a.stats_gols)||0)>0;
-  });
+  var temAssists=lista.some(function(a){ return getStatsRanking(a).assists>0; });
+  var temGols=lista.some(function(a){ return getStatsRanking(a).gols>0; });
   var tabAssists=document.getElementById('tab-assists');
   var tabGa=document.getElementById('tab-ga');
+  var tabMedia=document.getElementById('tab-media');
   if(tabAssists) tabAssists.style.display=temAssists?'':'none';
   if(tabGa) tabGa.style.display=(temAssists&&temGols)?'':'none';
-  // Se aba ativa ficou escondida, volta para gols
+  if(tabMedia) tabMedia.style.display=temGols?'':'none';
   if(tipoRankingAtivo==='assists'&&!temAssists){ setTipoRanking('gols'); }
   if(tipoRankingAtivo==='ga'&&!(temAssists&&temGols)){ setTipoRanking('gols'); }
+  if(tipoRankingAtivo==='media'&&!temGols){ setTipoRanking('gols'); }
 }
 
 function renderRankingLista(){
   var container=document.getElementById('rankingContainer'); if(!container) return;
-  if(!catAtivaRanking || !torneioAtivoRanking){
+    if(!campeonatoAtivoRanking){
     container.innerHTML='<div class="empty-state"><div style="font-size:48px">⚽</div><h3>Sem dados ainda</h3><p>Cadastre atletas com competições para ver os rankings aqui.</p></div>';
     return;
   }
   var aprov=atletasCache.filter(function(a){ return a.status==='aprovado' && a.competicoes && a.competicoes.length; });
   var lista=aprov.filter(function(a){
-    return a.competicoes.some(function(c){ return c.categoria===catAtivaRanking && c.competicao===torneioAtivoRanking; });
+    return a.competicoes.some(function(c){ return normalizarNomeCampeonato(c.competicao)===normalizarNomeCampeonato(campeonatoAtivoRanking); });
   });
   if(!lista.length){
     container.innerHTML='<div class="empty-state"><div style="font-size:48px">⚽</div><h3>Sem dados ainda</h3><p>Em breve os atletas desta competição estarão no ranking.</p></div>';
     return;
   }
-  var sorted=lista.slice().sort(function(a,b){ return getValRanking(b)-getValRanking(a); });
+  var sorted=lista.slice().sort(compararRanking);
   var top3=sorted.slice(0,3), resto=sorted.slice(3);
 
   var podiumHTML='<div class="podium">';
@@ -2778,17 +2840,20 @@ function renderRankingLista(){
     podiumHTML+='<div class="podium-card rank-'+(i+1)+'" onclick="abrirPerfil('+idx+')">'
       +'<div class="podium-photo">'+fotoHTML+'<div class="rank-medal medal-'+(i+1)+'">'+(i+1)+'</div></div>'
       +'<div class="podium-body">'
-      +'<div class="podium-stat">'+getValRanking(a)+'</div>'
+      +'<div class="podium-stat">'+formatValRanking(a)+'</div>'
       +'<div class="podium-stat-label">'+getLabelRanking()+'</div>'
       +'<div class="podium-name">'+a.nome+'</div>'
       +'<div class="podium-club">'+(a.clube||'—')+'</div>'
       +'<span class="pos-badge">'+a.posicao+'</span>'
       +'<div class="podium-mini-stats">'
-      +(tipoRankingAtivo==='gols'
+            +(tipoRankingAtivo==='gols'
         ? '<div class="mini-stat"><span class="mini-stat-val">'+cG+'</span><span class="mini-stat-label">Gols</span></div>'
         +'<div class="mini-stat"><span class="mini-stat-val">'+cJ+'</span><span class="mini-stat-label">Jogos</span></div>'
         : tipoRankingAtivo==='assists'
         ? '<div class="mini-stat"><span class="mini-stat-val">'+cA+'</span><span class="mini-stat-label">Assist.</span></div>'
+        +'<div class="mini-stat"><span class="mini-stat-val">'+cJ+'</span><span class="mini-stat-label">Jogos</span></div>'
+        : tipoRankingAtivo==='media'
+        ? '<div class="mini-stat"><span class="mini-stat-val">'+cG+'</span><span class="mini-stat-label">Gols</span></div>'
         +'<div class="mini-stat"><span class="mini-stat-val">'+cJ+'</span><span class="mini-stat-label">Jogos</span></div>'
         : '<div class="mini-stat"><span class="mini-stat-val">'+cJ+'</span><span class="mini-stat-label">Jogos</span></div>'
         +'<div class="mini-stat"><span class="mini-stat-val">'+cA+'</span><span class="mini-stat-label">Assist.</span></div>'
@@ -2821,7 +2886,7 @@ function renderRankingLista(){
       +'</div>'
       +'</div>'
       +'<div class="rank-secondary">'
-      +'<div class="rank-val">'+getValRanking(a)+'</div>'
+      +'<div class="rank-val">'+formatValRanking(a)+'</div>'
       +'<div class="rank-val-label">'+getLabelRanking()+'</div>'
       +'</div>'
       +'</div>';
