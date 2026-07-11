@@ -74,14 +74,14 @@ nav{
   box-shadow:0 6px 20px rgba(26,86,255,.3)
 }
 .nav-search-bar{
-  flex:1;max-width:360px;margin:0 24px;
+  width:100%;max-width:none;margin:0;
   display:flex;align-items:center;gap:9px;
-  background:var(--gray-light);border:1.5px solid var(--border);
-  border-radius:100px;padding:9px 18px;cursor:pointer;
+  background:var(--white);border:1.5px solid var(--border);
+  border-radius:100px;padding:11px 18px;cursor:pointer;
   transition:all .2s
 }
-.nav-search-bar:hover{border-color:var(--blue);background:var(--white);box-shadow:0 4px 16px rgba(26,86,255,.08)}
-.nav-search-placeholder{font-size:13px;color:var(--gray);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-search-bar:hover{border-color:var(--blue);box-shadow:0 4px 16px rgba(26,86,255,.08)}
+.nav-search-placeholder{font-size:14px;color:var(--gray);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ===== HERO ===== */
 .hero{
@@ -547,8 +547,6 @@ footer{
 @media(max-width:900px){
   nav{padding:0 16px}
   .nav-links{display:none}
-  .nav-search-bar{max-width:140px;margin:0 10px;padding:9px 12px}
-  .nav-search-placeholder{display:none}
   .hero{grid-template-columns:1fr;padding:90px 16px 60px}
   .hero-right{display:none}
   .search-section{padding:20px 16px}
@@ -1019,12 +1017,9 @@ footer{
 <nav>
   <!-- Linha 1: Logo + Auth -->
     <div class="nav-top">
-    <div class="logo" onclick="showPage('home');setNavTab('rankings')">ANALISE<span>.IO</span></div>
-    <div class="nav-search-bar" onclick="abrirBuscaGlobal()">
-      <span style="font-size:14px;color:var(--gray)">🔍</span>
-      <span class="nav-search-placeholder">Pesquisar atleta ou time...</span>
-    </div>
-    <div class="nav-auth-btns">
+       <div class="logo" onclick="showPage('home');setNavTab('rankings')">ANALISE<span>.IO</span></div>
+       <button onclick="abrirBuscaGlobal()" style="background:transparent;border:none;color:var(--text);width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0" title="Buscar">🔍</button>
+       <div class="nav-auth-btns">
       <div id="nav-guest" style="display:flex;gap:6px;align-items:center">
         <button class="btn-nav-outline" onclick="openAuthModal('login')">Entrar</button>
         <button class="btn-nav-outline" onclick="openAuthModal('criar')">Criar Conta</button>
@@ -1124,10 +1119,14 @@ footer{
         <span style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--blue);display:block;line-height:1" id="sClubes">0</span>
         <span style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-top:4px;display:block">Equipes</span>
       </div>
-      <div style="flex:1;padding:14px 8px;text-align:center">
+            <div style="flex:1;padding:14px 8px;text-align:center">
         <span style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--blue);display:block;line-height:1" id="sAnalises">0</span>
         <span style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-top:4px;display:block">Análises</span>
       </div>
+    </div>
+    <div class="nav-search-bar" onclick="abrirBuscaGlobal()" style="margin-top:12px">
+      <span style="font-size:14px;color:var(--gray)">🔍</span>
+      <span class="nav-search-placeholder">Procurar na Analise.io</span>
     </div>
   </div>
 
